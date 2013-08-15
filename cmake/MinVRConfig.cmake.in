@@ -1,0 +1,303 @@
+# - Config file for the MinVR library
+# It defines the following variables
+#	MinVR_FOUND, the library was found on the system
+#   MinVR_INCLUDE_DIRS, the paths where MinVR headers and available 3rd party dependencies are located
+#   MinVR_LIBRARY_DIRS, directories in which the MinVR library and its dependencies are located
+#   MinVR_LIBRARIES, libraries to link against to use MinVR. (ex. target_link_libraries(my_target ${MinVR_LIBRARIES}) )
+#
+# To use this find module, add the following line to your project's CMakeLists.txt file:
+#	find_package(MinVR COMPONENTS appkit REQUIRED)
+#	where 'appkit' is replaced with one of the following components:
+# @MVRCONFIG_AVAILABLE_COMPONENTS_LIST@	
+#
+# Dependencies among components will be included automatically.
+# Much of the macros and structure of this file were taken from PCLConfig.cmake.in at www.pointclouds.org
+
+### ---[ some useful macros
+macro(minvr_report_not_found _reason)
+  unset(MinVR_FOUND)
+  unset(MinVR_LIBRARIES)
+  unset(MinVR_INCLUDE_DIRS)
+  unset(MinVR_LIBRARY_DIRS)
+  if(MinVR_FIND_REQUIRED)
+    message(FATAL_ERROR ${_reason})
+  elseif(NOT MinVR_FIND_QUIETLY)
+    message(WARNING ${_reason})
+  endif()
+  return()
+endmacro(minvr_report_not_found)
+
+# Remove duplicate libraries    
+macro(minvr_remove_duplicate_libraries _unfiltered_libraries _filtered_libraries)
+  set(${_filtered_libraries})
+  set(_debug_libraries)
+  set(_optimized_libraries)
+  set(_other_libraries)
+  set(_waiting_for_debug 0)
+  set(_waiting_for_optimized 0)
+  set(_library_position -1)
+  foreach(library ${${_unfiltered_libraries}})
+    if("${library}" STREQUAL "debug")
+      set(_waiting_for_debug 1)
+    elseif("${library}" STREQUAL "optimized")
+      set(_waiting_for_optimized 1)
+    elseif(_waiting_for_debug)
+      list(FIND _debug_libraries "${library}" library_position)
+      if(library_position EQUAL -1)
+        list(APPEND ${_filtered_libraries} debug ${library})
+        list(APPEND _debug_libraries ${library})
+      endif()
+      set(_waiting_for_debug 0)
+    elseif(_waiting_for_optimized)
+      list(FIND _optimized_libraries "${library}" library_position)
+      if(library_position EQUAL -1)
+        list(APPEND ${_filtered_libraries} optimized ${library})
+        list(APPEND _optimized_libraries ${library})
+      endif()
+      set(_waiting_for_optimized 0)
+    else("${library}" STREQUAL "debug")
+      list(FIND _other_libraries "${library}" library_position)
+      if(library_position EQUAL -1)
+        list(APPEND ${_filtered_libraries} ${library})
+        list(APPEND _other_libraries ${library})
+      endif()
+    endif("${library}" STREQUAL "debug")
+  endforeach(library)
+endmacro(minvr_remove_duplicate_libraries)
+
+###  3rd party libraries
+macro(find_boost)
+	if(@BUILD_BOOST@)
+		set(BOOST_ROOT "@MINVR_INSTALL_DIR@/boost")
+	endif()
+	set(Boost_USE_STATIC_LIBS ON)
+	set(Boost_USE_MULTITHREADED ON)  
+	set(Boost_USE_STATIC_RUNTIME OFF)
+	find_package(Boost 1.54.0 ${QUIET_} COMPONENTS thread)
+  
+	set(BOOST_FOUND ${Boost_FOUND})
+	set(BOOST_INCLUDE_DIRS "${Boost_INCLUDE_DIR}")
+	set(BOOST_LIBRARY_DIRS "${Boost_LIBRARY_DIRS}")
+	set(BOOST_LIBRARIES ${Boost_LIBRARIES})
+endmacro(find_boost)
+
+macro(find_vrpn)
+	find_package(LibVRPN ${QUIET_})
+	set(LIBVRPN_FOUND ${LibVRPN_FOUND})
+	set(LIBVRPN_INCLUDE_DIRS "${LIBVRPN_INCLUDE_DIRS}")
+	set(LIBVRPN_LIBRARIES ${LIBVRPN_OPT_LIBRARIES} ${LIBVRPN_DEBUG_LIBRARIES} ${LIBVRPN_ALL_LIBRARIES})
+endmacro(find_vrpn)
+
+macro(find_tuio)
+	find_package(LibTUIO ${QUIET_})
+	set(LIBTUIO_FOUND ${LibTUIO_FOUND})
+	set(LIBTUIO_INCLUDE_DIRS "${LIBTUIO_INCLUDE_DIRS}")
+	set(LIBTUIO_LIBRARIES ${LIBTUIO_OPT_LIBRARIES} ${LIBTUIO_DEBUG_LIBRARIES} ${LIBTUIO_ALL_LIBRARIES})
+endmacro(find_tuio)
+
+macro(find_spacenav)
+	find_package(LibSPACENAV ${QUIET_})
+	set(LIBSPACENAV_FOUND ${LibSpaceNav_FOUND})
+	set(LIBSPACENAV_INCLUDE_DIRS "${LIBSPACENAV_INCLUDE_DIRS}")
+	set(LIBSPACENAV_LIBRARIES ${LIBSPACENAV_OPT_LIBRARIES} ${LIBSPACENAV_DEBUG_LIBRARIES} ${LIBSPACENAV_ALL_LIBRARIES})
+endmacro(find_spacenav)
+
+macro(find_g3dlite)
+	find_package(G3DLite ${QUIET_})
+	set(G3DLITE_FOUND ${G3DLite_FOUND})
+	set(G3DLITE_INCLUDE_DIRS "${G3DLite_INCLUDE_DIRS}")
+	set(G3DLITE_LIBRARIES ${G3DLite_LIBRARIES})
+endmacro(find_g3dlite)
+
+macro(find_glfw)
+	set(glfw_DIR "@MINVR_INSTALL_DIR@/glfw/lib/cmake/glfw")
+	find_package(glfw ${QUIET_})
+	set(GLFW_FOUND ${glfw_FOUND})
+	set(GLFW_INCLUDE_DIRS ${GLFW_INCLUDE_DIR})
+	set(GLFW_LIBRARY_DIRS ${GLFW_LIBRARY_DIR})
+	set(GLFW_LIBRARIES ${GLFW_LIBRARY})
+endmacro(find_glfw)
+
+macro(find_external_library _component _lib)
+  if("${_lib}" STREQUAL "Boost")
+    find_boost()
+  elseif("${_lib}" STREQUAL "G3DLite")
+	find_g3dlite()
+  elseif("${_lib}" STREQUAL "LibVRPN")
+	find_vrpn()
+  elseif("${_lib}" STREQUAL "LibTUIO")
+    find_tuio()
+  elseif("${_lib}" STREQUAL "LibSpaceNav")
+    find_spacenav()
+  elseif("${_lib}" STREQUAL "glfw")
+    find_glfw()
+  endif("${_lib}" STREQUAL "Boost")
+
+  string(TOUPPER "${_component}" COMPONENT)
+  string(TOUPPER "${_lib}" LIB)
+  if(${LIB}_FOUND)
+    list(APPEND MINVR_${COMPONENT}_INCLUDE_DIRS ${${LIB}_INCLUDE_DIRS})
+    if(${LIB}_USE_FILE)
+      include(${${LIB}_USE_FILE})
+    else(${LIB}_USE_FILE)
+      list(APPEND MINVR_${COMPONENT}_LIBRARY_DIRS "${${LIB}_LIBRARY_DIRS}")
+    endif(${LIB}_USE_FILE)
+    if(${LIB}_LIBRARIES)
+      list(APPEND MINVR_${COMPONENT}_LIBRARIES "${${LIB}_LIBRARIES}")
+    endif(${LIB}_LIBRARIES)
+    if(${LIB}_DEFINITIONS)
+      list(APPEND MINVR_${COMPONENT}_DEFINITIONS ${${LIB}_DEFINITIONS})
+    endif(${LIB}_DEFINITIONS)
+  else(${LIB}_FOUND)
+      minvr_report_not_found("${_component} is required but ${_lib} was not found")
+  endif(${LIB}_FOUND)
+endmacro(find_external_library)
+
+#flatten dependencies
+macro(compute_dependencies TO_FIND_COMPONENTS)
+  foreach(component ${${TO_FIND_COMPONENTS}})
+    set(minvr_component minvr_${component})
+    if(${minvr_component}_dep)
+      foreach(dependency ${${minvr_component}_dep})
+        list(FIND ${TO_FIND_COMPONENTS} ${component} pos)
+        list(FIND ${TO_FIND_COMPONENTS} ${dependency} found)
+        if(found EQUAL -1)
+          set(minvr_dependency minvr_${dependency})
+          if(${minvr_dependency}_dep)
+            list(INSERT ${TO_FIND_COMPONENTS} ${pos} ${dependency})
+            compute_dependencies(${TO_FIND_COMPONENTS})
+          else(${minv_dependency}_dep)
+            list(INSERT ${TO_FIND_COMPONENTS} 0 ${dependency})
+          endif(${minvr_dependency}_dep)
+        endif(found EQUAL -1)
+      endforeach(dependency)
+    endif(${minvr_component}_dep)
+  endforeach(component)
+endmacro(compute_dependencies)
+
+
+###  Find MinVR
+
+if(MinVR_FIND_QUIETLY)
+  set(QUIET_ QUIET)
+else(MinVR_FIND_QUIETLY)
+  set(QUIET_)
+endif(MinVR_FIND_QUIETLY)
+
+set(MinVR_INCLUDE_DIR "@MINVR_INSTALL_DIR@/include")
+set(MinVR_LIBRARY_DIR "@MINVR_INSTALL_DIR@/lib")
+
+#set a suffix for debug libraries
+set(MINVR_DEBUG_SUFFIX "@CMAKE_DEBUG_POSTFIX@")
+set(MINVR_RELEASE_SUFFIX "@CMAKE_RELEASE_POSTFIX@")
+
+set(minvr_all_components @MVRCONFIG_AVAILABLE_COMPONENTS@ )
+list(LENGTH minvr_all_components MinVR_NB_COMPONENTS)
+
+#list each component dependencies
+@MVRCONFIG_DEPENDENCIES@
+
+include(FindPackageHandleStandardArgs)
+
+#check if user provided a list of components
+#if no components at all or full list is given set MinVR_FIND_ALL
+if(MinVR_FIND_COMPONENTS)
+  list(LENGTH MinVR_FIND_COMPONENTS MinVR_FIND_COMPONENTS_LENGTH)
+  if(MinVR_FIND_COMPONENTS_LENGTH EQUAL MinVR_NB_COMPONENTS)
+    set(MinVR_TO_FIND_COMPONENTS ${minvr_all_components})
+  else(MinVR_FIND_COMPONENTS_LENGTH EQUAL MinVR_NB_COMPONENTS)
+    set(MinVR_TO_FIND_COMPONENTS ${MinVR_FIND_COMPONENTS})    
+  endif(MinVR_FIND_COMPONENTS_LENGTH EQUAL MinVR_NB_COMPONENTS)
+else(MinVR_FIND_COMPONENTS)
+  set(MinVR_TO_FIND_COMPONENTS ${minvr_all_components})
+endif(MinVR_FIND_COMPONENTS)
+
+compute_dependencies(MinVR_TO_FIND_COMPONENTS)
+
+# compute dependencies per component
+foreach(component ${MinVR_TO_FIND_COMPONENTS})
+    foreach(dep ${minvr_${component}_dep})
+      find_external_library(${component} ${dep})
+    endforeach(dep) 
+endforeach(component)
+
+foreach(component ${MinVR_TO_FIND_COMPONENTS})
+  set(minvr_component minvr_${component})
+  string(TOUPPER "${component}" COMPONENT)
+
+  message(STATUS "looking for ${COMPONENT}")
+  
+  find_path(MINVR_${COMPONENT}_INCLUDE_DIR
+    NAMES ${component}
+    HINTS ${MinVR_INCLUDE_DIRS}
+    PATH_SUFFIXES ${component}/include
+    DOC "path to ${component} headers"
+    NO_DEFAULT_PATH)
+
+  if(MINVR_${COMPONENT}_INCLUDE_DIR)
+    list(APPEND MINVR_${COMPONENT}_INCLUDE_DIRS "${MINVR_${COMPONENT}_INCLUDE_DIR}")
+  endif(MINVR_${COMPONENT}_INCLUDE_DIR)
+  
+    find_library(MINVR_${COMPONENT}_LIBRARY ${minvr_component}${MINVR_RELEASE_SUFFIX}
+      HINTS ${MinVR_LIBRARY_DIRS}
+      DOC "path to ${minvr_component} library"
+      NO_DEFAULT_PATH)
+    get_filename_component(${component}_library_path 
+      ${MINVR_${COMPONENT}_LIBRARY}
+      PATH)
+
+    find_library(MINVR_${COMPONENT}_LIBRARY_DEBUG ${minvr_component}${MINVR_DEBUG_SUFFIX}
+      HINTS ${MinVR_LIBRARY_DIRS} 
+      DOC "path to ${minvr_component} library debug"
+      NO_DEFAULT_PATH)
+    if(MINVR_${COMPONENT}_LIBRARY_DEBUG)
+      get_filename_component(${component}_library_path_debug 
+        ${MINVR_${COMPONENT}_LIBRARY_DEBUG}
+        PATH)
+    endif(MINVR_${COMPONENT}_LIBRARY_DEBUG)
+
+    find_package_handle_standard_args(MINVR_${COMPONENT} DEFAULT_MSG
+      MINVR_${COMPONENT}_LIBRARY MINVR_${COMPONENT}_INCLUDE_DIR)
+  
+  if(MINVR_${COMPONENT}_FOUND)
+    if(NOT "${MINVR_${COMPONENT}_INCLUDE_DIRS}" STREQUAL "")
+      list(REMOVE_DUPLICATES MINVR_${COMPONENT}_INCLUDE_DIRS)
+    endif(NOT "${MINVR_${COMPONENT}_INCLUDE_DIRS}" STREQUAL "")
+    list(APPEND MINVR_INCLUDE_DIRS ${MINVR_${COMPONENT}_INCLUDE_DIRS})
+    mark_as_advanced(MINVR_${COMPONENT}_INCLUDE_DIRS)
+      list(APPEND MINVR_LIBRARY_DIRS ${component_library_path})
+      if(MINVR_${COMPONENT}_LIBRARY_DEBUG)
+        list(APPEND MINVR_${COMPONENT}_LIBRARIES optimized ${MINVR_${COMPONENT}_LIBRARY} debug ${MINVR_${COMPONENT}_LIBRARY_DEBUG})
+        list(APPEND MINVR_LIBRARY_DIRS ${component_library_path_debug})
+      else(MINVR_${COMPONENT}_LIBRARY_DEBUG)
+        list(APPEND MINVR_${COMPONENT}_LIBRARIES ${MINVR_${COMPONENT}_LIBRARY})
+      endif(MINVR_${COMPONENT}_LIBRARY_DEBUG)
+      list(APPEND MinVR_LIBRARIES ${MINVR_${COMPONENT}_LIBRARIES})
+      mark_as_advanced(MINVR_${COMPONENT}_LIBRARY MINVR_${COMPONENT}_LIBRARY_DEBUG)
+   
+    # Append dependencies
+    foreach(dep ${pcl_${component}_dep})
+      string(TOUPPER "${dep}" DEP)
+      if(MINVR_${DEP}_FOUND)
+        list(APPEND MINVR_${COMPONENT}_INCLUDE_DIRS ${MINVR_${DEP}_INCLUDE_DIRS})
+        if(MINVR_${DEP}_LIBRARIES)
+          list(APPEND MINVR_${COMPONENT}_LIBRARIES "${MINVR_${DEP}_LIBRARIES}")
+        endif(MINVR_${DEP}_LIBRARIES) 
+      endif(MINVR_${DEP}_FOUND)
+    endforeach(dep)
+  endif(MINVR_${COMPONENT}_FOUND)
+endforeach(component)
+
+if(NOT "${MinVR_INCLUDE_DIRS}" STREQUAL "")
+  list(REMOVE_DUPLICATES MinVR_INCLUDE_DIRS)
+endif(NOT "${MinVR_INCLUDE_DIRS}" STREQUAL "")
+
+if(NOT "${MinVR_LIBRARY_DIRS}" STREQUAL "")
+  list(REMOVE_DUPLICATES MinVR_LIBRARY_DIRS)
+endif(NOT "${MinVR_LIBRARY_DIRS}" STREQUAL "")
+
+minvr_remove_duplicate_libraries(MinVR_LIBRARIES MinVR_DEDUP_LIBRARIES)
+set(MinVR_LIBRARIES ${MinVR_DEDUP_LIBRARIES})
+
+find_package_handle_standard_args(MinVR DEFAULT_MSG MinVR_LIBRARIES MinVR_INCLUDE_DIRS)
+mark_as_advanced(MinVR_LIBRARIES MinVR_INCLUDE_DIRS MinVR_LIBRARY_DIRS)

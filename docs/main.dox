@@ -1,0 +1,12 @@
+/*!
+
+@mainpage notitle
+
+@section main_intro Introduction
+
+MinVR is a free, Open Source, multi-platform, library for handling multiple virtual reality
+display configurations, stereoscopic rendering, and managing VR input.
+
+This is the documentation for version 1.0.
+
+*/
