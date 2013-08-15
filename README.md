@@ -1,4 +1,26 @@
-MinVR
-=====
+#MinVR
 
-Official MinVR repository. A virtual reality library.
+
+##Introduction
+
+MinVR is an open-source cross-platform virtual reality library initially developed at the University of Minnesota [Interactive Visualization Lab](http://ivlab.cs.umn.edu). It supports interaction with multiple VR input devices and display configurations (e.g. fish-tank VR displays, powerwalls, and CAVE systems), while allowing for integration with a variety of graphics toolkits (e.g. raw OpenGL, G3D, Glut, OpenSceneGraph, etc.).
+
+##MinVR Features and Design 
+
+Core Library Features:
+- window configuration
+- stereo output for various display devices
+- input device configuration
+- input events for VR, multi-touch, and other non-keyboard, mouse, joystick events based on VRPN
+- setting up head tracking and appropriate projection matrices   
+- multi-threaded rendering with support for multiple graphics windows (i.e., multiple graphics contexts), one per thread
+
+###Dependencies and Design Philosophy
+
+MinVR's primary design philosophy is to minimize potential dependency conflicts with other libraries you may be using. The core library depends on [Boost](http://boost.org) for its threading and timing libraries, a reduced subset of G3D's class (called G3DLite) for matrix and other math operations, and [VRPN](http://www.cs.unc.edu/Research/vrpn/) and [TUIO](http://http://www.tuio.org/) for connecting with input devices.
+
+In addition to the core library, individual App Kits are included for interfacing with a variety of common graphics libraries. Examples for each AppKit are included in their respective directories.
+
+
+
+
