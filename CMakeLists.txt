@@ -20,7 +20,7 @@ option(USE_APPKIT_GLUT "Enable to use the GLut app kit" OFF)
 
 option(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in Visual Studio" ON)
 option(BUILD_EXAMPLES "Enable to build app kit example projects" ON)
-option(BUILD_BOOST "If enabled, boost will be downloaded and built if an installed version is not found" ON)
+option(BUILD_DEPENDENCIES "If enabled, dependencies will be downloaded and built if an installed version is not found" ON)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS})
 
@@ -70,7 +70,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.54.0 COMPONENTS thread)
 if(Boost_FOUND)
     message("Using installed version of Boost")
-elseif(BUILD_BOOST)
+elseif(BUILD_DEPENDENCIES)
      set(Boost_Download_Dir ${CMAKE_SOURCE_DIR}/dependencies/boost)
 	 make_directory(${Boost_Download_Dir})
      message("   Library will be built from source in ${Boost_Download_Dir}.")

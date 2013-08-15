@@ -1,0 +1,41 @@
+/*!
+
+@page compiling Compiling MinVR and its dependencies
+
+@tableofcontents
+
+This is about compiling and installing MinVR and its dependencies.  For information on
+how to *use* MinVR when writing your own programs, start with the [Using MinVR Tutorial](@ref using).
+
+@section build_clone Downloading the MinVR source code
+
+The MinVR source code is hosted on Github. The easiest way to download the source is to clone the git repository to your local machine. This can be accomplished using command-line git with the following code:
+
+@code
+$ cd your_repo_root
+$ git clone https://github.com/MinVR/MinVR.git
+@endcode
+
+Alternatively, you may download a zip file or tarball of the source from the <a href="http://minvr.github.io/MinVR/">MinVR webpage</a> or directly from <a href="http://github.com/minvr/minvr>Github</a>.
+
+@section build_dependencies Building dependencies
+
+MinVR's core library has one required dependency and several optional ones depending on which input devices you plan to use. The individual App Kits also have their own dependencies.
+
+Core Library Dependencies:
+	- Boost version >= 1.54 (<a href="http://www.boost.org">www.boost.org</a>) - \b<Required>
+	- VRPN version >= 7.30 (<a href="http://www.cs.unc.edu/Research/vrpn/">www.cs.unc.edu/Research/vrpn/</a>) - \b<Optional>
+	- TUIO version >= 1.4 (<a href="http://prdownloads.sourceforge.net/reactivision/TUIO_CPP-1.4.zip">http://prdownloads.sourceforge.net/reactivision/TUIO_CPP-1.4.zip</a>) - \b<Optional>
+	- 3DConnexion SpaceNavigator driver - \b<Optional>
+		- Windows: <a href"http://www.3dconnexion.com/service/drivers.html">3DxSoftware (64-bit)</a>
+		- Mac OSX: <a href="http://www.3dconnexion.com/service/drivers.html">3DxWare 10 for OSX</a>
+		- Linux: <a href="http://sourceforge.net/projects/spacenav/files/spacenav%20library%20%28SDK%29/libspnav%200.2.2/libspnav-0.2.2.tar.gz/download">libspnav-0.2.2</a>
+
+App Kit Dependencies:
+	- AppKit_GLFW
+		- glfw version >= 3.0.1 (a href="http://github.com/bretjackson/glfw">http://github.com/bretjackson/glfw</a> - \b<Required>
+			Note: This is not the official glfw repository. In order to support creating an Nvidia Affinity context to choose the rendering GPU on windows, we have slightly modified the source. The official glfw version will work if you do not use the `useGPUAffinity` window setting in your vrsetup file. See [Creating a setup configuration](@ref vrsetup) for more detail on the `useGPUAffinity` parameter.
+
+
+*/
+

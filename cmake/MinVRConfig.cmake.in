@@ -67,7 +67,7 @@ endmacro(minvr_remove_duplicate_libraries)
 
 ###  3rd party libraries
 macro(find_boost)
-	if(@BUILD_BOOST@)
+	if(@BUILD_DEPENDENCIES@)
 		set(BOOST_ROOT "@MINVR_INSTALL_DIR@/boost")
 	endif()
 	set(Boost_USE_STATIC_LIBS ON)
