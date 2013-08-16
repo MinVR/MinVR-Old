@@ -22,12 +22,12 @@ gen:
     ifeq ($(ARCH), linux)
 	  mkdir -p ./build/Release
 	  mkdir -p ./build/Debug	  
-	  cd ./build/Release; cmake -DCMAKE_BUILD_TYPE=Release ../../
-	  cd ./build/Debug; cmake -DCMAKE_BUILD_TYPE=Debug ../../
+	  cd ./build/Release; cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(CURDIR)/install ../../
+	  cd ./build/Debug; cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$(CURDIR)/install ../../
     else ifeq ($(ARCH), WIN32)
-	  cd ./build; cmake -DGBUILDSTR=$(GBUILDSTR) -DCMAKE_INSTALL_PREFIX=$(G)/src/MinVR/install ../ -G "Visual Studio 10 Win64"
+	  cd ./build; cmake -DGBUILDSTR=$(GBUILDSTR) -DCMAKE_INSTALL_PREFIX=$(CURDIR)/install ../ -G "Visual Studio 10 Win64"
     else ifeq ($(ARCH), OSX)
-	  cd ./build; cmake ../ -G Xcode
+	  cd ./build; cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/install ../ -G Xcode
     endif
 
 debug:

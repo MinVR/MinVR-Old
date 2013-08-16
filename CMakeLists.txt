@@ -21,16 +21,19 @@ option(USE_APPKIT_GLUT "Enable to use the GLut app kit" OFF)
 option(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in Visual Studio" ON)
 option(BUILD_EXAMPLES "Enable to build app kit example projects" ON)
 option(BUILD_DEPENDENCIES "If enabled, dependencies will be downloaded and built if an installed version is not found" ON)
+option(BUILD_DOCUMENTATION "If enable, cmake attempts to find Doxygen and build the API documentation" ON)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS})
 
 set(MINVR_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/MinVR" CACHE PATH "Install location for MinVR")
 add_definitions(-DINSTALLPATH="${MINVR_INSTALL_DIR}")
 
-set(DOXYGEN_SKIP_DOT TRUE)
-find_package(Doxygen)
-if (DOXYGEN_FOUND)
-	add_subdirectory(docs)
+if (BUILD_DOCUMENTATION)
+	set(DOXYGEN_SKIP_DOT TRUE)
+	find_package(Doxygen)
+	if (DOXYGEN_FOUND)
+		add_subdirectory(docs)
+	endif()
 endif()
 
 if (USE_VRPN)
