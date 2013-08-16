@@ -15,9 +15,46 @@ To create a vrsetup file specific to your display configuration, copy one of the
 
 TODO
 
-@subsection vrsetup_structure_parameters Window Parameters
+@subsection vrsetup_structure_parameters Supported vrsetup parameters
 
-TODO
+| Name                         | Supported values/Format   | Notes                        |
+| ---------------------------- | ------------------------- | ---------------------------- |
+| `InputDevicesFile`           | Valid File Path           |                              |
+| `InterOcularDistance`        | 0 to max float            | Used for stereo to specify the distance between the eyes |
+| `InitialHeadFrame`           | ((1.0, 0.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 1.0, 1.0), (0.0, 0.0, 0.0, 1.0)) | Coordinate frame to specify the initial head location |
+| `NumWindows`                 | 1 to max int              | Specifies the number of windows. Ideally set the number of windows equal to the number of GPUS |
+| `Window<num>_Width`          | 0 to max int              |                              |
+| `Window<num>_Height`         | 0 to max int              |                              |
+| `Window<num>_X`              | 0 to max int              | Specifies the windows upper left corner position |
+| `Window<num>_Y`              | 0 to max int              | Specifies the windows upper left corner position |
+| `Window<num>_RGBBits`        | 0 to max int              | The number of bits to use for *each* color channel of the framebuffer |
+| `Window<num>_AlphaBits`      | 0 to max int              | The number of bits to use for the alpha channel of the framebuffer | 
+| `Window<num>_DepthBits`      | 0 to max int              | The number of bits to use for the depth buffer |
+| `Window<num>_StencilBits`    | 0 to max int              | The number of bits to use for the stencil buffer |
+| `Window<num>_MSAASamples`    | 0 to max int              | Number of samples per pixel for anti-aliasing purposes |
+| `Window<num>_FullScreen`     | 0 or 1                    | Open a fullscreen window on the display indicated by the x and y position |
+| `Window<num>_Asychronous`    | 0 or 1                    | Should buffer flips be un-hitched from refresh rate? True generally gives higher frame rates. |
+| `Window<num>_Stereo`         | 0 or 1                    | Turn stereo on or off        |
+| `Window<num>_Resizable`      | 0 or 1                    | Allow the window to be resized |
+| `Window<num>_AllowMaximize`  | 0 or 1                    | Allow the window to be maximized |
+| `Window<num>_Framed`         | 0 or 1                    | Specify whether the window should have a border frame |
+| `Window<num>_Visible`        | 0 or 1                    | Specifies whether the window will be initially visible when it is created |
+| `Window<num>_Caption`        | string                    | The window title             |
+| `Window<num>_StereoType`	   | Mono, QuadBuffered, Checkerboard, InterlacedColumns, InterlacedRows, SideBySide | Specifies the type of stereo used |
+| `Window<num>_UseDebugContext` | 0 or 1                   | Create an OpenGL debug context for more debugging info |
+| `Window<num>_UseGPUAffinity`  | 0 or 1                    | If set to true on an Nvidia Quadro graphics card, MinVR will use the GPU affinity extension to render only on the card the window is created on. Currently only supported with the GLFW App Kit |
+| `Window<num>_NumViewports`   | 1 to max int              | The number of viewports the window indicated by <num> contains |
+| `Window<num>_Viewport<num>_CameraType` | OffAxis         | The type of VR camera        |
+| `Window<num>_Viewport<num>_Width` | 0 to `Window<num>_Width` |                          |
+| `Window<num>_Viewport<num>_Height` | 0 to `Window<num>_Height` |                        |
+| `Window<num>_Viewport<num>_X`	| 0 to max int             |                              |
+| `Window<num>_Viewport<num>_Y`	| 0 to max int             |                              |
+| `Window<num>_Viewport<num>_TopLeft` | (-1.0, 0.5, 0.0)   | Specify the position of the viewport in feet from the VR origin (the center of the display, center of a CAVE, etc.) |
+| `Window<num>_Viewport<num>_TopRight`| (1.0, 0.5, 0.0)    | Specify the position of the viewport in feet from the VR origin (the center of the display, center of a CAVE, etc.) |
+| `Window<num>_Viewport<num>_BotLeft` | (-1.0, -0.5, 0.0)  | Specify the position of the viewport in feet from the VR origin (the center of the display, center of a CAVE, etc.) |
+| `Window<num>_Viewport<num>_BotRight` | (1.0, -0.5, 0.0)  | Specify the position of the viewport in feet from the VR origin (the center of the display, center of a CAVE, etc.) |
+| `Window<num>_Viewport<num>_NearClip` | 0. to max float   | Distance to the near clipping plane |
+| `Window<num>_Viewport<num>_FarClip` | 0. to max float    | Distance to the far clipping plane  |
 
 @section vrsetup_devices Input devices file structure
 

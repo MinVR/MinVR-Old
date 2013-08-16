@@ -114,7 +114,7 @@ void RenderThread::render()
 
 		// Draw the scene
 		// Monoscopic
-		if (_window->getSettings()->stereoType == WindowSettings::STEREOTYPE_MONO) {
+		if (_window->getSettings()->stereoType == WindowSettings::STEREOTYPE_MONO || _window->getSettings()->stereo == false) {
 			glDrawBuffer(GL_BACK);
 			glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for (int v=0; v < _window->getNumViewports(); v++) {

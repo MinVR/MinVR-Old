@@ -16,7 +16,6 @@ Window1_Width           600
 Window1_Height          600
 Window1_X               40
 Window1_Y               40
-Window1_Center          0
 Window1_RGBBits         0
 Window1_AlphaBits       0
 Window1_DepthBits       8
