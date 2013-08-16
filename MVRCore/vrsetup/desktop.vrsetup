@@ -3,8 +3,8 @@
 Description           A standard non-VR desktop window
 
 
-# Name of a VRG3D configuration file for input devices (leave blank
-# for no devices other than kbd and mouse)
+# Name of a configuration file for input devices (leave blank
+# for no devices other than keyboard and mouse)
 InputDevicesFile      
 
 InterOcularDistance		0.2083
@@ -73,8 +73,8 @@ Window2_Viewport1_X					0
 Window2_Viewport1_Y					0
 Window2_Viewport1_TopLeft           (-0.65, 0.5, 0.0)
 Window2_Viewport1_TopRight          ( 0.65, 0.5, 0.0)
-Window2_Viewport1_BotLeft           (-0.65,-0.5, 0.0)
-Window2_Viewport1_BotRight          ( 0.65,-0.5, 0.0)
+Window2_Viewport1_BotLeft           (-0.65, -0.5, 0.0)
+Window2_Viewport1_BotRight          ( 0.65, -0.5, 0.0)
 Window2_Viewport1_NearClip          0.01
 Window2_Viewport1_FarClip           100.0
 

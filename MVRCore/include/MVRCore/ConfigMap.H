@@ -160,9 +160,7 @@ public:
 				if (_log) {
 					_log->printf("ConfigMap Error: cannot remap '%s'", valString.c_str());
 				}
-				else {
-					printf("ConfigMap Error: cannot remap '%s'", valString.c_str());
-				}
+				printf("ConfigMap Error: cannot remap '%s'", valString.c_str());
 				return defaultVal;
 			}
 		}
@@ -170,9 +168,7 @@ public:
 			if (_log) {
 				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
 			}
-			else {
-				printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
-			}
+			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
 			return defaultVal;
 		}
 	}
@@ -184,9 +180,7 @@ public:
 			if (_log) {
 				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
 			}
-			else {
-				printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
-			}
+			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -198,9 +192,7 @@ public:
 			if (_log) {
 				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
 			}
-			else {
-				printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
-			}
+			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -212,9 +204,7 @@ public:
 			if (_log) {
 				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
 			}
-			else {
-				printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
-			}
+			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -226,9 +216,7 @@ public:
 			if (_log) {
 				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
 			}
-			else {
-				printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
-			}
+			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
 			return replaceEnvVars(defaultVal);
 		}
 	}
