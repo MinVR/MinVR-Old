@@ -11,11 +11,16 @@ The configuration file has two parts. The first has the extension `.vrsetup` and
 
 To create a vrsetup file specific to your display configuration, copy one of the examples or create a new one using the parameters detailed below.
 
-@section vrsetup_structure vrsetup file structure
+@section vrsetup_structure File structure for vrsetup
 
-@section vrsetup_structure_parameters
+TODO
 
-@section vrsetup_devices cfg input devices file structure
+@subsection vrsetup_structure_parameters Window Parameters
 
+TODO
+
+@section vrsetup_devices Input devices file structure
+
+TODO
 
 */

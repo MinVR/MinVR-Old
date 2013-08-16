@@ -653,7 +653,7 @@ WARN_LOGFILE           = @CMAKE_BINARY_DIR@/docs/warnings.txt
 # with spaces.
 
 INPUT                  = @CMAKE_SOURCE_DIR@/docs/main.dox \
-						 @CMAKE_SOURCE_DIR@/docs/build.dox \
+						 @CMAKE_SOURCE_DIR@/docs/compiling.dox \
 						 @CMAKE_SOURCE_DIR@/docs/vrsetup.dox \
 						 @CMAKE_SOURCE_DIR@/docs/usingMinVR.dox \
 						 @CMAKE_SOURCE_DIR@/MVRCore/include/MVRCore/ \

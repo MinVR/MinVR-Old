@@ -12,6 +12,7 @@ Release
 
 # build files
 build/
+instal/
 dependencies/glfw
 dependencies/boost
 CMakeCache.txt

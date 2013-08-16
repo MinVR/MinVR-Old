@@ -1,13 +1,13 @@
 /*!
 
-@page build Compiling MinVR and its dependencies
+@page compiling Compiling MinVR and its dependencies
 
 @tableofcontents
 
 This is about compiling and installing MinVR and its dependencies.  For information on
 how to *use* MinVR when writing your own programs, start with the [Using MinVR Tutorial](@ref usingMinVR).
 
-@section build_clone Downloading the MinVR source code
+@section compiling_clone Downloading the MinVR source code
 
 The MinVR source code is hosted on Github. The easiest way to download the source is to clone the git repository to your local machine. This can be accomplished using command-line git with the following code:
 
@@ -16,37 +16,37 @@ $ cd <your_repo_root>
 $ git clone https://github.com/MinVR/MinVR.git
 @endcode
 
-Alternatively, you may download a zip file or tarball of the source from the <a href="http://minvr.github.io/MinVR/">MinVR webpage</a> or directly from <a href="http://github.com/minvr/minvr>Github</a>.
+Alternatively, you may download a zip file or tarball of the source from the <a href="http://minvr.github.io/MinVR/">MinVR webpage</a> or directly from <a href="http://github.com/minvr/minvr">Github</a>.
 
-@section build_dependencies Dependencies
+@section compiling_dependencies Dependencies
 
 MinVR's core library has one required dependency and several optional ones depending on which input devices you plan to use. The individual App Kits also have their own dependencies for their specific graphics toolkits.
 
 Core Library Dependencies:
-	- Boost version >= 1.54 (<a href="http://www.boost.org">www.boost.org</a>) - \b<Required>
-	- VRPN version >= 7.30 (<a href="http://www.cs.unc.edu/Research/vrpn/">www.cs.unc.edu/Research/vrpn/</a>) - \b<Optional> Used to connect with a variety of tracking devices.
-	- TUIO version >= 1.4 (<a href="http://prdownloads.sourceforge.net/reactivision/TUIO_CPP-1.4.zip">TUIO_CPP-1.4.zip</a>) - \b<Optional> Used for multi-touch.
-	- 3DConnexion SpaceNavigator driver - \b<Optional> Used with the SpaceNavigator 3D mouse.
-		- Windows: <a href"http://www.3dconnexion.com/service/drivers.html">3DxSoftware (64-bit)</a>
+	- Boost version >= 1.54 (<a href="http://www.boost.org">www.boost.org</a>) - <b>Required</b>
+	- VRPN version >= 7.30 (<a href="http://www.cs.unc.edu/Research/vrpn/">www.cs.unc.edu/Research/vrpn/</a>) - <b>Optional</b> Used to connect with a variety of tracking devices.
+	- TUIO version >= 1.4 (<a href="http://prdownloads.sourceforge.net/reactivision/TUIO_CPP-1.4.zip">TUIO_CPP-1.4.zip</a>) - <b>Optional</b> Used for multi-touch.
+	- 3DConnexion SpaceNavigator driver - <b>Optional</b> Used with the SpaceNavigator 3D mouse.
+		- Windows: <a href="http://www.3dconnexion.com/service/drivers.html">3DxSoftware (64-bit)</a>
 		- Mac OSX: <a href="http://www.3dconnexion.com/service/drivers.html">3DxWare 10 for OSX</a>
 		- Linux: <a href="http://sourceforge.net/projects/spacenav/files/spacenav%20library%20%28SDK%29/libspnav%200.2.2/libspnav-0.2.2.tar.gz/download">libspnav-0.2.2</a>
 
 App Kit Dependencies:
 	- AppKit_GLFW
-		- glfw version >= 3.0.1 (a href="http://github.com/bretjackson/glfw">http://github.com/bretjackson/glfw</a> - \b<Required>
+		- glfw version >= 3.0.1 (<a href="http://github.com/bretjackson/glfw">http://github.com/bretjackson/glfw</a> - <b>Required</b>
 			Note: This is not the official glfw repository. In order to support creating an Nvidia Affinity context to choose the rendering GPU on Windows, we have slightly modified the source. The official glfw version will work if you do not use the `useGPUAffinity` window setting in your vrsetup file. See [Creating a setup configuration](@ref vrsetup) for more detail on the `useGPUAffinity` parameter.
 
-@section build_dependencies_building Building Dependencies
+@subsection compiling_dependencies_building Building Dependencies
 
 There are two options for building MinVR with its dependencies. The first option is to download them from the links above and build them yourself. You will then need to set a variety of environment variables for each one so that cmake can find their install locations. The second approach (the recommended one) is that you set the cmake variable `BUILD_DEPENDENCIES` to ON (the default). In this case, cmake will attempt to find versions of each dependency on your computer. If a dependency is not found, it will download the source automatically and build it.
 	
 If you choose to let the cmake build system download and build the dependencies, they are downloaded to the `dependencies` folder in the root of your source directory. When built, they are copied to the MinVR install location.
 	
-@section build_configuring Configuring MinVR with CMake
+@section compiling_configuring Configuring MinVR with CMake
 
 MinVR uses [CMake](http://www.cmake.org) to configure its build system. If you are on a Linux system you should be able to get the CMake package from your package manager. If you are on Windows or Mac OS X you can download an installer directly from the [CMake website](http://www.cmake.com)
 
-@section build_configuring_commandline Using CMake from the command line (recommended)
+@subsection compiling_configuring_commandline Using CMake from the command line (recommended)
 
 Our recommended approach is to generate the build files using CMake from the command line. If you are on a Windows system, we recommend downloading [Cygwin](http://www.cygwin.com). In order to make the build process easier, we have included a Makefile. The Makefile will create a new directory in the root of the source directory called `build`, where it will generate the build files using CMake.
 
@@ -57,13 +57,13 @@ For example to generate a Visual Studio 2012 project file, change the cmake line
 cmake ../ -G "Visual Studio 11 Win64"
 @endcode
 
-Additional CMake build options can also be added to the Makefile to customize your build. See [CMake options](@ref build_configuring_options).
+Additional CMake build options can also be added to the Makefile to customize your build. See [Build options](@ref compiling_configuring_options).
 
-@section build_configuring_commandline Using the CMake GUI
+@subsection compiling_configuring_gui Using the CMake GUI
 
 If you are using the GUI version of CMake, create a build directory in the root of the MinVR source tree. Set the cmake build location to this build directory, and the cmake source location to the root of the MinVR source tree. Click *Configure* and adjust any options you want. Click *Configure* again to save your changes, and then click *Generate* to create the project files.
 
-@section build_configuring_options Build Options
+@subsection compiling_configuring_options Build Options
 
 There are several CMake build options that can be set to customize your MinVR build. You should set the input device options and app kit options based on your intended configuration. If you are using the provided Makefile to build, these options are mostly easily set by changing them at the top of the `CMakeLists.txt` file in the root of the MinVR source directory. If you are using the CMake GUI, these can be set after clicking *Configure*.
 
@@ -84,11 +84,11 @@ The following options specify build parameters:
 
 To change MinVR's install location set the `CMAKE_INSTALL_PREFIX` variable. This is currently specified in the Makefile as a directory called `install` in the root of the source tree.
 
-@section build_compiling Compiling MinVR
+@section compiling_compiling Compiling MinVR
 
 Compiling MinVR is dependent on the system architecture and CMake generator you specified when configuring.
 
-@section building_compiling_linux Compiling on Linux
+@subsection compiling_compiling_linux Compiling on Linux
 
 To compile MinVR on linux, we have included helper targets in the root level MakeFile.
 
@@ -108,9 +108,9 @@ To install:
 @code
 $ cd <MinVR_root_dir>
 $ make install
-@code
+@endcode
 
-@section build_compiling_osx Compiling on Mac OS X
+@subsection compiling_compiling_osx Compiling on Mac OS X
 
 After configuring, the CMake build system will generate an MinVR XCode project. Open the XCode project found in the `build` folder.
 
@@ -124,7 +124,7 @@ To build the release version in XCode:
 	
 To install after building, click Product menu -> Scheme -> install
 
-@ section build_compiling_windows Compiling on Windows
+@subsection compiling_compiling_windows Compiling on Windows
 
 On Windows, the CMake default in the Makefile is to generate a Visual Studio solution file. Open the solution called `build/MinVR.sln`.
 
@@ -134,14 +134,14 @@ To build release, change the selector at the top of the screen to `Release`, and
 
 Right-click the INSTALL project in the Solution Explorer and select Build. This will copy the files to the install location.
 
-@section build_documentation Building documentation
+@section compiling_documentation Building documentation
 
 You can build the doxygen documentation of MinVR in order to have a local up-to-date api documentation. For this, you need Doxygen (http://www.doxygen.org).
 Once this is installed, if the CMake option `BUILD_DOCUMENTATION` is set to ON, CMake will attempt to find the Doxygen executable when configuring. If CMake can not find the executable you can set it manually:
 
 	`DOXYGEN_EXECUTABLE` : path to doxygen.exe (e.g. C:/Program Files (x86)/doxygen/bin/doxygen.exe)
 
-@section build_using Using MinVR
+@section compiling_using Using MinVR
 
 After compiling, to start using MinVR in your projects, go to the [Using MinVR tutorial](@ref usingMinVR).
 
