@@ -69,16 +69,16 @@ void DataFileUtils::addFileSearchPath(const std::string &path)
 DataFileUtils::DataFileUtils()
 {
 	_dataFilePaths.append("");
-	_dataFilePaths.append("data/");
-	_dataFilePaths.append("data/vrsetup/");
-	_dataFilePaths.append("data/shaders/");
-	_dataFilePaths.append("../../data/");
-	_dataFilePaths.append("../../data/vrsetup/");
-	_dataFilePaths.append("../../data/shaders/");
+	_dataFilePaths.append("share/");
+	_dataFilePaths.append("share/vrsetup/");
+	_dataFilePaths.append("share/shaders/");
+	_dataFilePaths.append("../../share/");
+	_dataFilePaths.append("../../share/vrsetup/");
+	_dataFilePaths.append("../../share/shaders/");
 	_dataFilePaths.append(INSTALLPATH);
-	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "data/"));
-	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "data/vrsetup"));
-	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "data/shaders"));
+	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "share/"));
+	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "share/vrsetup"));
+	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "share/shaders"));
 }
 
 std::string DataFileUtils::_findDataFile(const std::string &filename)

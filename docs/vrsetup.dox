@@ -4,6 +4,18 @@
 
 @tableofcontents
 
-@section vrsetup_intro TODO
+@section vrsetup_intro Introduction
+
+To run your application in a VR environment, MinVR requires a configuration file that specifies the display configuration, window parameters, and input devices.
+The configuration file has two parts. The first has the extension `.vrsetup` and details the window parameters. The second part has the extension `.cfg` and specifies the input devices. These are separated so that an input device file could be reused for multiple display/window configurations. Several examples of both vrsetup and input device cfg files can be found in the `<install location>/data/vrsetup` directory or in `<source root>/MVRCore/vrsetup`.
+
+To create a vrsetup file specific to your display configuration, copy one of the examples or create a new one using the parameters detailed below.
+
+@section vrsetup_structure vrsetup file structure
+
+@section vrsetup_structure_parameters
+
+@section vrsetup_devices cfg input devices file structure
+
 
 */

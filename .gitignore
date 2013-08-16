@@ -12,6 +12,8 @@ Release
 
 # build files
 build/
+dependencies/glfw
+dependencies/boost
 CMakeCache.txt
 CMakeFiles
 cmake_install.cmake

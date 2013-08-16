@@ -33,4 +33,4 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/MinVRConfigVersion.cmake.in"
 install(FILES
         "${CMAKE_BINARY_DIR}/MinVRConfig.cmake"
         "${CMAKE_BINARY_DIR}/MinVRConfigVersion.cmake"
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/MinVR")
+        DESTINATION "${MINVR_INSTALL_DIR}")

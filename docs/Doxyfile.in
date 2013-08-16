@@ -653,9 +653,12 @@ WARN_LOGFILE           = @CMAKE_BINARY_DIR@/docs/warnings.txt
 # with spaces.
 
 INPUT                  = @CMAKE_SOURCE_DIR@/docs/main.dox \
+						 @CMAKE_SOURCE_DIR@/docs/build.dox \
+						 @CMAKE_SOURCE_DIR@/docs/vrsetup.dox \
+						 @CMAKE_SOURCE_DIR@/docs/usingMinVR.dox \
 						 @CMAKE_SOURCE_DIR@/MVRCore/include/MVRCore/ \
 						 @CMAKE_SOURCE_DIR@/dependencies/G3DLite/include/G3DLite/ \
-						 @CMAKE_SOURCE_DIR@/AppKit_GLFW/include/AppKit_GLFW
+						 @CMAKE_SOURCE_DIR@/AppKits/AppKit_GLFW/include/AppKit_GLFW
 						 
 
 # This tag can be used to specify the character encoding of the source files
