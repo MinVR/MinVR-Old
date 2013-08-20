@@ -7,15 +7,63 @@
 @section vrsetup_intro Introduction
 
 To run your application in a VR environment, MinVR requires a configuration file that specifies the display configuration, window parameters, and input devices.
-The configuration file has two parts. The first has the extension `.vrsetup` and details the window parameters. The second part has the extension `.cfg` and specifies the input devices. These are separated so that an input device file could be reused for multiple display/window configurations. Several examples of both vrsetup and input device cfg files can be found in the `<install location>/data/vrsetup` directory or in `<source root>/MVRCore/vrsetup`.
+The configuration file has two parts. The first has the extension `.vrsetup` and details the window parameters. The second part has the extension `.cfg` and specifies the input devices. These are separated so that an input device file could be reused for multiple display/window configurations. Several examples of both vrsetup and input device cfg files can be found in the `<install location>/share/vrsetup` directory or in `<source root>/MVRCore/vrsetup`.
 
 To create a vrsetup file specific to your display configuration, copy one of the examples or create a new one using the parameters detailed below.
 
 @section vrsetup_structure File structure for vrsetup
 
-TODO
+Each vrsetup file begins by specifying the associated input devices file, the `InterOcularDistance` for stereo rendering, and the `InitialHeadFrame`:
 
+	InputDevicesFile        devices.cfg
+	InterOcularDistance     0.2083
+	InitialHeadFrame        ((1,0,0,0), (0,1,0,0), (0,0,1,1), (0,0,0,1))
+
+This is followed by a section specifying the number of windows and each window parameter. Each application and have multiple windows and multiple viewports within each window:
+
+	NumWindows                      1
+	Window1_Width                   600
+	Window1_Height                  600
+	Window1_X                       40
+	Window1_Y                       40
+	Window1_RGBBits                 0
+	Window1_AlphaBits               0
+	Window1_DepthBits               8
+	Window1_StencilBits             0
+	Window1_MSAASamples             1
+	Window1_FullScreen              0
+	Window1_Asychronous             1
+	Window1_Stereo                  0
+	Window1_Resizable               1
+	Window1_AllowMaximize           1
+	Window1_Framed                  1
+	Window1_Caption                 MinVR Window 1
+	Window1_StereoType              Mono
+	Window1_UseDebugContext         1
+	Window1_NumViewports            1
+	Window1_Viewport1_CameraType    OffAxis
+	Window1_Viewport1_Width	        600
+	Window1_Viewport1_Height        600
+	Window1_Viewport1_X             0
+	Window1_Viewport1_Y             0
+	Window1_Viewport1_TopLeft       (-0.65, 0.5, 0.0)
+	Window1_Viewport1_TopRight      ( 0.65, 0.5, 0.0)
+	Window1_Viewport1_BotLeft       (-0.65,-0.5, 0.0)
+	Window1_Viewport1_BotRight      ( 0.65,-0.5, 0.0)
+	Window1_Viewport1_NearClip      0.01
+	Window1_Viewport1_FarClip       100.0
+	
+@subsection vrsetup_structure_recommendations Configuration Recommendations
+
+MinVR has the flexibility to render to open multiple windows or multiple viewports within a single window. This choice can have an influence on performance and stereo rendering. Each window runs in its own thread and contains its own OpenGL context.
+
+Our recommendation is that if your displays are connected to multiple graphics cards, use a single window for each card. If multiple displays are connected to each card, for example individual walls in a CAVE environment, use a viewport for each display that is not coplanar. This will enable you to use stereo and will maximize performance because each thread can make sure the CPU-GPU communications are saturated.
+
+If you are using Windows on an Nvidia Quadro card, we also suggest you set the `Window<num>_UseGPUAffinity` parameter, as this will cause rendering commands to only be sent to the specific GPU the window is associated with, rather than all GPUs.
+	
 @subsection vrsetup_structure_parameters Supported vrsetup parameters
+
+The following parameters are supported in a vrsetup file.
 
 | Name                         | Supported values/Format   | Notes                        |
 | ---------------------------- | ------------------------- | ---------------------------- |
@@ -58,6 +106,65 @@ TODO
 
 @section vrsetup_devices Input devices file structure
 
-TODO
+The input devices file specifies which devices generate events that are sent to your MinVR application. The parameters in the devices file depend on the device type, but usually follow the following structure where <name> is replaced with a unique name:
+
+	InputDevices+=                          <name>
+	<name>_Type                             InputDeviceVRPNTracker
+	<name>_InputDeviceVRPNTrackerName       head@tcp:lespaul.cs.umn.edu:3883
+	<name>_EventsToGenerate                 <event name>
+	<name>_ConvertLHtoRH                    1
+	<name>_IgnoreZeroes                     1
+	<name>_WaitForNewReportInPoll           0
+	<name>_TrackerUnitsToRoomUnitsScale     3.28084
+	<name>_DeviceToRoom                     ((1,0,0,0), (0,1,0,-1.73), (0,0,1,2.25), (0,0,0,1))
+	<event name>_PropToTracker              ((1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1))
+	<event name>_FinalOffset                ((1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1))
+	
+VRPN button and analog devices look like this:
+
+	InputDevices+=                          TNG3BDigital
+	TNG3BDigital_Type                       InputDeviceVRPNButton
+	TNG3BDigital_InputDeviceVRPNButtonName  Tng0@tcp:lespaul.cs.umn.edu:3886
+	TNG3BDigital_EventsToGenerate           TNG_Btn1 TNG_Btn2 TNG_Btn3 TNG_Btn4 TNG_Btn5 TNG_Btn6 TNG_Btn7 TNG_Btn8
+
+	InputDevices+=                          TNG3BAnalog
+	TNG3BAnalog_Type                        InputDeviceVRPNAnalog
+	TNG3BAnalog_InputDeviceVRPNAnalogName   Tng0@tcp:lespaul.cs.umn.edu:3886
+	TNG3BAnalog_EventsToGenerate            TNG_An1 TNG_An2 TNG_An3 TNG_An4
+	
+To add a 3DConnexion SpaceNavigator 3D mouse:
+
+	InputDevices+= Spnav
+	Spnav_Type     InputDeviceSpaceNav
+	
+To get TUIO multitouch events:
+
+	InputDevices+=          MultiTouch
+	MultiTouch_Type         TUIO
+	MultiTouch_Port         3333
+	MultiTouch_XScaleFactor 1.0
+	MultiTouch_YScaleFactor 1.0
+
+@subsection vrsetup_devices_parameters Input device file parameters
+
+The following are valid input device file parameters.
+
+| Name                         | Supported values/Format   | Notes                        |
+| ---------------------------- | ------------------------- | ---------------------------- |
+| `<name>_Type`                | InputDeviceVRPNTracker, InputDeviceVRPNButton, InputDeviceVRPNAnalog, TUIO, InputDeviceSpaceNav | Specifies the device type |
+| `<name>_InputDeviceVRPNTrackerName` | \<vrpn object name\>\@tcp:\<host or IP address\>:\<port\> | |
+| `<name>_InputDeviceVRPNButtonName` | \<vrpn object name\>\@tcp:\<host or IP address\>:\<port\> | |
+| `<name>_InputDeviceVRPNAnalogName` | \<vrpn object name\>\@tcp:\<host or IP address\>:\<port\> | |
+| `<name>_EventsToGenerate`    | string                    | MinVR event name to be generated |
+| `<name>_ConvertLHtoRH`       | 0 or 1                    | Used with InputDeviceVRPNTracker. Converts left handed coordinate system to right handed |
+| `<name>_IgnoreZeroes`        | 0 or 1                    | Ignore events where the tracker position has not moved |
+| `<name>_WaitForNewReportInPoll` | 0 or 1                 |                              |
+| `<name>_TrackerUnitsToRoomUnitsScale` | 1 to max float   | Used for unit scaling or conversion, for example from meters to feet |
+| `<name>_DeviceToRoom`        | ((1,0,0,0), (0,1,0,-1.73), (0,0,1,2.25), (0,0,0,1)) | Transformation between device coordinates and room coordinates, if the tracker origin is in a different position or orientation |
+| `<event name>_PropToTracker` | ((1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1)) | Use to adjust the origin of your tracked prop if the origin is not at the tracker location |
+| `<event name>_FinalOffset`   | ((1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1)) |           |
+| `<name>_Port`                | port number               | Used to specify a TUIO port number on localhost |
+| `<name>_XScaleFactor`        | 1 to max float			   | Used to scale the X TUIO cursor position |
+| `MultiTouch_YScaleFactor`    | 1 to max float            | Used to scale the Y TUIO cursor position |
 
 */

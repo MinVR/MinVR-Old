@@ -1,0 +1,221 @@
+/*!
+
+@page events Handling MinVR events
+
+@tableofcontents
+
+@section events_intro Introduction and design philosophy
+
+The MinVR event system is based on the Event class (Event.H). To make things easier, there are no subclasses of Event. Instead, individual events are distinguished based on their name string. This makes it easier to add new event types in the future and adjust event names in static config files. Additionally,
+basing event types on strings makes it very easy to make a keyboard event look like a tracker event which can be a useful technique for debugging your VR app.
+
+However, because events are not subclassed, different events will contain different valid member variables. For example, only keyboard and mouse events will have a valid window parameter, because other event types are not associated with a specific window. To check which members are valid, just print the event using the toString() method.
+
+@section events_handling Handling events in your application
+
+Before drawing each frame of your application, the MinVR engine will query the input devices and application windows to poll them for input. Events are added to an array that is passed to the doUserInputAndPreDrawComputation(const G3DLite::Array<EventRef> &events, double synchronizedTime) method in your application.
+Note, that the events in the events array are sorted by increasing time and may contain duplicate events. For instance, if your framerate is slow, you may have multiple mouse move events in the array, etc.
+
+For example, here is how you might handle head position updates or a keyboard event:
+	
+@code
+void MyApp::doUserInputAndPreDrawComputation(const G3DLite::Array<EventRef> &events, double synchronizedTime)
+{
+	for(int i=0; i < events.size(); i++) {
+		string name = events[i]->getName();
+		if (name == "Head_Tracker")
+		{
+			G3DLite::CoordinateFrame headPosition = events[i]->getCoordinateFrameData();
+        }
+		else if (name == "kbd_A_down")
+		{ 
+			cout << "Pressed the A key at " << events[i]->getTimestamp() << ". The key value is " << events[i]->getMsgData() << endl;
+		}
+	}
+}
+@endcode
+
+@subsection events_handling_names Event Types
+
+The following sections describe the individual event types.
+
+@subsubsection events_handling_names_device_vrpn VRPN events
+
+VRPN tracker device events contain a G3DLite CoordinateFrame representing the trackers rotation and translation from the room space origin. The name of the event is based on the `<name>_EventsToGenerate` string in the input devices config file.
+
+VRPN button events are named after the `<name>_EventsToGenerate` with a suffix of `_up` or `_down` depending on whether the button was pressed or released. They also contain an id value corresponding with the order in the `<name>_EventsToGenerate` string. For example, if multiple vrpn buttons are available, the string might look like:
+
+	vrpndevice_EventsToGenerate wand_btn_0 wand_btn_1 wand_btn_2
+	
+In this case, the button id would match the suffix of the button name.
+
+Similarly, VRPN analog events also contain a id related to the position of the event name in the `<name>_EventsToGenerate` string. Analog events also contain a 1D analog data value.
+
+@subsubsection events_handling_names_device_tuio TUIO multi-touch events
+
+TUIO events contain the following names and data values.
+
+| Name                         | Data                      | Notes                     |
+| ---------------------------- | ------------------------- | ------------------------- |
+| `TUIO_Cursor<id num>_up`    | id integer                 |                           |
+| `TUIO_Cursor<id num>_down`  | id integer, (x, y) position |                          |
+| `TUIO_CursorMove<id num>    | id integer, (x, y, velocity, acceleration) |           |
+| `TUIO_Obj<id num>           | id integer, (x, y, angle)  |                           |
+
+@subsubsection events_handling_names_device_spnav 3DConnexion SpaceNavigator events
+
+| Name                         | Data                      | Notes                     |
+| ---------------------------- | ------------------------- | ------------------------- |
+| `SpaceNav_Trans`             | (x, y, z)                 |                           |
+| `SpaceNav_Rot`               | (x angle, y angle, z angle) | Euler Angles XYZ order  |
+
+@subsubsection events_handling_names_mouse Mouse Events
+
+Mouse event names and their valid data values are found in the table below.
+
+| Name                         | Data                      | Notes                     |
+| ---------------------------- | ------------------------- | ------------------------- |
+| `mouse_btn_left_down`        | window reference          |                           |
+| `mouse_btn_left_up`          | window reference          |                           |
+| `mouse_btn_right_down`       | window reference          |                           |
+| `mouse_btn_right_up`         | window reference          |                           |
+| `mouse_btn_middle_down`      | window reference          |                           |
+| `mouse_btn_middle_down`      | window reference          |                           |
+| `mouse_pointer`              | window reference, (x, y) position | Position is relative to the upper left corner of the client area of the window |          
+| `mouse_pointer_entered`      | window reference          | When the cursor enters the client area of the window |
+| `mouse_pointer_left`         | window reference          | When the cursor leaves the client area of the window |
+| `mouse_scroll`               | window reference, (x, y) offsets | Scroll offsets along the x and y axes |
+
+
+@subsubsection events_handling_names_keyboard Keyboard Events
+
+In MinVR, the names of keyboard events start with the prefix `kbd_`. Each event contains a reference to the focused window, and if it make sense, a string value for the key. Each keyboard event ends with an action suffix, either `down`, `up`, or `repeat`. For example when the A key is pressed, the event name would be `kbd_A_down`.
+
+It is also possible to have modifiers, for example to hold shift and press the A key. In this case, the possible modifier names are `SHIFT`, `ALT`, `CTRL`, and `SUPER`. These are added to the name string before the action. So, for the example above, the name would be `kbd_A_SHIFT_down`. For the shift keys with letters, the string value is automatically modified. The string for the previous event would be `"A"` rather than the usual `"a"`.
+
+| Name                             | Data                         | Notes                  |
+| -------------------------------- | ---------------------------- | ---------------------- |
+| `kbd_A_<action>`                 | window reference, string=`"a"` |                        |
+| `kbd_B_<action>`                 | window reference, string=`"b"` |                        |
+| `kbd_C_<action>`                 | window reference, string=`"c"` |                        |
+| `kbd_D_<action>`                 | window reference, string=`"d"` |                        |
+| `kbd_E_<action>`                 | window reference, string=`"e"` |                        |
+| `kbd_F_<action>`                 | window reference, string=`"f"` |                        |
+| `kbd_G_<action>`                 | window reference, string=`"g"` |                        |
+| `kbd_H_<action>`                 | window reference, string=`"h"` |                        |
+| `kbd_I_<action>`                 | window reference, string=`"i"` |                        |
+| `kbd_J_<action>`                 | window reference, string=`"j"` |                        |
+| `kbd_K_<action>`                 | window reference, string=`"k"` |                        |
+| `kbd_L_<action>`                 | window reference, string=`"l"` |                        |
+| `kbd_M_<action>`                 | window reference, string=`"m"` |                        |
+| `kbd_N_<action>`                 | window reference, string=`"n"` |                        |
+| `kbd_O_<action>`                 | window reference, string=`"o"` |                        |
+| `kbd_P_<action>`                 | window reference, string=`"p"` |                        |
+| `kbd_Q_<action>`                 | window reference, string=`"q"` |                        |
+| `kbd_R_<action>`                 | window reference, string=`"r"` |                        |
+| `kbd_S_<action>`                 | window reference, string=`"s"` |                        |
+| `kbd_T_<action>`                 | window reference, string=`"t"` |                        |
+| `kbd_U_<action>`                 | window reference, string=`"u"` |                        |
+| `kbd_V_<action>`                 | window reference, string=`"v"` |                        |
+| `kbd_W_<action>`                 | window reference, string=`"w"` |                        |
+| `kbd_X_<action>`                 | window reference, string=`"x"` |                        |
+| `kbd_Y_<action>`                 | window reference, string=`"y"` |                        |
+| `kbd_Z_<action>`                 | window reference, string=`"z"` |                        |
+| `kbd_0_<action>`                 | window reference, string=`"0"` |                        |
+| `kbd_1_<action>`                 | window reference, string=`"1"` |                        |
+| `kbd_2_<action>`                 | window reference, string=`"2"` |                        |
+| `kbd_3_<action>`                 | window reference, string=`"3"` |                        |
+| `kbd_4_<action>`                 | window reference, string=`"4"` |                        |
+| `kbd_5_<action>`                 | window reference, string=`"5"` |                        |
+| `kbd_6_<action>`                 | window reference, string=`"6"` |                        |
+| `kbd_7_<action>`                 | window reference, string=`"7"` |                        |
+| `kbd_8_<action>`                 | window reference, string=`"8"` |                        |
+| `kbd_9_<action>`                 | window reference, string=`"9"` |                        |
+| `kbd_SPACE_<action>`             | window reference, string=`" "` |                        |
+| `kbd_MINUS_<action>`             | window reference, string=`"-"` |                        |
+| `kbd_EQUAL_<action>`             | window reference, string=`"="` |                        |
+| `kbd_LEFT_BRACKET_<action>`      | window reference, string=`"["` |                        |
+| `kbd_RIGHT_BRACKET_<action>`     | window reference, string=`"]"` |                        |
+| `kbd_BACKSLASH_<action>`         | window reference, string="\" |                       |
+| `kbd_SEMICOLON_<action>`         | window reference, string=`";"` |                        |
+| `kbd_APOSTROPHE_<action>`        | window reference, string=`'` |                        |
+| `kbd_GRAVE_ACCENT_<action>`      | window reference, string="`" |                       |
+| `kbd_COMMA_<action>`             | window reference, string=`","` |                        |
+| `kbd_PERIOD_<action>`            | window reference, string=`"."` |                        |
+| `kbd_SLASH_<action>`             | window reference, string=`"/"` |                        |
+| `kbd_WORLD1_<action>`            | window reference             |                        |
+| `kbd_WORLD2_<action>`            | window reference             |                        |
+| `kbd_ESC_<action>`               | window reference             |                        |
+| `kbd_F1_<action>`                | window reference             |                        |              
+| `kbd_F2_<action>`                | window reference             |                        |
+| `kbd_F3_<action>`                | window reference             |                        |
+| `kbd_F4_<action>`                | window reference             |                        |
+| `kbd_F5_<action>`                | window reference             |                        |
+| `kbd_F6_<action>`                | window reference             |                        |
+| `kbd_F7_<action>`                | window reference             |                        |
+| `kbd_F8_<action>`                | window reference             |                        |
+| `kbd_F9_<action>`                | window reference             |                        |
+| `kbd_F10_<action>`               | window reference             |                        |
+| `kbd_F11_<action>`               | window reference             |                        |
+| `kbd_F12_<action>`               | window reference             |                        |
+| `kbd_F13_<action>`               | window reference             |                        |
+| `kbd_F14_<action>`               | window reference             |                        |
+| `kbd_F15_<action>`               | window reference             |                        |
+| `kbd_F16_<action>`               | window reference             |                        |
+| `kbd_F17_<action>`               | window reference             |                        |
+| `kbd_F18_<action>`               | window reference             |                        |
+| `kbd_F19_<action>`               | window reference             |                        |
+| `kbd_F20_<action>`               | window reference             |                        |
+| `kbd_F21_<action>`               | window reference             |                        |
+| `kbd_F22_<action>`               | window reference             |                        |
+| `kbd_F23_<action>`               | window reference             |                        |
+| `kbd_F24_<action>`               | window reference             |                        |
+| `kbd_F25_<action>`               | window reference             |                        |
+| `kbd_UP_<action>`                | window reference             |                        |
+| `kbd_DOWN_<action>`              | window reference             |                        |
+| `kbd_LEFT_<action>`              | window reference             |                        |
+| `kbd_RIGHT_<action>`             | window reference             |                        |
+| `kbd_LEFT_SHIFT_<action>`        | window reference             |                        |
+| `kbd_RIGHT_SHIFT_<action>`       | window reference             |                        |
+| `kbd_LEFT_CONTROL_<action>`      | window reference             |                        |
+| `kbd_RIGHT_CONTROL_<action>`     | window reference             |                        |
+| `kbd_LEFT_ALT_<action>`          | window reference             |                        |
+| `kbd_RIGHT_ALT_<action>`         | window reference             |                        |
+| `kbd_TAB_<action>`               | window reference, string="\t" |                       |
+| `kbd_ENTER_<action>`             | window reference, string="\n" |                       |
+| `kbd_BACKSPACE_<action>`         | window reference             |                        |
+| `kbd_INSERT_<action>`            | window reference             |                        |
+| `kbd_DELETE_<action>`            | window reference             |                        |
+| `kbd_PAGEUP_<action>`            | window reference             |                        |
+| `kbd_PAGEDOWN_<action>`          | window reference             |                        |
+| `kbd_HOME_<action>`              | window reference             |                        |
+| `kbd_END_<action>`               | window reference             |                        |
+| `kbd_KEYPAD0_<action>`           | window reference, string=`"0"` |                        |
+| `kbd_KEYPAD1_<action>`           | window reference, string=`"1"` |                        |
+| `kbd_KEYPAD2_<action>`           | window reference, string=`"2"` |                        |
+| `kbd_KEYPAD3_<action>`           | window reference, string=`"3"` |                        |
+| `kbd_KEYPAD4_<action>`           | window reference, string=`"4"` |                        |
+| `kbd_KEYPAD5_<action>`           | window reference, string=`"5"` |                        |
+| `kbd_KEYPAD6_<action>`           | window reference, string=`"6"` |                        |
+| `kbd_KEYPAD7_<action>`           | window reference, string=`"7"` |                        |
+| `kbd_KEYPAD8_<action>`           | window reference, string=`"8"` |                        |
+| `kbd_KEYPAD9_<action>`           | window reference, string=`"9"` |                        |
+| `kbd_KEYPAD_DIVIDE_<action>`     | window reference, string=`"/"` |                        |
+| `kbd_KEYPAD_MULTIPLY_<action>`   | window reference, string=`"*"` |                        |
+| `kbd_KEYPAD_SUBTRACT_<action>`   | window reference, string=`"-"` |                        |
+| `kbd_KEYPAD_ADD_<action>`        | window reference, string=`"+"` |                        |
+| `kbd_KEYPAD_DECIMAL_<action>`    | window reference, string=`"."` |                        |
+| `kbd_KEYPAD_EQUAL_<action>`      | window reference, string=`"="` |                        |
+| `kbd_KEYPAD_ENTER_<action>`      | window reference, string="\n" |                       |
+| `kbd_PRINT_SCREEN_<action>`      | window reference             |                        |
+| `kbd_NUM_LOCK_<action>`          | window reference             |                        |
+| `kbd_CAPS_LOCK_<action>`         | window reference             |                        |
+| `kbd_SCROLL_LOCK_<action>`       | window reference             |                        |
+| `kbd_PAUSE_<action>`             | window reference             |                        |
+| `kbd_LEFT_SUPER_<action>`        | window reference             |                        |
+| `kbd_RIGHT_SUPER_<action>`       | window reference             |                        |
+| `kbd_MENU_<action>`              | window reference             |                        |
+| `kbd_UNKNOWN_<action>`           | window reference             | Used when an unknown key is pressed |
+
+*/
+

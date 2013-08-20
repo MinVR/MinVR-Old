@@ -307,7 +307,7 @@ void WindowGLFW::scroll_callback(GLFWwindow* window, double x, double y)
 
 void WindowGLFW::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    string name = getKeyName(key);
+    string name = "kbd_" + getKeyName(key);
 	
 	if (mods) {
 		name = name + "_" + getModsName(mods);
@@ -366,17 +366,17 @@ string WindowGLFW::getKeyName(int key)
         case GLFW_KEY_SPACE:        return "SPACE";
         case GLFW_KEY_MINUS:        return "MINUS";
         case GLFW_KEY_EQUAL:        return "EQUAL";
-        case GLFW_KEY_LEFT_BRACKET: return "LEFT BRACKET";
-        case GLFW_KEY_RIGHT_BRACKET: return "RIGHT BRACKET";
+        case GLFW_KEY_LEFT_BRACKET: return "LEFT_BRACKET";
+        case GLFW_KEY_RIGHT_BRACKET: return "RIGHT_BRACKET";
         case GLFW_KEY_BACKSLASH:    return "BACKSLASH";
         case GLFW_KEY_SEMICOLON:    return "SEMICOLON";
         case GLFW_KEY_APOSTROPHE:   return "APOSTROPHE";
-        case GLFW_KEY_GRAVE_ACCENT: return "GRAVE ACCENT";
+        case GLFW_KEY_GRAVE_ACCENT: return "GRAVE_ACCENT";
         case GLFW_KEY_COMMA:        return "COMMA";
         case GLFW_KEY_PERIOD:       return "PERIOD";
         case GLFW_KEY_SLASH:        return "SLASH";
-        case GLFW_KEY_WORLD_1:      return "WORLD 1";
-        case GLFW_KEY_WORLD_2:      return "WORLD 2";
+        case GLFW_KEY_WORLD_1:      return "WORLD1";
+        case GLFW_KEY_WORLD_2:      return "WORLD2";
 
         // Function keys
         case GLFW_KEY_ESCAPE:       return "ESC";
@@ -435,7 +435,7 @@ string WindowGLFW::getKeyName(int key)
         case GLFW_KEY_KP_8:         return "KEYPAD8";
         case GLFW_KEY_KP_9:         return "KEYPAD9";
         case GLFW_KEY_KP_DIVIDE:    return "KEYPAD_DIVIDE";
-        case GLFW_KEY_KP_MULTIPLY:  return "KEYPAD_MULTPLY";
+        case GLFW_KEY_KP_MULTIPLY:  return "KEYPAD_MULTIPLY";
         case GLFW_KEY_KP_SUBTRACT:  return "KEYPAD_SUBTRACT";
         case GLFW_KEY_KP_ADD:       return "KEYPAD_ADD";
         case GLFW_KEY_KP_DECIMAL:   return "KEYPAD_DECIMAL";
