@@ -1,10 +1,171 @@
 /*!
 
-@page usingMinVR Using MinVR in your project
+@page using Using MinVR in your project
 
 @tableofcontents
 
-@section usingMinVR_stub TODO
+This guide will show you how to write your own simple virtual reality application using MinVR.
+
+@section using_appkit Compiling and choosing an App Kit
+
+While MinVR is designed to handle input device events and correct stereoscopic rendering projection matrices, frequently a more fully featured graphics toolkit is used to develop VR applications. MinVR has been designed to facilitate this by including AppKits for commonly used graphics libraries. To get started writing your application, choose a specific App Kit and compile it following the directions on [Compiling MinVR](@ref compiling). If you are unsure of which AppKit to choose, we recommend the GLFW AppKit for creating windows for raw OpenGL use.
+
+@section using_creating Creating your application
+
+Once MinVR and the specific App Kit are compiled, you are ready to start writing your application. A MinVR program consists of two main classes: the AppKit specific MinVREngine, and an App class derived from AbstractMVRApp.H.
+
+To create your App class, you will need to override the following methods:
+
+@code
+virtual void doUserInputAndPreDrawComputation(const G3DLite::Array<EventRef> &events, double synchronizedTime) = 0;
+virtual void initializeContextSpecificVars(int threadId) = 0;
+virtual void drawGraphics(int threadId, AbstractCameraRef camera) = 0;
+@endcode
+	
+We will start by discussing each method individually.
+
+@subsection using_creating_userinput Overriding doUserInputAndPreDrawComputation
+
+The `doUserInputAndPreDrawComputation` method is where you handle events generated from input devices, or the mouse and keyboard. See the [Handling Events](@ref events) for an example of how to respond to specific events.
+
+@subsection using_creating_vars Overriding initializeContextSpecificVars
+
+If your display configuration uses multiple windows, this method is particularly important. Each window runs its own render thread and has its own OpenGL context. This method is called individually by each thread when the application starts to initialize context specific OpenGL variables such as vertex buffer objects, textures, and shaders.
+
+If you need to initialize App member variables in this method, we recommend that you declare the variables with `boost::thread_specific_ptr<T>` or c++11 thread local storage. For example, to do this with an id to reference a vertex buffer object you would declare the variable like this:
+
+@code	
+boost::thread_specific_ptr<GLuint> _vboId;
+@endcode
+
+Then in the `initializeContextSpecificVars` method you could initialize it like this:
+
+@code	
+_vboId.reset(new GLuint(0));
+glGenBuffersARB(1, _vboId.get());
+@endcode
+
+Using a thread specific pointer object, enables you to run your application with a variety of different window configurations without worrying about explicitly creating a set number of variables that matches the number of windows (i.e. render threads). Under the hood, boost will create a new variable, and retrieve the correct thread specific one later if you reference it.
+
+Alternatively, if you know you will only ever run your application with a specific number of windows, you could initialize your thread specific variables in an array. Then you could reference them using the threadId that is passed to the `drawGraphics` method as an index location in your array.
+
+@subsection using_creating_draw Overriding drawGraphics
+
+The `drawGraphics` method is where you should place your application's drawing code. Be aware that this method is called multiple times each frame when stereo rendering, and is also called by multiple threads if your application has multiple windows. Any member variables you reference here should be declared using boost's thread_specific_ptr as mentioned previously, or you should take care to make sure they are thread safe.
+
+When this method is called by each render thread, the correct viewport and perspective matrices are already set. All you need to do is declare your rendering code. For example, to draw a triangle you might do something like this:
+
+	camera->setObjectToWorldMatrix(G3DLite::CoordinateFrame(G3DLite::Vector3(1.0, 0, 0)));
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.f, 0.f, 0.f);
+	glVertex3f(-0.3f, -0.2f, -1.f);
+	glColor3f(0.f, 1.0f, 0.f);
+	glVertex3f(0.3f, -0.2f, -1.0f);
+	glColor3f(0.f, 0.f, 1.f);
+	glVertex3f(0.f, 0.3f, -1.f);
+	glEnd();
+
+Notice in the above example how to set the object to world matrix. In this case, we are moving the triangle one foot down the x-axis from the roomspace origin. The camera for the specific render thread context is passed as an argument to the method. A unique thread id for the calling thead is also passed. These ids start at zero and increment so that they can be used as array indices if needed.
+	
+@subsection using_creating_main Creating a main function
+
+To run your application, you need a main function. This should initialize the MinVR App Kit engine, initialize your application, and call run. For example, your main might look like this:
+
+@code
+#include "AppKit_GLFW/MVREngineGLFW.H"
+#include "GLFWDemoApp.H"
+#include "MVRCore/DataFileUtils.H"
+
+int main(int argc, char** argv)
+{
+	// This is how you add a search path for MinVR to find setup files if they are stored in a
+	// directory that differs from the MinVR install directory. Note that the $(G) will be replaced
+	// by an environment variable called G.
+	MinVR::DataFileUtils::addFileSearchPath("$(G)/src/MinVR/MVRCore/vrsetup");
+	MinVR::DataFileUtils::addFileSearchPath("$(G)/src/MinVR/MVRCore/shaders");
+
+	MinVR::AbstractMVREngine *engine = new MinVR::MVREngineGLFW();
+	engine->init(argc, argv);
+	MinVR::AbstractMVRAppRef app = new GLFWDemoApp();
+	engine->runApp(app);
+	delete engine;
+}
+@endcode
+
+@subsection using_creating_config Using application configuration files
+
+Configuration files are an easy way to access or change program settings without recompiling.  The file contains text-based key=value pairs. At runtime, the value string can be easily reinterpreted by any class that overrides the stream >> and << operators.
+
+The structure of the configuration file is as follows:
+
+	key value
+
+where key has no spaces in it.  value is everything after the space
+until the end of the line, so it can have spaces in it.  Any line
+that *starts* with the character "#" is a comment and is ignored.
+A single "\" character means cut the line here and continue on the
+next line.  Everything after the "\" is ignored and the text on the
+next line is appended to the text on the current line.  You can 
+escape the "\" operator with a "\\" to get a single "\" character.
+
+Additionally, any value X appearing inside the special character
+sequence $(X) will be replaced by the value of the environment
+variable named X.  If X is not defined, it will be replaced by a
+null string.  If X takes the form of the path to a file and you're
+running in Windows under cygwin then X will be automatically 
+converted from the form /cygdrive/c/blah/blah to the more Windows 
+friendly form c:/blah/blah to stay compatible with the Visual C++ 
+compiler.
+
+Additionally, if you put a += after the key and the key has already
+been defined, then the value is appended to the key's current value.
+If you don't have the += and the same key is read in from a file,
+then the new value overwrites the old.  For example:
+
+	mykey1     value1
+	mykey1     value2
+	mykey2     value3
+	mykey2+=   value4
+
+The value of mykey1 will be "value2".  The value of mykey2 will be 
+"value3 value4".
+
+In your application, you can get the value of a key using the static method `ConfigVal(KEYTYPE keyString, const VALTYPE &defaultVal, bool warn=true)`.
+The `ConfigVal()` function figures out what type to try to convert the value to by the type of the second parameter to the function.  This parameter also specifies the default value to return if the key is not found in the ConfigMap::_map Table.
+
+Example: config-file.cfg
+
+	MyLength  0.4
+	MyVector (0.2, 0.4, 0.3)
+
+In your application:
+	
+	double l  = ConfigVal("MyLength", 0.0);
+	Vector3 v = ConfigVal("MyVector", Vector3::zero());
+	
+To pass files to your application, use the `--configfile` or `-f` commandline parameters:
+
+	$ myapp.exe desktop -f config-file.cfg
+	
+Alternatively, you can pass key value pairs directly using the `--configval` or `-c` parameters:
+
+	$ myapp.exe desktop -c MyLength=0.4
+
+
+@section using_linking Linking MinVR
+
+The easiest way to link MinVR with your application is to use [CMake](http://www.cmake.org). If you have installed MinVR, a custom cmake find module called `MinVRConfig.cmake` was created during the install process. To link MinVR, you need to add the following lines to your `CMakeLists.txt` file, replacing AppKit_GLFW with whatever App Kit you are using:
+
+	set(MinVR_DIR path/to/minvr/install/dir)
+	find_package(MinVR COMPONENTS MVRCore AppKit_GLFW REQUIRED)
+	include_directories(${MinVR_INCLUDE_DIRS})
+	target_link_libraries(myProjectName ${MinVR_LIBRARIES})
+
+@section using_running Running your application
+
+To run your application, you must pass the name of a [vrsetup file](@ref vrsetup) as the first argument. Additional, configuration files can also be passed as arguments. For example, the following would run an app using the desktop configuration file and pass a configuration file called settings.cfg to the app.
+
+	$ MyApp.exe desktop -f settings.cfg
 
 */
 

@@ -30,6 +30,7 @@
 
 #include <G3DLite/G3DLite.h>
 #include "MVRCore/Event.H"
+#include "MVRCore/ConfigVal.H"
 #include "MVRCore/AbstractCamera.H"
 
 namespace MinVR {

@@ -131,7 +131,7 @@ VALTYPE ConfigVal(KEYTYPE keyString, const VALTYPE &defaultVal, bool warn=true) 
     if (!ok) {
       std::string errString = string("ERROR: ConfigVal is unable to retype value.\n\tKey:\t'") 
           + keyString + string("'\n\tValue:\t'") + valString + string("'\n");
-      std::cerr << errString;
+      std::cout << errString;
     }
     return val;
   }

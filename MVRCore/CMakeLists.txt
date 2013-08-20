@@ -31,6 +31,7 @@ include/MVRCore/AbstractWindow.H
 include/MVRCore/CameraOffAxis.H
 include/MVRCore/CameraTraditional.H
 include/MVRCore/ConfigMap.H
+include/MVRCore/ConfigVal.H
 include/MVRCore/DataFileUtils.H
 include/MVRCore/Event.H
 include/MVRCore/InputDeviceSpaceNav.H

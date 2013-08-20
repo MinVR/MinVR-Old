@@ -8,7 +8,7 @@
 # To use this find module, add the following line to your project's CMakeLists.txt file:
 #	find_package(MinVR COMPONENTS appkit REQUIRED)
 #	where 'appkit' is replaced with one of the following components:
-# @MVRCONFIG_AVAILABLE_COMPONENTS_LIST@	
+@MVRCONFIG_AVAILABLE_COMPONENTS_LIST@	
 #
 # Dependencies among components will be included automatically.
 # Much of the macros and structure of this file were taken from PCLConfig.cmake.in at www.pointclouds.org

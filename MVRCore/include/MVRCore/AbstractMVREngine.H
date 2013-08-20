@@ -31,6 +31,7 @@
 #include "MVRCore/AbstractMVRApp.H"
 #include "MVRCore/AbstractWindow.H"
 #include "MVRCore/ConfigMap.H"
+#include "MVRCore/ConfigVal.H"
 #include "MVRCore/WindowSettings.H"
 #include "MVRCore/AbstractCamera.H"
 #include "MVRCore/CameraOffAxis.H"
@@ -73,8 +74,9 @@ public:
 	 *  if you want to handle your own command line arguments
 	 *
 	 *	@param[in] A map of configuration parameters.
+	 *  @param[in] Log file.
 	 */
-	virtual void init(ConfigMapRef configMap);
+	virtual void init(ConfigMapRef configMap, G3DLite::Log* log);
 
 	/*! @brief Start the main loop.
 	 *

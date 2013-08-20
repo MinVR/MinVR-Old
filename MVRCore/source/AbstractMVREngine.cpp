@@ -42,14 +42,19 @@ AbstractMVREngine::~AbstractMVREngine()
 void AbstractMVREngine::init(int argc, char **argv)
 {
 	_log = new G3DLite::Log("log.txt");
-
-	ConfigMapRef myMap = new ConfigMap(argc, argv, _log, false);
-	init(myMap);
+	_configMap = new ConfigMap(argc, argv, _log, false);
+	ConfigValMap::map = _configMap;
+	
+	_syncTimeStart = boost::posix_time::microsec_clock::local_time();
+	setupWindowsAndViewports();
+	setupInputDevices();
 }
 
-void AbstractMVREngine::init(ConfigMapRef configMap)
+void AbstractMVREngine::init(ConfigMapRef configMap, G3DLite::Log* log)
 {
 	_configMap = configMap;
+	ConfigValMap::map = _configMap;
+	_log = log;
 
 	_syncTimeStart = boost::posix_time::microsec_clock::local_time();
 	setupWindowsAndViewports();
