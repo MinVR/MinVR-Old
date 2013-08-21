@@ -39,5 +39,5 @@ MinVR is licensed under the MIT License. This allows you to do anything you want
 
 ###Authors and Contributors
 
-- Bret Jackson @bretjackson
+- Bret Jackson [@bretjackson](http://github.com/bretjackson)
 - Daniel F. Keefe
