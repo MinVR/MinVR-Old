@@ -19,15 +19,13 @@ Core Library Features:
 
 ###Documentation
 
-MinVR is documented using [Doxygen](http://www.stack.nl/~dimitri/doxygen/):
-
 [View the API documentation for the latest release](docs/latest/index.html)
 
 Tutorials and guides:
--[Compiling MinVR and its dependencies](docs/latest/compiling.html)
--[Using MinVR in your project](docs/latest/using.html)
--[Specifying a VR configuration](docs/latest/vrsetup.html)
--[Handling MinVR events](docs/latest/events.html)
+- [Compiling MinVR and its dependencies](docs/latest/compiling.html)
+- [Using MinVR in your project](docs/latest/using.html)
+- [Specifying a VR configuration](docs/latest/vrsetup.html)
+- [Handling MinVR events](docs/latest/events.html)
 
 ###Questions and Issues
 
@@ -39,5 +37,5 @@ MinVR is licensed under the MIT License. This allows you to do anything you want
 
 ###Authors and Contributors
 
--Bret Jackson (@bretjackson)
--Daniel F. Keefe
+- Bret Jackson @bretjackson
+- Daniel F. Keefe
