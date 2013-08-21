@@ -86,6 +86,14 @@ void AbstractMVREngine::setupWindowsAndViewports()
 		wSettings->framed       = _configMap->get(winStr + "Framed", wSettings->framed);
 		wSettings->windowTitle  = _configMap->get(winStr + "Caption", wSettings->windowTitle);
 		wSettings->useDebugContext = _configMap->get(winStr + "UseDebugContext", wSettings->useDebugContext);
+		wSettings->msaaSamples  = _configMap->get(winStr + "MSAASamples", wSettings->msaaSamples);
+		wSettings->rgbBits      = _configMap->get(winStr + "RGBBits", wSettings->rgbBits);
+		wSettings->depthBits    = _configMap->get(winStr + "DepthBits", wSettings->depthBits);
+		wSettings->stencilBits  = _configMap->get(winStr + "StencilBits", wSettings->stencilBits);
+		wSettings->alphaBits    = _configMap->get(winStr + "AlphaBits", wSettings->alphaBits);
+		wSettings->visible      = _configMap->get(winStr + "Visible", wSettings->visible);
+		wSettings->useGPUAffinity = _configMap->get(winStr + "UseGPUAffinity", wSettings->useGPUAffinity);
+
 		//wSettings.mouseVisible = _configMap->get(winStr + "MouseVisible", wSettings.mouseVisible);
 
 		std::string stereoStr = _configMap->get(winStr + "StereoType", "Mono");

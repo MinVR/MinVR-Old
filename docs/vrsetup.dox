@@ -32,7 +32,6 @@ This is followed by a section specifying the number of windows and each window p
 	Window1_StencilBits             0
 	Window1_MSAASamples             1
 	Window1_FullScreen              0
-	Window1_Asychronous             1
 	Window1_Stereo                  0
 	Window1_Resizable               1
 	Window1_AllowMaximize           1
@@ -81,7 +80,6 @@ The following parameters are supported in a vrsetup file.
 | `Window<num>_StencilBits`    | 0 to max int              | The number of bits to use for the stencil buffer |
 | `Window<num>_MSAASamples`    | 0 to max int              | Number of samples per pixel for anti-aliasing purposes |
 | `Window<num>_FullScreen`     | 0 or 1                    | Open a fullscreen window on the display indicated by the x and y position |
-| `Window<num>_Asychronous`    | 0 or 1                    | Should buffer flips be un-hitched from refresh rate? True generally gives higher frame rates. |
 | `Window<num>_Stereo`         | 0 or 1                    | Turn stereo on or off        |
 | `Window<num>_Resizable`      | 0 or 1                    | Allow the window to be resized |
 | `Window<num>_AllowMaximize`  | 0 or 1                    | Allow the window to be maximized |

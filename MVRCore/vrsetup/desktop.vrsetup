@@ -20,9 +20,8 @@ Window1_RGBBits         0
 Window1_AlphaBits       0
 Window1_DepthBits       8
 Window1_StencilBits     0
-Window1_FSAASamples     1
+Window1_MSAASamples     1
 Window1_FullScreen      0
-Window1_Asychronous     1
 Window1_Stereo          0
 Window1_Resizable       1
 Window1_AllowMaximize   1
@@ -30,6 +29,7 @@ Window1_Framed          1
 Window1_Caption         MinVR Window 1
 Window1_StereoType	    Mono
 Window1_UseDebugContext 1
+Window1_UseGPUAffinity  0
 
 Window1_NumViewports 1
 Window1_Viewport1_CameraType	OffAxis
@@ -53,9 +53,8 @@ Window2_RGBBits         0
 Window2_AlphaBits       0
 Window2_DepthBits       8
 Window2_StencilBits     0
-Window2_FSAASamples     1
+Window2_MSAASamples     1
 Window2_FullScreen      0
-Window2_Asychronous     1
 Window2_Stereo          0
 Window2_Resizable       1
 Window2_AllowMaximize   1
@@ -63,6 +62,7 @@ Window2_Framed          1
 Window2_Caption         MinVR Window 2
 Window2_StereoType	    Mono
 Window2_UseDebugContext 1
+Window2_UseGPUAffinity  0
 
 Window2_NumViewports 1
 Window2_Viewport1_CameraType	OffAxis
