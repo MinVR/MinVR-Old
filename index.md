@@ -31,6 +31,8 @@ Tutorials and guides:
 
 If you have a question about how to use MinVR, a bug report to submit, or a feature request, please submit an issue or pull request on the [MinVR Repository issue tracker](https://github.com/MinVR/MinVR/issues).
 
+To suggest changes to this website, create a pull request for the `gh-pages` branch of the repository.
+
 ###License
 
 MinVR is licensed under the MIT License. This allows you to do anything you want with the MinVR code as long as you provide attribution and don’t hold us  liable. A copy of the license can be found in the `LICENSE.txt` file and in every header file in the source code.
