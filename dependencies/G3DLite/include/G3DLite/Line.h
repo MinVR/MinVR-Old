@@ -9,8 +9,8 @@
  @edited  2006-02-28
  */
 
-#ifndef G3D_LINE_H
-#define G3D_LINE_H
+#ifndef G3DLITE_LINE_H
+#define G3DLITE_LINE_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"

@@ -7,8 +7,8 @@
  @edited  2008-02-02
  */
 
-#ifndef G3D_LINESEGMENT_H
-#define G3D_LINESEGMENT_H
+#ifndef G3DLITE_LINESEGMENT_H
+#define G3DLITE_LINESEGMENT_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"

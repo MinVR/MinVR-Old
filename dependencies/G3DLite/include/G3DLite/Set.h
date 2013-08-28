@@ -9,8 +9,8 @@
   @edited  2009-06-10
  */
 
-#ifndef G3D_Set_h
-#define G3D_Set_h
+#ifndef G3DLITE_Set_h
+#define G3DLITE_Set_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Table.h"
@@ -30,7 +30,7 @@ namespace G3DLite {
  */
 // There is not copy constructor or assignment operator defined because
 // the default ones are correct for Set.
-template<class T, class HashFunc = HashTrait<T>, class EqualsFunc = EqualsTrait<T> > 
+template<class T, class HashFunc = G3DLite::HashTrait<T>, class EqualsFunc = G3DLite::EqualsTrait<T> > 
 class Set {
 
     /**

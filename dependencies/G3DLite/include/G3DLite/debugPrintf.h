@@ -10,8 +10,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_DEBUGPRINTF_H
-#define G3D_DEBUGPRINTF_H
+#ifndef G3DLITE_DEBUGPRINTF_H
+#define G3DLITE_DEBUGPRINTF_H
 
 #include "G3DLite/platform.h"
 #include <stdio.h>

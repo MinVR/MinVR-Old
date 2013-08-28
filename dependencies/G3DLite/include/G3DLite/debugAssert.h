@@ -23,8 +23,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_DEBUGASSERT_H
-#define G3D_DEBUGASSERT_H
+#ifndef G3DLITE_DEBUGASSERT_H
+#define G3DLITE_DEBUGASSERT_H
 
 #include <string>
 #include "G3DLite/platform.h"
@@ -54,7 +54,7 @@
 
 /**
   @def debugAssert(exp)
-  Breaks if the expression is false. If G3D_DEBUG_NOGUI is defined, prompts at
+  Breaks if the expression is false. If G3DLITE_DEBUG_NOGUI is defined, prompts at
   the console, otherwise pops up a dialog.  The user may then break (debug), 
   ignore, or halt the program.
  
@@ -63,7 +63,7 @@
 
 /**
   @def debugAssertM(exp, msg)
-  Breaks if the expression is false and displays a message. If G3D_DEBUG_NOGUI 
+  Breaks if the expression is false and displays a message. If G3DLITE_DEBUG_NOGUI 
   is defined, prompts at the console, otherwise pops up a dialog.  The user may
   then break (debug), ignore, or halt the program.
  
@@ -107,11 +107,11 @@ namespace _internal {
 } // G3D
 
 /**
- @def __debugPromptShowDialog__
+ @def __g3dlitedebugPromptShowDialog__
  @internal
  */
 
-#define G3D_DEBUG_NOGUI
+#define G3DLITE_DEBUG_NOGUI
 
 #ifdef G3D_DEBUG
 
@@ -129,17 +129,17 @@ namespace _internal {
 #    define debugBreak() G3DLite::_internal::_releaseInputGrab_(); rawBreak(); G3DLite::_internal::_restoreInputGrab_();
 #    define debugAssert(exp) debugAssertM(exp, "Debug assertion failure")
 
-    #ifdef G3D_DEBUG_NOGUI
-        #define __debugPromptShowDialog__ false
+    #ifdef G3DLITE_DEBUG_NOGUI
+        #define __g3dlitedebugPromptShowDialog__ false
     #else
-        #define __debugPromptShowDialog__ true
+        #define __g3dlitedebugPromptShowDialog__ true
     #endif
 
     #define debugAssertM(exp, message) do { \
         if (!(exp)) { \
             G3DLite::_internal::_releaseInputGrab_(); \
             if ((G3DLite::_internal::_debugHook != NULL) && \
-                G3DLite::_internal::_debugHook((const char*)(#exp), message, __FILE__, __LINE__, __debugPromptShowDialog__)) { \
+                G3DLite::_internal::_debugHook((const char*)(#exp), message, __FILE__, __LINE__, __g3dlitedebugPromptShowDialog__)) { \
                  rawBreak(); \
             } \
             G3DLite::_internal::_restoreInputGrab_(); \
@@ -149,10 +149,10 @@ namespace _internal {
     #define alwaysAssertM debugAssertM
 
 #else  // Release
-    #ifdef G3D_DEBUG_NOGUI
-        #define __debugPromptShowDialog__ false
+    #ifdef G3DLITE_DEBUG_NOGUI
+        #define __g3dlitedebugPromptShowDialog__ false
     #else
-        #define __debugPromptShowDialog__ true
+        #define __g3dlitedebugPromptShowDialog__ true
     #endif
 
     // In the release build, just define away assertions.
@@ -166,7 +166,7 @@ namespace _internal {
         if (!(exp)) { \
             G3DLite::_internal::_releaseInputGrab_(); \
             if ((G3DLite::_internal::_failureHook != NULL) && \
-                G3DLite::_internal::_failureHook(#exp, message, __FILE__, __LINE__, __debugPromptShowDialog__)) { \
+                G3DLite::_internal::_failureHook(#exp, message, __FILE__, __LINE__, __g3dlitedebugPromptShowDialog__)) { \
                 ::exit(-1);                                             \
             } \
             G3DLite::_internal::_restoreInputGrab_(); \

@@ -15,7 +15,7 @@ void GLFWDemoApp::doUserInputAndPreDrawComputation(const G3DLite::Array<MinVR::E
 {
 }
 
-void GLFWDemoApp::initializeContextSpecificVars(int threadId)
+void GLFWDemoApp::initializeContextSpecificVars(int threadId, WindowRef window)
 {
 	initGL();
 	initVBO();
@@ -170,7 +170,7 @@ void GLFWDemoApp::initLights()
 	}
 }
 
-void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera)
+void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef window)
 {
 	GLenum err;
 	while((err = glGetError()) != GL_NO_ERROR) {

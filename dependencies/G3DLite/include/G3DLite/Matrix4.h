@@ -9,8 +9,8 @@
   @edited  2009-10-20
  */
 
-#ifndef G3D_Matrix4_h
-#define G3D_Matrix4_h
+#ifndef G3DLITE_Matrix4_h
+#define G3DLITE_Matrix4_h
 
 #ifdef _MSC_VER
 // Disable conditional expression is constant, which occurs incorrectly on inlined functions

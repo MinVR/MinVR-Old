@@ -10,8 +10,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_Table_h
-#define G3D_Table_h
+#ifndef G3DLITE_Table_h
+#define G3DLITE_Table_h
 
 #include <cstddef>
 #include <string>
@@ -97,7 +97,7 @@ namespace G3DLite {
   1.0 your hash function is badly designed and maps too many inputs to
   the same output.
  */
-template<class Key, class Value, class HashFunc = HashTrait<Key>, class EqualsFunc = EqualsTrait<Key> > 
+template<class Key, class Value, class HashFunc = G3DLite::HashTrait<Key>, class EqualsFunc = G3DLite::EqualsTrait<Key> > 
 class Table {
 public:
 

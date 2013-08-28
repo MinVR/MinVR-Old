@@ -10,8 +10,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_BinaryInput_h
-#define G3D_BinaryInput_h
+#ifndef G3DLITE_BinaryInput_h
+#define G3DLITE_BinaryInput_h
 
 #ifdef _MSC_VER
 // Disable conditional expression is constant, which occurs incorrectly on inlined functions
@@ -42,7 +42,7 @@ namespace G3DLite {
 #if defined(G3D_WIN32) || defined(G3D_LINUX)
     // Allow writing of integers to non-word aligned locations.
     // This is legal on x86, but not on other platforms.
-    #define G3D_ALLOW_UNALIGNED_WRITES
+    #define G3DLITE_ALLOW_UNALIGNED_WRITES
 #endif
 
 /**
@@ -283,7 +283,7 @@ public:
             out[1] = m_buffer[m_pos - 2];
             return *(uint16*)out;
         } else {
-            #ifdef G3D_ALLOW_UNALIGNED_WRITES
+            #ifdef G3DLITE_ALLOW_UNALIGNED_WRITES
                 return *(uint16*)(&m_buffer[m_pos - 2]);
             #else
                 uint8 out[2];
@@ -312,7 +312,7 @@ public:
             out[3] = m_buffer[m_pos - 4];
             return *(uint32*)out;
         } else {
-            #ifdef G3D_ALLOW_UNALIGNED_WRITES
+            #ifdef G3DLITE_ALLOW_UNALIGNED_WRITES
                 return *(uint32*)(&m_buffer[m_pos - 4]);
             #else
                 uint8 out[4];

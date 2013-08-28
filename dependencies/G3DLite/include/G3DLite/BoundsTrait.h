@@ -8,13 +8,17 @@
   All rights reserved.
  */
 
-#ifndef G3D_BOUNDSTRAIT_H
-#define G3D_BOUNDSTRAIT_H
+#ifndef G3DLITE_BOUNDSTRAIT_H
+#define G3DLITE_BOUNDSTRAIT_H
 
 #include "G3DLite/platform.h"
 
+namespace G3DLite {
+
 template<typename Value>
 struct BoundsTrait{};
+
+} // namespace G3DLite
 
 #endif
 

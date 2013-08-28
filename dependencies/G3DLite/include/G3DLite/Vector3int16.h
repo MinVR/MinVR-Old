@@ -9,8 +9,8 @@
   All rights reserved.
  */
 
-#ifndef VECTOR3INT16_H
-#define VECTOR3INT16_H
+#ifndef G3DLITE_VECTOR3INT16_H
+#define G3DLITE_VECTOR3INT16_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -29,7 +29,7 @@ namespace G3DLite {
  \class Vector3int16
  A Vector3 that packs its fields into uint16s.
  */
-G3D_BEGIN_PACKED_CLASS(2)
+G3DLITE_BEGIN_PACKED_CLASS(2)
 class Vector3int16 {
 private:
     // Hidden operators
@@ -118,10 +118,11 @@ public:
 }
 G3D_END_PACKED_CLASS(2)
 
-}
 
 template <> struct HashTrait<G3DLite::Vector3int16> {
     static size_t hashCode(const G3DLite::Vector3int16& key) { return static_cast<size_t>(key.x + ((int)key.y << 5) + ((int)key.z << 10)); }
 };
+
+} // namespace G3DLite
 
 #endif

@@ -4,8 +4,8 @@
  @author Morgan McGuire, http://graphics.cs.williams.edu
  */
 
-#ifndef G3D_SPLINE_H
-#define G3D_SPLINE_H
+#ifndef G3DLITE_SPLINE_H
+#define G3DLITE_SPLINE_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Array.h"

@@ -6,8 +6,8 @@
  @created 2009-08-21
  @edited  2009-08-21
  */
-#ifndef G3D_units_h
-#define G3D_units_h
+#ifndef G3DLITE_units_h
+#define G3DLITE_units_h
 
 #include "G3DLite/platform.h"
 

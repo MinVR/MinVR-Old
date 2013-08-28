@@ -9,8 +9,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_TEXTOUTPUT_H
-#define G3D_TEXTOUTPUT_H
+#ifndef G3DLITE_TEXTOUTPUT_H
+#define G3DLITE_TEXTOUTPUT_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Array.h"

@@ -11,8 +11,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_Array_h
-#define G3D_Array_h
+#ifndef G3DLITE_Array_h
+#define G3DLITE_Array_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/debug.h"

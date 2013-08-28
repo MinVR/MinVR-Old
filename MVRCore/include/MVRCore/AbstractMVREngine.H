@@ -96,6 +96,15 @@ public:
 	 */
 	virtual void runOneFrameOfApp(AbstractMVRAppRef app);
 
+	/*! @brief Initialize thread specific variables
+	 *
+	 * Called from each renderthread to initialize needed variables
+	 *
+	 * @param[in] A thread specific id
+	 * @param[in] Window reference for the calling renderthread.
+	 */
+	virtual void initializeContextSpecificVars(int threadId, WindowRef window);
+
 protected:
 
 	/*! @brief Creates windows and viewports

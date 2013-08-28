@@ -11,8 +11,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_Any_h
-#define G3D_Any_h
+#ifndef G3DLITE_Any_h
+#define G3DLITE_Any_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Table.h"

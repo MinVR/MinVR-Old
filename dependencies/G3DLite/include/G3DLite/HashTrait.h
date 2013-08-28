@@ -9,13 +9,15 @@
   All rights reserved.
  */
 
-#ifndef G3D_HashTrait_h
-#define G3D_HashTrait_h
+#ifndef G3DLITE_HashTrait_h
+#define G3DLITE_HashTrait_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Crypto.h"
 #include "G3DLite/g3dmath.h"
 #include "G3DLite/uint128.h"
+
+namespace G3DLite {
 
 /** Must be specialized for custom types.
     @see G3DLite::Table for specialization requirements.
@@ -88,5 +90,7 @@ template <> struct HashTrait<G3DLite::uint128> {
         return static_cast<size_t>((foldedHash >> 32) ^ (foldedHash & 0xFFFFFFFF));
     }
 };
+
+} // end namespace
 
 #endif

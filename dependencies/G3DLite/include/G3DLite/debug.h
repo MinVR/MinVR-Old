@@ -10,8 +10,8 @@
  All rights reserved.
 */
 
-#ifndef G3D_DEBUG_H
-#define G3D_DEBUG_H
+#ifndef G3DLITE_DEBUG_H
+#define G3DLITE_DEBUG_H
 
 #include "G3DLite/platform.h"
 #ifdef _MSC_VER

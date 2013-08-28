@@ -4,6 +4,7 @@
 #include "GL/glew.h"
 #include "MVRCore/AbstractMVRApp.H"
 #include "MVRCore/AbstractCamera.H"
+#include "MVRCore/AbstractWindow.H"
 #include "G3DLite/G3DLite.h"
 #include "MVRCore/Event.H"
 #include <GLFW/glfw3.h>
@@ -16,8 +17,8 @@ public:
 	~GLFWDemoApp();
 
 	void doUserInputAndPreDrawComputation(const G3DLite::Array<MinVR::EventRef> &events, double synchronizedTime);
-	void initializeContextSpecificVars(int threadId);
-	void drawGraphics(int threadId, MinVR::AbstractCameraRef camera);
+	void initializeContextSpecificVars(int threadId, MinVR::WindowRef window);
+	void drawGraphics(int threadId, MinVR::AbstractCameraRef camera, MinVR::WindowRef window);
 
 private:
 	void initGL();

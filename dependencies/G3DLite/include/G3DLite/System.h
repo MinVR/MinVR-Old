@@ -11,8 +11,8 @@
   @edited  2008-10-14
  */
 
-#ifndef G3D_System_h
-#define G3D_System_h
+#ifndef G3DLITE_System_h
+#define G3DLITE_System_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

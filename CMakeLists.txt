@@ -16,6 +16,7 @@ option(USE_TUIO "Enable generation of events from a tuio device" ON)
 option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" ON)
 
 option(USE_APPKIT_GLFW "Enable to use the GLFW app kit" ON)
+option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" ON)
 option(USE_APPKIT_GLUT "Enable to use the GLut app kit" OFF)
 
 option(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in Visual Studio" ON)
@@ -154,7 +155,10 @@ else ()
 endif()
 include_directories(${Boost_INCLUDE_DIR})
 
-add_subdirectory (dependencies/G3DLite)
+add_definition(-DGLM_SWIZZLE)
+include_directories(dependencies/glm)
+
+#add_subdirectory (dependencies/G3DLite)
 add_subdirectory (MVRCore)
 
 #Compile the user specified App Kits
@@ -163,6 +167,9 @@ if (USE_APPKIT_GLFW)
 endif()
 if (USE_APPKIT_GLUT)
 	add_subdirectory (AppKits/AppKit_Glut)
+endif()
+if (USE_APPKIT_G3D9)
+	add_subdirectory (AppKits/AppKit_G3D9)
 endif()
 
 if (BUILD_EXAMPLES)

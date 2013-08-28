@@ -10,8 +10,8 @@
  All rights reserved.
 */
 
-#ifndef G3D_CFrame_h
-#define G3D_CFrame_h
+#ifndef G3DLITE_CFrame_h
+#define G3DLITE_CFrame_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"

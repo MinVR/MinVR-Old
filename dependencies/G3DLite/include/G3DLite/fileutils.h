@@ -10,8 +10,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_fileutils_h
-#define G3D_fileutils_h
+#ifndef G3DLITE_fileutils_h
+#define G3DLITE_fileutils_h
 
 #include "G3DLite/platform.h"
 #include <string>

@@ -35,8 +35,8 @@
  * From FreeBSD fnmatch.h 1.7
  * $Id: g3dfnmatch.h,v 1.1 2012-07-29 19:21:41 daschroe Exp $
  */
-#ifndef G3D_g3dfnmatch_h
-#define G3D_g3dfnmatch_h
+#ifndef G3DLITE_g3dfnmatch_h
+#define G3DLITE_g3dfnmatch_h
 
 #include "G3DLite/platform.h"
 

@@ -10,8 +10,8 @@
   All rights reserved.
  */
 
-#ifndef VECTOR2INT16_H
-#define VECTOR2INT16_H
+#ifndef G3DLITE_VECTOR2INT16_H
+#define G3DLITE_VECTOR2INT16_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -23,7 +23,7 @@ namespace G3DLite {
  \class Vector2int16 
  A Vector2 that packs its fields into uint16s.
  */
-G3D_BEGIN_PACKED_CLASS(2)
+G3DLITE_BEGIN_PACKED_CLASS(2)
 class Vector2int16 {
 private:
     // Hidden operators
@@ -118,10 +118,12 @@ public:
 }
 G3D_END_PACKED_CLASS(2)
 
-}
+
 
 template<> struct HashTrait<G3DLite::Vector2int16> {
     static size_t hashCode(const G3DLite::Vector2int16& key) { return static_cast<size_t>(key.x + ((int)key.y << 16)); }
 };
+
+} // namespace G3DLite
 
 #endif

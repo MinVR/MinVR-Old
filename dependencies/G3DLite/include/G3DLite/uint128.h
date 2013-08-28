@@ -8,8 +8,8 @@
  @edited  2008-07-17
  */
 
-#ifndef G3D_UINT128_H
-#define G3D_UINT128_H
+#ifndef G3DLITE_UINT128_H
+#define G3DLITE_UINT128_H
 
 #include "G3DLite/g3dmath.h"
 

@@ -10,8 +10,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_Rect2D_h
-#define G3D_Rect2D_h
+#ifndef G3DLITE_Rect2D_h
+#define G3DLITE_Rect2D_h
 
 // Linux defines this as a macro
 #ifdef border

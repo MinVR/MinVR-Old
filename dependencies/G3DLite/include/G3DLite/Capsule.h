@@ -10,8 +10,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_CAPSULE_H
-#define G3D_CAPSULE_H
+#ifndef G3DLITE_CAPSULE_H
+#define G3DLITE_CAPSULE_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

@@ -59,7 +59,7 @@ void BinaryInput::readBool8(Array<bool>& out, int64 n) {
 }
 
 
-#define IMPLEMENT_READER(ucase, lcase)\
+#define IMPLEMENT_READER_G3DLITE(ucase, lcase)\
 void BinaryInput::read##ucase(std::vector<lcase>& out, int64 n) {\
     out.resize(n);\
     read##ucase(&out[0], n);\
@@ -72,22 +72,22 @@ void BinaryInput::read##ucase(Array<lcase>& out, int64 n) {\
 }
 
 
-IMPLEMENT_READER(UInt8,   uint8)
-IMPLEMENT_READER(Int8,    int8)
-IMPLEMENT_READER(UInt16,  uint16)
-IMPLEMENT_READER(Int16,   int16)
-IMPLEMENT_READER(UInt32,  uint32)
-IMPLEMENT_READER(Int32,   int32)
-IMPLEMENT_READER(UInt64,  uint64)
-IMPLEMENT_READER(Int64,   int64)
-IMPLEMENT_READER(Float32, float32)
-IMPLEMENT_READER(Float64, float64)    
+IMPLEMENT_READER_G3DLITE(UInt8,   uint8)
+IMPLEMENT_READER_G3DLITE(Int8,    int8)
+IMPLEMENT_READER_G3DLITE(UInt16,  uint16)
+IMPLEMENT_READER_G3DLITE(Int16,   int16)
+IMPLEMENT_READER_G3DLITE(UInt32,  uint32)
+IMPLEMENT_READER_G3DLITE(Int32,   int32)
+IMPLEMENT_READER_G3DLITE(UInt64,  uint64)
+IMPLEMENT_READER_G3DLITE(Int64,   int64)
+IMPLEMENT_READER_G3DLITE(Float32, float32)
+IMPLEMENT_READER_G3DLITE(Float64, float64)    
 
-#undef IMPLEMENT_READER
+#undef IMPLEMENT_READER_G3DLITE
 
 // Data structures that are one byte per element can be 
 // directly copied, regardles of endian-ness.
-#define IMPLEMENT_READER(ucase, lcase)\
+#define IMPLEMENT_READER_G3DLITE(ucase, lcase)\
 void BinaryInput::read##ucase(lcase* out, int64 n) {\
     if (sizeof(lcase) == 1) {\
         readBytes(out, n);\
@@ -98,14 +98,14 @@ void BinaryInput::read##ucase(lcase* out, int64 n) {\
     }\
 }
 
-IMPLEMENT_READER(Bool8,   bool)
-IMPLEMENT_READER(UInt8,   uint8)
-IMPLEMENT_READER(Int8,    int8)
+IMPLEMENT_READER_G3DLITE(Bool8,   bool)
+IMPLEMENT_READER_G3DLITE(UInt8,   uint8)
+IMPLEMENT_READER_G3DLITE(Int8,    int8)
 
-#undef IMPLEMENT_READER
+#undef IMPLEMENT_READER_G3DLITE
 
 
-#define IMPLEMENT_READER(ucase, lcase)\
+#define IMPLEMENT_READER_G3DLITE(ucase, lcase)\
 void BinaryInput::read##ucase(lcase* out, int64 n) {\
     if (m_swapBytes) {\
         for (int64 i = 0; i < n; ++i) {\
@@ -117,16 +117,16 @@ void BinaryInput::read##ucase(lcase* out, int64 n) {\
 }
 
 
-IMPLEMENT_READER(UInt16,  uint16)
-IMPLEMENT_READER(Int16,   int16)
-IMPLEMENT_READER(UInt32,  uint32)
-IMPLEMENT_READER(Int32,   int32)
-IMPLEMENT_READER(UInt64,  uint64)
-IMPLEMENT_READER(Int64,   int64)
-IMPLEMENT_READER(Float32, float32)
-IMPLEMENT_READER(Float64, float64)    
+IMPLEMENT_READER_G3DLITE(UInt16,  uint16)
+IMPLEMENT_READER_G3DLITE(Int16,   int16)
+IMPLEMENT_READER_G3DLITE(UInt32,  uint32)
+IMPLEMENT_READER_G3DLITE(Int32,   int32)
+IMPLEMENT_READER_G3DLITE(UInt64,  uint64)
+IMPLEMENT_READER_G3DLITE(Int64,   int64)
+IMPLEMENT_READER_G3DLITE(Float32, float32)
+IMPLEMENT_READER_G3DLITE(Float64, float64)    
 
-#undef IMPLEMENT_READER
+#undef IMPLEMENT_READER_G3DLITE
 
 void BinaryInput::loadIntoMemory(int64 startPosition, int64 minLength) {
     // Load the next section of the file

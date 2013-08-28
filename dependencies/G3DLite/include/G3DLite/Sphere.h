@@ -9,8 +9,8 @@
  @edited  2008-10-07
  */
 
-#ifndef G3D_SPHERE_H
-#define G3D_SPHERE_H
+#ifndef G3DLITE_SPHERE_H
+#define G3DLITE_SPHERE_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"
@@ -135,7 +135,7 @@ public:
     void merge(const Sphere& s);
 };
 
-}
+
 
 template <> struct HashTrait<G3DLite::Sphere> {
     static size_t hashCode(const G3DLite::Sphere& key) { 
@@ -143,5 +143,6 @@ template <> struct HashTrait<G3DLite::Sphere> {
     }
 };
 
+} // namespace
 
 #endif

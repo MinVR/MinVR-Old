@@ -10,8 +10,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_Cylinder_H
-#define G3D_Cylinder_H
+#ifndef G3DLITE_Cylinder_H
+#define G3DLITE_Cylinder_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

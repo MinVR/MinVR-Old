@@ -7,8 +7,8 @@
  @edited  2006-01-10
 */
 
-#ifndef G3D_PHYSICSFRAME_H
-#define G3D_PHYSICSFRAME_H
+#ifndef G3DLITE_PHYSICSFRAME_H
+#define G3DLITE_PHYSICSFRAME_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"

@@ -9,14 +9,14 @@
  @edited  2010-01-11
  */
 
-#ifndef G3D_platform_h
-#define G3D_platform_h
+#ifndef G3DLITE_platform_h
+#define G3DLITE_platform_h
 
 /**
  The version number of G3D in the form: MmmBB -> 
  version M.mm [beta BB]
  */
-#define G3D_VER 80000
+#define G3DLITE_VER 80000
 
 // fatal error for unsupported architectures
 #if defined(__powerpc__)
@@ -71,11 +71,6 @@
 #    define G3D_64BIT
 #else
 #    define G3D_32BIT
-#endif
-
-// Define to disable FFMPEG.  This is a temporary feature while we debug the Windows 64-bit build 
-#if defined(G3D_WIN32) && defined(G3D_64BIT)
-#   define G3D_NO_FFMPEG
 #endif
 
 // Strongly encourage inlining on gcc
@@ -316,13 +311,13 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw) {\
 #    define PRAGMA(x) _Pragma(#x)
 #endif
 
-/** @def G3D_BEGIN_PACKED_CLASS(byteAlign)
+/** @def G3DLITE_BEGIN_PACKED_CLASS(byteAlign)
     Switch to tight alignment
     See G3DLite::Color3uint8 for an example.*/
 #ifdef _MSC_VER
-#    define G3D_BEGIN_PACKED_CLASS(byteAlign)  PRAGMA( pack(push, byteAlign) )
+#    define G3DLITE_BEGIN_PACKED_CLASS(byteAlign)  PRAGMA( pack(push, byteAlign) )
 #else
-#    define G3D_BEGIN_PACKED_CLASS(byteAlign)
+#    define G3DLITE_BEGIN_PACKED_CLASS(byteAlign)
 #endif
 
 /** @def G3D_END_PACKED_CLASS(byteAlign)
@@ -336,6 +331,24 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw) {\
 #    define G3D_END_PACKED_CLASS(byteAlign)  ;
 #endif
 
+
+// Bring in shared_ptr and weak_ptr
+#if (defined(__GNUC__) && defined(__APPLE__)) || defined(__linux__)
+#   include <tr1/memory>
+    using std::tr1::shared_ptr;
+    using std::tr1::weak_ptr;
+    using std::tr1::dynamic_pointer_cast;
+    using std::tr1::static_pointer_cast;
+    using std::tr1::enable_shared_from_this;
+#else
+#   include <memory>
+    using std::shared_ptr;
+    using std::weak_ptr;
+    using std::dynamic_pointer_cast;
+    using std::static_pointer_cast;
+    using std::enable_shared_from_this;
+#endif
+#define G3DLITE_USE_SHARED_PTR
 
 // Header guard
 #endif

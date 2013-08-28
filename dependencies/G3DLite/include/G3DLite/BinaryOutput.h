@@ -10,8 +10,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_BINARYOUTPUT_H
-#define G3D_BINARYOUTPUT_H
+#ifndef G3DLITE_BINARYOUTPUT_H
+#define G3DLITE_BINARYOUTPUT_H
 
 #include "G3DLite/platform.h"
 #include <assert.h>

@@ -194,6 +194,10 @@ void AbstractMVREngine::setupInputDevices()
 	}
 }
 
+void AbstractMVREngine::initializeContextSpecificVars(int threadId, WindowRef window)
+{
+}
+
 void AbstractMVREngine::setupRenderThreads()
 {
 	_renderThreads.clear();
@@ -207,7 +211,7 @@ void AbstractMVREngine::setupRenderThreads()
 	_swapBarrier = boost::shared_ptr<boost::barrier>(new boost::barrier(RenderThread::numRenderingThreads));
 
 	for(int i=0; i < _windows.size(); i++) {
-		RenderThreadRef thread = new RenderThread(_windows[i], _app, _swapBarrier.get(), &_startRenderingMutex, &_renderingCompleteMutex, &_startRenderingCond, &_renderingCompleteCond);
+		RenderThreadRef thread = new RenderThread(_windows[i], this, _app, _swapBarrier.get(), &_startRenderingMutex, &_renderingCompleteMutex, &_startRenderingCond, &_renderingCompleteCond);
 		_renderThreads.append(thread);
 	}
 }

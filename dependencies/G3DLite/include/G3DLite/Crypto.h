@@ -8,8 +8,8 @@
   @edited  2006-04-06
  */
 
-#ifndef G3D_CRYPTO_H
-#define G3D_CRYPTO_H
+#ifndef G3DLITE_CRYPTO_H
+#define G3DLITE_CRYPTO_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

@@ -6,8 +6,8 @@
  @author  2002-06-06
  @edited  2010-02-05
  */
-#ifndef G3D_FileSystem_h
-#define G3D_FileSystem_h
+#ifndef G3DLITE_FileSystem_h
+#define G3DLITE_FileSystem_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Array.h"

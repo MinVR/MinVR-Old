@@ -34,6 +34,7 @@
  */
 
 #include "MVRCore/RenderThread.H"
+#include "MVRCore/AbstractMVREngine.H"
 
 using namespace G3DLite;
 using namespace std;
@@ -46,10 +47,11 @@ int RenderThread::numThreadsReceivedRenderingComplete = 0;
 int RenderThread::numRenderingThreads = 0;
 int RenderThread::nextThreadId = 0;
 
-RenderThread::RenderThread(WindowRef window, AbstractMVRAppRef app, boost::barrier* swapBarrier, boost::mutex* startRenderingMutex,
+RenderThread::RenderThread(WindowRef window, AbstractMVREngine* engine, AbstractMVRAppRef app, boost::barrier* swapBarrier, boost::mutex* startRenderingMutex,
 	boost::mutex* renderingCompleteMutex, boost::condition_variable* startRenderingCond, boost::condition_variable* renderingCompleteCond)
 {
 	_window = window;
+	_engine = engine;
 	_app = app;
 	_swapBarrier = swapBarrier;
 	_startRenderingMutex = startRenderingMutex;
@@ -83,7 +85,8 @@ void RenderThread::render()
 		std::cout << "openGL ERROR before init context specific: "<<err<<std::endl;
 	}
 
-	_app->initializeContextSpecificVars(_threadId);
+	_engine->initializeContextSpecificVars(_threadId, _window);
+	_app->initializeContextSpecificVars(_threadId, _window);
 
 	if((err = glGetError()) != GL_NO_ERROR) {
 		std::cout << "openGL ERROR in start of render(): "<<err<<std::endl;
@@ -121,7 +124,7 @@ void RenderThread::render()
 				G3DLite::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatrices();
-				_app->drawGraphics(_threadId, _window->getCamera(v));
+				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			}  
 		}
 		
@@ -134,7 +137,7 @@ void RenderThread::render()
 				G3DLite::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForLeftEye();
-				_app->drawGraphics(_threadId, _window->getCamera(v));
+				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			}
 			// Right Eye
 			glDrawBuffer(GL_BACK_RIGHT);
@@ -143,7 +146,7 @@ void RenderThread::render()
 				G3DLite::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForRightEye();
-				_app->drawGraphics(_threadId, _window->getCamera(v));
+				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			} 
 		}
 
@@ -156,14 +159,14 @@ void RenderThread::render()
 				G3DLite::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width()/2, viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForLeftEye();
-				_app->drawGraphics(_threadId, _window->getCamera(v));
+				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			}
 			// Right Eye
 			for (int v=0; v < _window->getNumViewports(); v++) {
 				G3DLite::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0()+viewport.width()/2, viewport.y0(), viewport.width()/2, viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForRightEye();
-				_app->drawGraphics(_threadId, _window->getCamera(v));
+				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			} 
 		}
 
@@ -179,7 +182,7 @@ void RenderThread::render()
 				G3DLite::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForLeftEye();
-				_app->drawGraphics(_threadId, _window->getCamera(v));
+				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			}
 
 			//Set righteye texture
@@ -189,7 +192,7 @@ void RenderThread::render()
 				G3DLite::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForRightEye();
-				_app->drawGraphics(_threadId, _window->getCamera(v));
+				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);

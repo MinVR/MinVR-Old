@@ -6,8 +6,8 @@
  @created 2005-09-01
  @edited  2006-06-21
  */
-#ifndef G3D_ATOMICINT32_H
-#define G3D_ATOMICINT32_H
+#ifndef G3DLITE_ATOMICINT32_H
+#define G3DLITE_ATOMICINT32_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

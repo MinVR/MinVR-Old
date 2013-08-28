@@ -14,8 +14,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_Color4_h
-#define G3D_Color4_h
+#ifndef G3DLITE_Color4_h
+#define G3DLITE_Color4_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -335,7 +335,7 @@ inline Color4& Color4::operator*= (float fScalar) {
     return *this;
 }
 
-} // namespace
+
 
 template <>
 struct HashTrait<G3DLite::Color4> {
@@ -343,5 +343,7 @@ struct HashTrait<G3DLite::Color4> {
         return key.hashCode();
     }
 };
+
+} // namespace
 
 #endif

@@ -12,8 +12,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_Vector4_h
-#define G3D_Vector4_h
+#ifndef G3DLITE_Vector4_h
+#define G3DLITE_Vector4_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -698,7 +698,7 @@ inline float Vector4::squaredLength() const {
     return x * x + y * y + z * z + w * w;
 }
 
-}
+
 
 template <> struct HashTrait<G3DLite::Vector4> {
     static size_t hashCode(const G3DLite::Vector4& key) { return key.hashCode(); }
@@ -708,6 +708,8 @@ template <> struct HashTrait<G3DLite::Vector4> {
 template<> struct PositionTrait<class G3DLite::Vector4> {
     static void getPosition(const G3DLite::Vector4& v, G3DLite::Vector3& p) { p = v.xyz(); }
 };
+
+} // namespace G3DLite
 
 inline G3DLite::Vector4 operator* (float s, const G3DLite::Vector4& v) {
     return v * s;

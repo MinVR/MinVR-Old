@@ -9,8 +9,8 @@
  Copyright 2000-2009, Morgan McGuire.
  All rights reserved.
  */
-#ifndef G3D_Random_h
-#define G3D_Random_h
+#ifndef G3DLITE_Random_h
+#define G3DLITE_Random_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

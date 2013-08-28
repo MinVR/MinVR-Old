@@ -13,8 +13,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_g3dmath_h
-#define G3D_g3dmath_h
+#ifndef G3DLITE_g3dmath_h
+#define G3DLITE_g3dmath_h
 
 #ifdef _MSC_VER
 // Disable conditional expression is constant, which occurs incorrectly on inlined functions

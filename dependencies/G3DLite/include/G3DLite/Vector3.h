@@ -11,8 +11,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_Vector3_h
-#define G3D_Vector3_h
+#ifndef G3DLITE_Vector3_h
+#define G3DLITE_Vector3_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -775,8 +775,6 @@ inline bool Vector3::isUnit() const {
     return G3DLite::fuzzyEq(squaredMagnitude(), 1.0f);
 }
 
-} // namespace G3DLite
-
 
 template <>
 struct HashTrait<G3DLite::Vector3> {
@@ -793,6 +791,8 @@ template<> struct PositionTrait<class G3DLite::Vector2> {
 template<> struct PositionTrait<class G3DLite::Vector3> {
     static void getPosition(const G3DLite::Vector3& v, G3DLite::Vector3& p) { p = v; }
 };
+
+} // namespace G3DLite
 
 
 #endif

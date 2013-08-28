@@ -8,8 +8,8 @@
   Copyright 2000-2009, Morgan McGuire.
   All rights reserved.
  */
-#ifndef G3D_MemoryManager_h
-#define G3D_MemoryManager_h
+#ifndef G3DLITE_MemoryManager_h
+#define G3DLITE_MemoryManager_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/ReferenceCount.h"

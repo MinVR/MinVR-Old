@@ -38,6 +38,9 @@
 
 namespace MinVR {
 
+// forward declaration
+class AbstractMVREngine;
+
 typedef G3DLite::ReferenceCountedPointer<class RenderThread> RenderThreadRef;
 
 class RenderThread : public G3DLite::ReferenceCountedObject
@@ -49,7 +52,7 @@ public:
 		RENDERING_TERMINATE
 	};
 
-	RenderThread(WindowRef window, AbstractMVRAppRef app, boost::barrier* swapBarrier, boost::mutex* startRenderingMutex, boost::mutex* renderingCompleteMutex, boost::condition_variable* startRenderingCond, boost::condition_variable* renderingCompleteCond);
+	RenderThread(WindowRef window, AbstractMVREngine* engine, AbstractMVRAppRef app, boost::barrier* swapBarrier, boost::mutex* startRenderingMutex, boost::mutex* renderingCompleteMutex, boost::condition_variable* startRenderingCond, boost::condition_variable* renderingCompleteCond);
 	~RenderThread();
 
 	static RenderingState renderingState;
@@ -66,6 +69,7 @@ private:
 	void setShaderVariables();
 	
 	WindowRef _window;
+	AbstractMVREngine* _engine;
 	AbstractMVRAppRef _app;
 	bool	_rendering;
 	int		_numRenderingThreads;

@@ -8,10 +8,12 @@
   All rights reserved.
  */
 
-#ifndef G3D_EQUALSTRAIT_H
-#define G3D_EQUALSTRAIT_H
+#ifndef G3DLITE_EQUALSTRAIT_H
+#define G3DLITE_EQUALSTRAIT_H
 
 #include "G3DLite/platform.h"
+
+namespace G3DLite {
 
 /** Default implementation of EqualsTrait.
     @see G3DLite::Table for specialization requirements.
@@ -21,6 +23,8 @@ template<typename Key> struct EqualsTrait {
         return a == b;
     }
 };
+
+} // namespace G3DLite
 
 #endif
 

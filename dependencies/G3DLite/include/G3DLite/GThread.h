@@ -6,8 +6,8 @@
 
  */
 
-#ifndef G3D_GTHREAD_H
-#define G3D_GTHREAD_H
+#ifndef G3DLITE_GTHREAD_H
+#define G3DLITE_GTHREAD_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/ReferenceCount.h"

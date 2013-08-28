@@ -12,8 +12,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_TRIANGLE_H
-#define G3D_TRIANGLE_H
+#ifndef G3DLITE_TRIANGLE_H
+#define G3DLITE_TRIANGLE_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -146,7 +146,6 @@ public:
     bool intersect(const class Ray& ray, float& distance, float baryCoord[3]) const;
 };
 
-} // namespace G3DLite
 
 template <> struct HashTrait<G3DLite::Triangle> {
     static size_t hashCode(const G3DLite::Triangle& key) { return key.hashCode(); }
@@ -156,5 +155,7 @@ template <> struct HashTrait<G3DLite::Triangle> {
 template<> struct BoundsTrait<class G3DLite::Triangle> {
     static void getBounds(const G3DLite::Triangle& t, G3DLite::AABox& out) { t.getBounds(out); }
 };
+
+} // namespace G3DLite
 
 #endif

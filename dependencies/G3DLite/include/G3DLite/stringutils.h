@@ -7,8 +7,8 @@
  @edited  2010-03-05
  */
 
-#ifndef G3D_stringutils_h
-#define G3D_stringutils_h
+#ifndef G3DLITE_stringutils_h
+#define G3DLITE_stringutils_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Array.h"

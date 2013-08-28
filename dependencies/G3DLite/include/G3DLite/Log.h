@@ -7,8 +7,8 @@
   @edited  2005-11-04
  */
 
-#ifndef G3D_LOG_H
-#define G3D_LOG_H
+#ifndef G3DLITE_LOG_H
+#define G3DLITE_LOG_H
 
 #include <stdio.h>
 #include <string>

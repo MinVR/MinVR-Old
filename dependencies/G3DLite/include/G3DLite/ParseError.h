@@ -9,8 +9,8 @@
  Copyright 2000-2009, Morgan McGuire.
  All rights reserved.
  */
-#ifndef G3D_ParseError_h
-#define G3D_ParseError_h
+#ifndef G3DLITE_ParseError_h
+#define G3DLITE_ParseError_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

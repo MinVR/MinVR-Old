@@ -14,8 +14,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_Color3_h
-#define G3D_Color3_h
+#ifndef G3DLITE_Color3_h
+#define G3DLITE_Color3_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -419,7 +419,7 @@ inline Color3 Color3::unitCross (const Color3& rkVector) const {
 }
 
 
-} // namespace
+
 
 
 template <> struct HashTrait<G3DLite::Color3> {
@@ -428,5 +428,6 @@ template <> struct HashTrait<G3DLite::Color3> {
     }
 };
 
+} // namespace
 
 #endif

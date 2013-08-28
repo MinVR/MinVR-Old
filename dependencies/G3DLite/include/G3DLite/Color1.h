@@ -11,8 +11,8 @@
  All rights reserved.
  */
 
-#ifndef G3D_COLOR1_H
-#define G3D_COLOR1_H
+#ifndef G3DLITE_COLOR1_H
+#define G3DLITE_COLOR1_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"
@@ -131,7 +131,7 @@ public:
     }
 };
 
-}
+
 
 template <>
 struct HashTrait<G3DLite::Color1> {
@@ -140,5 +140,6 @@ struct HashTrait<G3DLite::Color1> {
     }
 };
 
+}
 
 #endif

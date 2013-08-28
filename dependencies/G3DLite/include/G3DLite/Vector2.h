@@ -12,8 +12,8 @@
   All rights reserved.
 */
 
-#ifndef G3D_VECTOR2_H
-#define G3D_VECTOR2_H
+#ifndef G3DLITE_VECTOR2_H
+#define G3DLITE_VECTOR2_H
 
 #include <string>
 
@@ -433,7 +433,6 @@ inline bool Vector2::isUnit() const {
     return squaredLength() == 1.0f;
 }
 
-} // namespace G3DLite
 
 template <>
 struct HashTrait<G3DLite::Vector2> {
@@ -442,6 +441,7 @@ struct HashTrait<G3DLite::Vector2> {
     }
 };
 
+} // namespace G3DLite
 
 // Intentionally outside namespace to avoid operator overloading confusion
 inline G3DLite::Vector2 operator*(double s, const G3DLite::Vector2& v) {

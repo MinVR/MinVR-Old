@@ -10,8 +10,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_Color3uint8_h
-#define G3D_Color3uint8_h
+#ifndef G3DLITE_Color3uint8_h
+#define G3DLITE_Color3uint8_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

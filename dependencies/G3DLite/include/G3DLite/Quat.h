@@ -9,8 +9,8 @@
   @edited  2009-05-10
  */
 
-#ifndef G3D_Quat_h
-#define G3D_Quat_h
+#ifndef G3DLITE_Quat_h
+#define G3DLITE_Quat_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/g3dmath.h"

@@ -32,6 +32,7 @@
 #include "MVRCore/Event.H"
 #include "MVRCore/ConfigVal.H"
 #include "MVRCore/AbstractCamera.H"
+#include "MVRCore/AbstractWindow.H"
 
 namespace MinVR {
 
@@ -68,10 +69,11 @@ public:
 	*  wrapped as a boost::thread_specific_ptr<> object to automatically create thread specific versions.
 	*
 	*  @param[in] A unique thread specific id. Ids will start at zero so that they can be used as indices in an array.
+	*  @param[in] The window for the calling render thread. Can be used to get the window size, position, etc.
 	*
 	*  @note Initalizing opengl variables elsewhere in the application is not threadsafe!
 	*/
-	virtual void initializeContextSpecificVars(int threadId) = 0;
+	virtual void initializeContextSpecificVars(int threadId, WindowRef window) = 0;
 
 	/*! @brief Drawing code.
 	 *  This is where all your OpenGL drawing code should go.  This routine is typically called more than
@@ -90,10 +92,11 @@ public:
 	 *
 	 *  @param[in] A unique id for the current calling renderthread
 	 *  @param[in] A reference to the camera, which can be used to set the current object to world transform.
+	 *  @param[in] The window for the calling render thread. Can be used to get the window size, position, etc.
 	 *
 	 *  @note This method is called from multiple render threads. Do not modify variables in this method, as it is not thread-safe.
 	 */
-	virtual void drawGraphics(int threadId, AbstractCameraRef camera) = 0;
+	virtual void drawGraphics(int threadId, AbstractCameraRef camera, WindowRef window) = 0;
 
 };
 

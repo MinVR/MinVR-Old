@@ -325,15 +325,15 @@ void System::init() {
 
 void getG3DVersion(std::string& s) {
     char cstr[100];
-    if ((G3D_VER % 100) != 0) {
+    if ((G3DLITE_VER % 100) != 0) {
         sprintf(cstr, "G3D %d.%02d beta %d",
-                G3D_VER / 10000,
-                (G3D_VER / 100) % 100,
-                G3D_VER % 100);
+                G3DLITE_VER / 10000,
+                (G3DLITE_VER / 100) % 100,
+                G3DLITE_VER % 100);
     } else {
         sprintf(cstr, "G3D %d.%02d",
-                G3D_VER / 10000,
-                (G3D_VER / 100) % 100);
+                G3DLITE_VER / 10000,
+                (G3DLITE_VER / 100) % 100);
     }
     s = cstr;
 }
@@ -1615,7 +1615,7 @@ void System::describeSystem(
     t.writeNewline();
     t.pushIndent();
     {
-        var(t, "Link version", G3D_VER);
+        var(t, "Link version", G3DLITE_VER);
         var(t, "Compile version", System::version());
     }
     t.popIndent();

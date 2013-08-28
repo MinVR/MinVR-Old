@@ -11,8 +11,8 @@
   @edited  2006-04-05
  */
 
-#ifndef G3D_Matrix3_h
-#define G3D_Matrix3_h
+#ifndef G3DLITE_Matrix3_h
+#define G3DLITE_Matrix3_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"

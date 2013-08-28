@@ -9,8 +9,8 @@
  @edited  2004-07-18
 */
 
-#ifndef G3D_PLANE_H
-#define G3D_PLANE_H
+#ifndef G3DLITE_PLANE_H
+#define G3DLITE_PLANE_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"

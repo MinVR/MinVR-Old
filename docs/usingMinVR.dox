@@ -18,8 +18,8 @@ To create your App class, you will need to override the following methods:
 
 @code
 virtual void doUserInputAndPreDrawComputation(const G3DLite::Array<EventRef> &events, double synchronizedTime) = 0;
-virtual void initializeContextSpecificVars(int threadId) = 0;
-virtual void drawGraphics(int threadId, AbstractCameraRef camera) = 0;
+virtual void initializeContextSpecificVars(int threadId, WindowRef window) = 0;
+virtual void drawGraphics(int threadId, AbstractCameraRef camera, WindowRef window) = 0;
 @endcode
 	
 We will start by discussing each method individually.

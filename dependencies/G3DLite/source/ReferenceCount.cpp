@@ -15,6 +15,8 @@
 
 namespace G3DLite {
 
+#ifndef G3DLITE_USE_SHARED_PTR
+
 ReferenceCountedObject::ReferenceCountedObject() : 
     ReferenceCountedObject_refCount(0), 
     ReferenceCountedObject_weakPointer(0) {
@@ -57,5 +59,7 @@ ReferenceCountedObject& ReferenceCountedObject::operator=(const ReferenceCounted
     // changes).
     return *this;
 }
+
+#endif
 
 } // G3D

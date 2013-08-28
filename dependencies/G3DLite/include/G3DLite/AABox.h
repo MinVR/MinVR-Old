@@ -12,8 +12,8 @@
   All rights reserved.
  */
 
-#ifndef G3D_AABOX_H
-#define G3D_AABOX_H
+#ifndef G3DLITE_AABOX_H
+#define G3DLITE_AABOX_H
 
 #include "G3DLite/platform.h"
 #include "G3DLite/Vector3.h"
@@ -261,12 +261,11 @@ public:
     }
 };
 
-}
 
 template <> struct HashTrait<G3DLite::AABox> {
     static size_t hashCode(const G3DLite::AABox& key) { return key.hashCode(); }
 };
 
-
+}
 
 #endif

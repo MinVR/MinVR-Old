@@ -5,8 +5,8 @@
   @edited  2009-03-25
  */
 
-#ifndef G3D_GMutex_h
-#define G3D_GMutex_h
+#ifndef G3DLITE_GMutex_h
+#define G3DLITE_GMutex_h
 
 #include "G3DLite/platform.h"
 #include "G3DLite/AtomicInt32.h"
