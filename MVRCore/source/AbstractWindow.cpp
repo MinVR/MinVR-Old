@@ -29,9 +29,7 @@
 
 namespace MinVR {
 
-using namespace G3DLite;
-
-AbstractWindow::AbstractWindow(WindowSettingsRef settings, G3DLite::Array<AbstractCameraRef> cameras)
+AbstractWindow::AbstractWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras)
 {
 	_settings = settings;
 	_viewports = settings->viewports;
@@ -42,7 +40,7 @@ AbstractWindow::~AbstractWindow()
 {
 }
 
-void AbstractWindow::updateHeadTrackingForAllViewports(CoordinateFrame headFrame)
+void AbstractWindow::updateHeadTrackingForAllViewports(glm::mat4 headFrame)
 {
 	for (int i=0;i<_cameras.size();i++) {
 		_cameras[i]->updateHeadTrackingFrame(headFrame);

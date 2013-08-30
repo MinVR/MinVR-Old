@@ -29,8 +29,9 @@
 #define DATAFILEUTILS_H
 
 #include <string>
-#include "G3DLite/G3DLite.h"
+#include <vector>
 #include "MVRCore/StringUtils.H"
+#include <boost/filesystem.hpp>
 
 namespace MinVR
 {
@@ -57,7 +58,7 @@ private:
 	std::string _findDataFile(const std::string &filename);
 	void _addFileSearchPath(const std::string &path);
 
-	G3DLite::Array<std::string> _dataFilePaths;
+	std::vector<std::string> _dataFilePaths;
 };
 
 }

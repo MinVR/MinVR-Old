@@ -44,10 +44,15 @@ Makefile to link with the SDK.
 #ifndef SPACENAVDEV_H
 #define SPACENAVDEV_H
 
-#include <G3DLite/G3DLite.h>
+#include <glm/glm.hpp>
 #include "MVRCore/AbstractInputDevice.h"
 #include "MVRCore/ConfigMap.H"
 #include "MVRCore/Event.H"
+#include <vector>
+#include <boost/log/trivial.hpp>
+
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 
 namespace MinVR {
@@ -57,9 +62,9 @@ class InputDeviceSpaceNav : public AbstractInputDevice
 public:
 
 #ifdef USE_SPACENAV
-	InputDeviceSpaceNav( const std::string name, G3DLite::Log* log, const ConfigMapRef map = NULL )
+	InputDeviceSpaceNav( const std::string name, const ConfigMapRef map = NULL )
 	{
-		log->println( "Creating new SpaceNavDevice" );
+		BOOST_LOG_TRIVIAL(info) << "Creating new SpaceNavDevice";
 		setup();
 	}
 
@@ -67,19 +72,19 @@ public:
 
 	virtual ~InputDeviceSpaceNav();
 
-	void pollForInput(G3DLite::Array<EventRef> &events);
+	void pollForInput(std::vector<EventRef> &events);
 
 private:
 	bool connected;
 
 #else
-	InputDeviceSpaceNav(const std::string name, G3DLite::Log* log, const ConfigMapRef map = NULL)
+	InputDeviceSpaceNav(const std::string name, const ConfigMapRef map = NULL)
 	{
-		alwaysAssertM(false, "Spacenav is currently unsupported. Set cmake option USE_SPACENAV to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "Spacenav is currently unsupported. Set cmake option USE_SPACENAV to ON and recompile.");
 	}
 
 	virtual ~InputDeviceSpaceNav() {}
-	void pollForInput(G3DLite::Array<EventRef> &events) {}
+	void pollForInput(std::vector<EventRef> &events) {}
 
 #endif             // USE_SPACENAV
 };

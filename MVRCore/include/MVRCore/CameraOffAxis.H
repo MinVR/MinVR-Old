@@ -28,7 +28,8 @@
 #ifndef CAMERAOFFAXIS_H
 #define CAMERAOFFAXIS_H
 
-#include "G3DLite/G3DLite.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_access.hpp>
 #include "MVRCore/AbstractCamera.H"
 
 namespace MinVR {
@@ -41,8 +42,8 @@ namespace MinVR {
 class CameraOffAxis : public AbstractCamera
 {
 public:
-	CameraOffAxis(G3DLite::Vector3 topLeft, G3DLite::Vector3 topRight, G3DLite::Vector3 botLeft, G3DLite::Vector3 botRight,
-				  G3DLite::CoordinateFrame initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist);
+	CameraOffAxis(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 botLeft, glm::vec3 botRight,
+				  glm::mat4 initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist);
 
 	virtual ~CameraOffAxis();
 
@@ -53,7 +54,7 @@ public:
 	*
 	*  @param[in] The new head position.
 	*/
-	virtual void updateHeadTrackingFrame(G3DLite::CoordinateFrame newHeadFrame);
+	virtual void updateHeadTrackingFrame(glm::mat4 newHeadFrame);
 
 	/*! @brief Sets the openGL matrices.
 	*
@@ -81,7 +82,7 @@ public:
 	*  This method sets the transformation between the current object (model) space and world (room)
 	*  coordinate system. It is used when setting the opengl modelview matrix.
 	*/
-	virtual void setObjectToWorldMatrix(G3DLite::CoordinateFrame obj2World);
+	virtual void setObjectToWorldMatrix(glm::mat4 obj2World);
 
 	/*! @brief Gets the current location of the left eye.
 	*
@@ -89,7 +90,7 @@ public:
 	*  
 	*  @return A coordinate frame representing the translation and rotation for the left eye position.
 	*/
-	G3DLite::CoordinateFrame getLeftEyeFrame();
+	glm::mat4 getLeftEyeFrame();
 
 	/*! @brief Gets the current location of the right eye.
 	*
@@ -97,34 +98,35 @@ public:
 	*  
 	*  @return A coordinate frame representing the translation and rotation for the right eye position.
 	*/
-	G3DLite::CoordinateFrame getRightEyeFrame();
+	glm::mat4 getRightEyeFrame();
 
 protected:
 
-	G3DLite::Vector3 _topLeft;
-	G3DLite::Vector3 _topRight;
-	G3DLite::Vector3 _botLeft;
-	G3DLite::Vector3 _botRight;
-	G3DLite::CoordinateFrame _headFrame;
+	glm::vec3 _topLeft;
+	glm::vec3 _topRight;
+	glm::vec3 _botLeft;
+	glm::vec3 _botRight;
+	glm::mat4 _headFrame;
 	double _iod;
 	double _nearClip;
 	double _farClip;
 	double _halfWidth;
 	double _halfHeight;
-	G3DLite::CoordinateFrame _room2tile;
+	glm::mat4 _room2tile;
 
-	G3DLite::Matrix4 _projection;
-	G3DLite::Matrix4 _projectionLeft;
-	G3DLite::Matrix4 _projectionRight;
-	G3DLite::Matrix4 _view;
-	G3DLite::Matrix4 _viewLeft;
-	G3DLite::Matrix4 _viewRight;
-	G3DLite::CoordinateFrame _object2World;
+	glm::mat4 _projection;
+	glm::mat4 _projectionLeft;
+	glm::mat4 _projectionRight;
+	glm::mat4 _view;
+	glm::mat4 _viewLeft;
+	glm::mat4 _viewRight;
+	glm::mat4 _object2World;
 
-	G3DLite::Matrix4 _currentViewMatrix;
+	glm::mat4 _currentViewMatrix;
 
-	void applyProjectionAndCameraMatrices(const G3DLite::Matrix4& projectionMat, const G3DLite::Matrix4& viewMat);
-	G3DLite::Matrix4 invertYMat();
+	void applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat);
+	glm::mat4 invertYMat();
+	glm::mat4 perspectiveProjection(double left, double right, double bottom, double top, double nearval, double farval, float upDirection = -1.0);
 
 };
 

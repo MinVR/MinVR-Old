@@ -42,11 +42,16 @@
 #define VRPNBUTTONDEVICE_H
 
 // Note: This include ordering is important, don't screw with it!
-#include <G3DLite/G3DLite.h>
+#include <glm/glm.hpp>
+#include <vector>
 #include <iostream>
 
 #include "MVRCore/AbstractInputDevice.H"
 #include "MVRCore/ConfigMap.H"
+
+#include <boost/log/trivial.hpp>
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 #ifdef USE_VRPN
 class vrpn_Button_Remote;
@@ -60,32 +65,32 @@ class InputDeviceVRPNButton : public AbstractInputDevice
 {
 public:
 #ifdef USE_VRPN
-	InputDeviceVRPNButton(const std::string &vrpnButtonDeviceName, const G3DLite::Array<std::string> &eventsToGenerate);
-	InputDeviceVRPNButton(const std::string name, G3DLite::Log* log, const ConfigMapRef map);
+	InputDeviceVRPNButton(const std::string &vrpnButtonDeviceName, const std::vector<std::string> &eventsToGenerate);
+	InputDeviceVRPNButton(const std::string name, const ConfigMapRef map);
 
 	virtual ~InputDeviceVRPNButton();
 
-	void pollForInput(G3DLite::Array<EventRef> &events);
+	void pollForInput(std::vector<EventRef> &events);
 
 	std::string getEventName(int buttonNumber);
 	void sendEvent(int buttonNumber, bool down);
 
 private:
 	vrpn_Button_Remote  *_vrpnDevice;
-	G3DLite::Array<std::string>   _eventNames;
-	G3DLite::Array<EventRef>      _pendingEvents;
+	std::vector<std::string>   _eventNames;
+	std::vector<EventRef>      _pendingEvents;
 #else
-	InputDeviceVRPNButton(const std::string &vrpnButtonDeviceName, const G3DLite::Array<std::string> &eventsToGenerate)
+	InputDeviceVRPNButton(const std::string &vrpnButtonDeviceName, const std::vector<std::string> &eventsToGenerate)
 	{
-		alwaysAssertM(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
 	}
-	InputDeviceVRPNButton(const std::string name, G3DLite::Log* log, const ConfigMapRef map)
+	InputDeviceVRPNButton(const std::string name, const ConfigMapRef map)
 	{
-		alwaysAssertM(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
 	}
 
 	virtual ~InputDeviceVRPNButton() {}
-	void pollForInput(G3DLite::Array<EventRef> &events) {}
+	void pollForInput(std::vector<EventRef> &events) {}
 #endif // USE_VRPN defined
 };
 

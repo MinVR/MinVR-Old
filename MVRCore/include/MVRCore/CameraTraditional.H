@@ -28,7 +28,7 @@
 #ifndef CAMERATRADITIONAL_H
 #define CAMERATRADITIONAL_H
 
-#include <G3DLite/G3DLite.h>
+#include <glm/glm.hpp>
 #include "MVRCore/AbstractCamera.H"
 
 namespace MinVR {
@@ -46,7 +46,7 @@ public:
 	*
 	*  @param[in] The new head position.
 	*/
-	virtual void updateHeadTrackingFrame(G3DLite::CoordinateFrame newHeadFrame) = 0;
+	virtual void updateHeadTrackingFrame(glm::mat4 newHeadFrame) = 0;
 
 	/*! @brief Sets the openGL matrices.
 	*
@@ -77,7 +77,7 @@ public:
 	*  This method sets the transformation between the current object (model) space and world (room)
 	*  coordinate system. It is used when setting the opengl modelview matrix.
 	*/
-	virtual void setObjectToWorldMatrix(G3DLite::CoordinateFrame obj2World) = 0;
+	virtual void setObjectToWorldMatrix(glm::mat4 obj2World) = 0;
 };
 
 } // end namespace

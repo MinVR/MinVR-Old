@@ -20,6 +20,7 @@ source/InputDeviceVRPNButton.cpp
 source/InputDeviceVRPNTracker.cpp
 source/RenderThread.cpp
 source/StringUtils.cpp
+source/Rect2D.cpp
 )
 
 set (HEADERFILES
@@ -42,6 +43,7 @@ include/MVRCore/InputDeviceVRPNTracker.H
 include/MVRCore/RenderThread.H
 include/MVRCore/StringUtils.H
 include/MVRCore/WindowSettings.H
+include/MVRCore/Rect2D.H
 )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -66,7 +68,7 @@ source_group("Header Files" FILES ${HEADERFILES})
 include_directories (
   .
   ${PROJECT_SOURCE_DIR}/include
-  ${CMAKE_SOURCE_DIR}/dependencies/G3DLite/include
+  ${CMAKE_SOURCE_DIR}/dependencies/glm
 )
 
 make_directory(${CMAKE_BINARY_DIR}/lib)
@@ -109,5 +111,5 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${MINVR_INSTALL_DI
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/shaders/ DESTINATION "${MINVR_INSTALL_DIR}/share/shaders")
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/vrsetup/ DESTINATION "${MINVR_INSTALL_DIR}/share/vrsetup")
 
-add_dependencies(${PROJECT_NAME} boost G3DLite)
+add_dependencies(${PROJECT_NAME} boost)
 

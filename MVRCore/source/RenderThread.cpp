@@ -36,7 +36,6 @@
 #include "MVRCore/RenderThread.H"
 #include "MVRCore/AbstractMVREngine.H"
 
-using namespace G3DLite;
 using namespace std;
 
 namespace MinVR {
@@ -121,7 +120,7 @@ void RenderThread::render()
 			glDrawBuffer(GL_BACK);
 			glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for (int v=0; v < _window->getNumViewports(); v++) {
-				G3DLite::Rect2D viewport = _window->getViewport(v);
+				MinVR::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatrices();
 				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
@@ -134,7 +133,7 @@ void RenderThread::render()
 			glDrawBuffer(GL_BACK_LEFT);
 			glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for (int v=0; v < _window->getNumViewports(); v++) {
-				G3DLite::Rect2D viewport = _window->getViewport(v);
+				MinVR::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForLeftEye();
 				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
@@ -143,7 +142,7 @@ void RenderThread::render()
 			glDrawBuffer(GL_BACK_RIGHT);
 			glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for (int v=0; v < _window->getNumViewports(); v++) {
-				G3DLite::Rect2D viewport = _window->getViewport(v);
+				MinVR::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForRightEye();
 				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
@@ -156,14 +155,14 @@ void RenderThread::render()
 			glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			// Left Eye
 			for (int v=0; v < _window->getNumViewports(); v++) {
-				G3DLite::Rect2D viewport = _window->getViewport(v);
+				MinVR::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width()/2, viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForLeftEye();
 				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
 			}
 			// Right Eye
 			for (int v=0; v < _window->getNumViewports(); v++) {
-				G3DLite::Rect2D viewport = _window->getViewport(v);
+				MinVR::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0()+viewport.width()/2, viewport.y0(), viewport.width()/2, viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForRightEye();
 				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
@@ -179,7 +178,7 @@ void RenderThread::render()
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _leftEyeTexture, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for (int v=0; v < _window->getNumViewports(); v++) {
-				G3DLite::Rect2D viewport = _window->getViewport(v);
+				MinVR::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForLeftEye();
 				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
@@ -189,7 +188,7 @@ void RenderThread::render()
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _rightEyeTexture, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for (int v=0; v < _window->getNumViewports(); v++) {
-				G3DLite::Rect2D viewport = _window->getViewport(v);
+				MinVR::Rect2D viewport = _window->getViewport(v);
 				glViewport(viewport.x0(), viewport.y0(), viewport.width(), viewport.height());
 				_window->getCamera(v)->applyProjectionAndCameraMatricesForRightEye();
 				_app->drawGraphics(_threadId, _window->getCamera(v), _window);
@@ -261,7 +260,7 @@ void RenderThread::initExtensions()
 		!glGenRenderbuffers || !glDeleteRenderbuffers || !glBindRenderbuffer || !glRenderbufferStorage ||
 		!glGetRenderbufferParameteriv || !glIsRenderbuffer)
 	{
-		alwaysAssertM(false, "Video card does NOT support GL_ARB_framebuffer_object.");
+		BOOST_ASSERT_MSG(false, "Video card does NOT support GL_ARB_framebuffer_object.");
 	}
 	
 	pglCreateProgram = (PFNGLCREATEPROGRAMPROC)wglGetProcAddress("glCreateProgram");
@@ -282,7 +281,7 @@ void RenderThread::initExtensions()
 		!glAttachShader || !glLinkProgram || !glGetShaderiv || !glGetProgramivARB || !glUseProgram ||
 		!glGetUniformLocation || !glUniform2f || !glUniform1i )
 	{
-		alwaysAssertM(false, "Video card does NOT support loading shader extensions.");
+		BOOST_ASSERT_MSG(false, "Video card does NOT support loading shader extensions.");
 	}
 
 	pglBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
@@ -290,13 +289,13 @@ void RenderThread::initExtensions()
 	pglBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
 
 	if (!glBindBuffer || !glGenBuffers || !glBufferData) {
-		alwaysAssertM(false, "Video card does NOT support vertex buffer objects.");
+		BOOST_ASSERT_MSG(false, "Video card does NOT support vertex buffer objects.");
 	}
 
 	pglActiveTexture = (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
 
 	if (!glActiveTexture) {
-		alwaysAssertM(false, "Video card does NOT support glActiveTexture");
+		BOOST_ASSERT_MSG(false, "Video card does NOT support glActiveTexture");
 	}
 
 #endif
@@ -315,8 +314,8 @@ void RenderThread::initStereoCompositeShader()
 		fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);	
 	
 		std::string vertexShaderName = DataFileUtils::findDataFile("shaders/stereo.vert");
-		debugAssertM(FileSystem::exists(vertexShaderName), "Unable to load vertex shader for stereo in RenderThread.cpp. File not found");
-		const char* vs = G3DLite::readWholeFile(vertexShaderName).c_str();
+		BOOST_ASSERT_MSG(boost::filesystem::exists(vertexShaderName), "Unable to load vertex shader for stereo in RenderThread.cpp. File not found");
+		const char* vs = readWholeFile(vertexShaderName).c_str();
 
 		std::string fragShaderName = "";
 		if (_window->getSettings()->stereoType == WindowSettings::STEREOTYPE_CHECKERBOARD) {
@@ -329,8 +328,8 @@ void RenderThread::initStereoCompositeShader()
 			fragShaderName = DataFileUtils::findDataFile("shaders/stereo-interlacedrows.frag");
 		}
 
-		debugAssertM(FileSystem::exists(fragShaderName), "Unable to load fragment shader for stereo in RenderThread.cpp. File not found");
-		const char* fs = G3DLite::readWholeFile(fragShaderName).c_str();
+		BOOST_ASSERT_MSG(boost::filesystem::exists(fragShaderName), "Unable to load fragment shader for stereo in RenderThread.cpp. File not found");
+		const char* fs = readWholeFile(fragShaderName).c_str();
 	
 		glShaderSource(vertexShader, 1, &vs,NULL);
 		glShaderSource(fragmentShader, 1, &fs,NULL);
@@ -416,7 +415,7 @@ void RenderThread::initStereoFramebufferAndTextures() {
 		}
 
 		if (e != GL_FRAMEBUFFER_COMPLETE) {
-			alwaysAssertM(false, message);
+			BOOST_ASSERT_MSG(false, message.c_str());
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -36,7 +36,6 @@
 #include  "MVRCore/InputDeviceSpaceNav.H"
 
 using namespace std;
-using namespace G3DLite;
 
 namespace MinVR {
 
@@ -55,29 +54,29 @@ InputDeviceSpaceNav::~InputDeviceSpaceNav() {
 	spnav_close();
 }
 
-void InputDeviceSpaceNav::pollForInput(Array<EventRef> &events) {
+void InputDeviceSpaceNav::pollForInput(std::vector<EventRef> &events) {
 	//Just sayin, the open source library is way nicer than the closed
 	if(connected){
 		spnav_event sev;
 		while(spnav_poll_event(&sev)) {//non-blocking API
 			if(sev.type == SPNAV_EVENT_MOTION) {
-				Vector3 trans(-sev.motion.x, sev.motion.z, sev.motion.y);
-				Vector3 rot(-sev.motion.rx, sev.motion.rz, sev.motion.ry);
+				glm::vec3 trans(-sev.motion.x, sev.motion.z, sev.motion.y);
+				glm::vec3 rot(-sev.motion.rx, sev.motion.rz, sev.motion.ry);
 				trans=trans/-400.0;//roughly normalizes
 				rot=rot/-400.0;//roughly normalizes
-				events.append(new MinVR::Event("SpaceNav_Trans", trans));
-				events.append(new MinVR::Event("SpaceNav_Rot", rot));
+				events.push_back(EventRef(new MinVR::Event("SpaceNav_Trans", trans)));
+				events.push_back(EventRef(new MinVR::Event("SpaceNav_Rot", rot)));
 			} else {	/* SPNAV_EVENT_BUTTON */
 				if(sev.button.press) {
 					if(sev.button.bnum==0) 
-						events.append(new MinVR::Event("SpaceNav_Btn1_down"));
+						events.push_back(EventRef(new MinVR::Event("SpaceNav_Btn1_down")));
 					else
-						events.append(new MinVR::Event("SpaceNav_Btn2_down"));
+						events.push_back(EventRef(new MinVR::Event("SpaceNav_Btn2_down")));
 				}else{
 					if(sev.button.bnum==0) 
-						events.append(new MinVR::Event("SpaceNav_Btn1_up"));
+						events.push_back(EventRef(new MinVR::Event("SpaceNav_Btn1_up")));
 					else
-						events.append(new MinVR::Event("SpaceNav_Btn2_up"));
+						events.push_back(EventRef(new MinVR::Event("SpaceNav_Btn2_up")));
 				}
 			}
 		}

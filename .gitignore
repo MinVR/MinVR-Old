@@ -13,6 +13,7 @@ Release
 # build files
 build/
 install/
+dependencies/G3D9
 dependencies/glfw
 dependencies/boost
 CMakeCache.txt

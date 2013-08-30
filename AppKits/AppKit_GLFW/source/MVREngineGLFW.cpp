@@ -33,7 +33,7 @@ MVREngineGLFW::MVREngineGLFW() : AbstractMVREngine()
 {
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit()) {
-		alwaysAssertM(false, "Cannot initialize glfw");
+		BOOST_ASSERT_MSG(false, "Cannot initialize glfw");
 	}
 }
 
@@ -53,7 +53,7 @@ void MVREngineGLFW::runApp(AbstractMVRAppRef app)
 		runOneFrameOfApp(app);
 
 		for (int i=0; i<_windows.size(); i++) {
-			if (glfwWindowShouldClose(((WindowGLFW*)_windows[i].pointer())->getWindowPtr())) {
+			if (glfwWindowShouldClose(((WindowGLFW*)_windows[i].get())->getWindowPtr())) {
 				quit = true;
 			}
 		}
@@ -68,15 +68,15 @@ void MVREngineGLFW::runApp(AbstractMVRAppRef app)
 	_renderThreads.clear();
 }
 
-WindowRef MVREngineGLFW::createWindow(WindowSettingsRef settings, G3DLite::Array<AbstractCameraRef> cameras)
+WindowRef MVREngineGLFW::createWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras)
 {
-	WindowRef window = new WindowGLFW(settings, cameras);
+	WindowRef window(new WindowGLFW(settings, cameras));
 	return window;
 }
 
 void MVREngineGLFW::error_callback(int error, const char* description)
 {
-	alwaysAssertM(false, description);
+	BOOST_ASSERT_MSG(false, description);
 }
 
 } // end namespace

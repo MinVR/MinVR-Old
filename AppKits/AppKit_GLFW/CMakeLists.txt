@@ -54,7 +54,7 @@ include_directories(${GLFW_INCLUDE_DIR})
 include_directories (
   .
   ${PROJECT_SOURCE_DIR}/include
-  ${CMAKE_SOURCE_DIR}/dependencies/G3DLite/include
+  ${CMAKE_SOURCE_DIR}/dependencies/glm
   ${CMAKE_SOURCE_DIR}/MVRCore/include
 )
 
@@ -99,7 +99,7 @@ endif()
 
 add_library ( ${PROJECT_NAME} ${HEADERFILES} ${SOURCEFILES} )
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "App Kits")
-add_dependencies(${PROJECT_NAME} boost glfw G3DLite MVRCore)
+add_dependencies(${PROJECT_NAME} boost glfw MVRCore)
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${MINVR_INSTALL_DIR}/include")
 

@@ -28,16 +28,18 @@
 #ifndef MINVREVENT_H
 #define MINVREVENT_H
 
-#include <G3DLite/G3DLite.h>
+#include <glm/glm.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include "MVRCore/StringUtils.H"
 
 namespace MinVR {
 
 class AbstractWindow;
-typedef G3DLite::ReferenceCountedPointer<class AbstractWindow> WindowRef;
+typedef boost::shared_ptr<class AbstractWindow> WindowRef;
 
 class Event;
-typedef G3DLite::ReferenceCountedPointer<class Event> EventRef;
+typedef boost::shared_ptr<class Event> EventRef;
 
 /// Creates a copy of the Event pointed to by e and returns a ref
 /// counted pointer to the new copy.
@@ -50,7 +52,7 @@ Events are typically sent by devices as two separate
 EVENTTYPE_STANDARD Events, the first named ButtonName_down and
 then when the button is released ButtonName_up.
 */
-class Event : public G3DLite::ReferenceCountedObject
+class Event
 {
 public:
 
@@ -60,16 +62,16 @@ public:
 		EVENTTYPE_2D = 2,              /// stores two doubles
 		EVENTTYPE_3D = 3,              /// stores three doubles
 		EVENTTYPE_4D = 4,			   /// stores four doubles
-		EVENTTYPE_COORDINATEFRAME = 5, /// stores a G3DLite::CoordinateFrame
+		EVENTTYPE_COORDINATEFRAME = 5, /// stores a CoordinateFrame
 		EVENTTYPE_MSG = 6              /// stores a std::string
 	};
 
 	Event(const std::string &name, const WindowRef window = nullptr, const int id = -1);
 	Event(const std::string &name, const double data, const WindowRef window = nullptr, const int id = -1);
-	Event(const std::string &name, const G3DLite::Vector2 &data, const WindowRef window = nullptr, const int id = -1);
-	Event(const std::string &name, const G3DLite::Vector3 &data, const WindowRef window = nullptr, const int id = -1);
-	Event(const std::string &name, const G3DLite::Vector4 &data, const WindowRef window = nullptr, const int id = -1);
-	Event(const std::string &name, const G3DLite::CoordinateFrame &data, const WindowRef window = nullptr, const int id = -1);
+	Event(const std::string &name, const glm::vec2 &data, const WindowRef window = nullptr, const int id = -1);
+	Event(const std::string &name, const glm::vec3 &data, const WindowRef window = nullptr, const int id = -1);
+	Event(const std::string &name, const glm::vec4 &data, const WindowRef window = nullptr, const int id = -1);
+	Event(const std::string &name, const glm::mat4 &data, const WindowRef window = nullptr, const int id = -1);
 	Event(const std::string &name, const std::string &data, const WindowRef window = nullptr, const int id = -1);
 	virtual ~Event();
 	
@@ -79,10 +81,10 @@ public:
 	WindowRef getWindow() const;
 
 	double get1DData();
-	G3DLite::Vector2 get2DData();
-	G3DLite::Vector3 get3DData();
-	G3DLite::Vector4 get4DData();
-	G3DLite::CoordinateFrame getCoordinateFrameData();
+	glm::vec2 get2DData();
+	glm::vec3 get3DData();
+	glm::vec4 get4DData();
+	glm::mat4 getCoordinateFrameData();
 	std::string getMsgData();
 	boost::posix_time::ptime getTimestamp();
 
@@ -93,9 +95,6 @@ public:
 
 	void rename(const std::string &newname);
 
-	void serialize(G3DLite::BinaryOutput &b) const;
-	void deserialize(G3DLite::BinaryInput &b);
-
 protected:
 	std::string _name;
 	int	_id;
@@ -103,10 +102,10 @@ protected:
 	boost::posix_time::ptime _timestamp;
 	EventType _type;
 	double _data1D;
-	G3DLite::Vector2 _data2D;
-	G3DLite::Vector3 _data3D;
-	G3DLite::Vector4 _data4D;
-	G3DLite::CoordinateFrame _dataCF;
+	glm::vec2 _data2D;
+	glm::vec3 _data3D;
+	glm::vec4 _data4D;
+	glm::mat4 _dataCF;
 	std::string _dataMsg;
 };
 

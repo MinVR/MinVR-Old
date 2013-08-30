@@ -38,13 +38,15 @@
 #define WINDOWSETTINGS_H
 
 #include <string>
-#include <G3DLite/G3DLite.h>
+#include <vector>
+#include <boost/shared_ptr.hpp>
+#include "MVRCore/Rect2D.H"
 
 namespace MinVR {
 
-typedef G3DLite::ReferenceCountedPointer<class WindowSettings> WindowSettingsRef;
+typedef boost::shared_ptr<class WindowSettings> WindowSettingsRef;
 
-class WindowSettings : public G3DLite::ReferenceCountedObject
+class WindowSettings
 {
 public:
 	enum StereoType {
@@ -77,7 +79,7 @@ public:
 	bool framed;
 	bool fullScreen;
 	bool visible;
-	G3DLite::Array<G3DLite::Rect2D> viewports;
+	std::vector<MinVR::Rect2D> viewports;
 	bool useGPUAffinity;
 	bool useDebugContext;
 };

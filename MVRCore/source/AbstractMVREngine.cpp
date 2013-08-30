@@ -27,7 +27,8 @@
 
 #include "MVRCore/AbstractMVREngine.H"
 
-using namespace G3DLite;
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 namespace MinVR {
 
@@ -39,10 +40,34 @@ AbstractMVREngine::~AbstractMVREngine()
 {
 }
 
+void AbstractMVREngine::initializeLogging()
+{
+    boost::shared_ptr<boost::log::core> core = boost::log::core::get();
+
+    // Create a backend and attach a couple of streams to it
+    boost::shared_ptr<boost::log::sinks::text_ostream_backend> backend = boost::make_shared<boost::log::sinks::text_ostream_backend>();
+    backend->add_stream(boost::shared_ptr< std::ostream >(&std::cout, boost::log::empty_deleter()));
+    backend->add_stream(boost::shared_ptr< std::ostream >(new std::ofstream("log.txt")));
+
+    // Enable auto-flushing after each log record written
+    backend->auto_flush(true);
+
+    // Wrap it into the frontend and register in the core.
+    // The backend requires synchronization in the frontend.
+    typedef boost::log::sinks::synchronous_sink<boost::log::sinks::text_ostream_backend> sink_t;
+    boost::shared_ptr< sink_t > sink(new sink_t(backend));
+    core->add_sink(sink);
+	boost::log::add_common_attributes();
+	core->set_filter
+    (
+        boost::log::trivial::severity >= boost::log::trivial::info
+    );
+}
+
 void AbstractMVREngine::init(int argc, char **argv)
 {
-	_log = new G3DLite::Log("log.txt");
-	_configMap = new ConfigMap(argc, argv, _log, false);
+	initializeLogging();
+	_configMap.reset(new ConfigMap(argc, argv, false));
 	ConfigValMap::map = _configMap;
 	
 	_syncTimeStart = boost::posix_time::microsec_clock::local_time();
@@ -50,11 +75,10 @@ void AbstractMVREngine::init(int argc, char **argv)
 	setupInputDevices();
 }
 
-void AbstractMVREngine::init(ConfigMapRef configMap, G3DLite::Log* log)
+void AbstractMVREngine::init(ConfigMapRef configMap)
 {
 	_configMap = configMap;
 	ConfigValMap::map = _configMap;
-	_log = log;
 
 	_syncTimeStart = boost::posix_time::microsec_clock::local_time();
 	setupWindowsAndViewports();
@@ -63,7 +87,7 @@ void AbstractMVREngine::init(ConfigMapRef configMap, G3DLite::Log* log)
 
 void AbstractMVREngine::setupWindowsAndViewports()
 {
-	G3DLite::CoordinateFrame initialHeadFrame = _configMap->get("InitialHeadFrame", CoordinateFrame());
+	glm::mat4 initialHeadFrame = _configMap->get("InitialHeadFrame", glm::mat4(1.0));
 	
 	// InterOcularDistance defaults to 2.5 inches (0.2083 ft). This assumes your coordinate system is in feet.
 	float interOcularDistance = _configMap->get("InterOcularDistance", 0.2083);
@@ -76,7 +100,7 @@ void AbstractMVREngine::setupWindowsAndViewports()
 	for (int w=0;w<nWindows;w++) {
 		std::string winStr = "Window" + intToString(w+1) + "_";
 
-		WindowSettingsRef wSettings = new WindowSettings();
+		WindowSettingsRef wSettings(new WindowSettings());
 		wSettings->width        = _configMap->get(winStr + "Width", wSettings->width);
 		wSettings->height       = _configMap->get(winStr + "Height", wSettings->height);
 		wSettings->xPos         = _configMap->get(winStr + "X", wSettings->xPos);
@@ -116,7 +140,9 @@ void AbstractMVREngine::setupWindowsAndViewports()
 			wSettings->stereoType = WindowSettings::STEREOTYPE_SIDEBYSIDE;
 		}
 		else {
-			alwaysAssertM(false, "Fatal error: Unrecognized value for " + winStr + "StereoType: " + stereoStr);
+			std::stringstream ss;
+			ss << "Fatal error: Unrecognized value for " + winStr + "StereoType: " + stereoStr;
+			BOOST_ASSERT_MSG(false, ss.str().c_str());
 		}
 
 
@@ -127,7 +153,7 @@ void AbstractMVREngine::setupWindowsAndViewports()
 		// of the cave and render using one thread rather than using a separate window and 
 		// rendering thread for each wall.
 		int nViewports = _configMap->get(winStr + "NumViewports", 1);
-		G3DLite::Array<AbstractCameraRef> cameras;
+		std::vector<AbstractCameraRef> cameras;
 		for (int v=0;v<nViewports;v++) {
 			std::string viewportStr = winStr + "Viewport" + intToString(v+1) + "_";
 			
@@ -135,30 +161,32 @@ void AbstractMVREngine::setupWindowsAndViewports()
 			int height   = _configMap->get(viewportStr + "Height", wSettings->height);
 			int x        = _configMap->get(viewportStr + "X", 0.0);
 			int y        = _configMap->get(viewportStr + "Y", 0.0);
-			wSettings->viewports.append(G3DLite::Rect2D::xywh(x,y,width,height));
+			wSettings->viewports.push_back(MinVR::Rect2D::xywh(x,y,width,height));
 
 			std::string cameraStr = _configMap->get(viewportStr + "CameraType", "OffAxis");
 			if (cameraStr == "OffAxis") {
-				Vector3 topLeft  = _configMap->get(viewportStr + "TopLeft", Vector3(-1, 1, 0));
-				Vector3 topRight = _configMap->get(viewportStr + "TopRight", Vector3(1, 1, 0));
-				Vector3 botLeft  = _configMap->get(viewportStr + "BotLeft", Vector3(-1, -1, 0));
-				Vector3 botRight = _configMap->get(viewportStr + "BotRight", Vector3(1, -1, 0));
+				glm::vec3 topLeft  = _configMap->get(viewportStr + "TopLeft", glm::vec3(-1.0, 1.0, 0.0));
+				glm::vec3 topRight = _configMap->get(viewportStr + "TopRight", glm::vec3(1.0, 1.0, 0.0));
+				glm::vec3 botLeft  = _configMap->get(viewportStr + "BotLeft", glm::vec3(-1.0, -1.0, 0.0));
+				glm::vec3 botRight = _configMap->get(viewportStr + "BotRight", glm::vec3(1.0, -1.0, 0.0));
 				float nearClip = _configMap->get(viewportStr + "NearClip", 0.01);
 				float farClip  = _configMap->get(viewportStr + "FarClip", 1000.0);
-				AbstractCameraRef cam = new CameraOffAxis(topLeft, topRight, botLeft, botRight, initialHeadFrame, interOcularDistance, nearClip, farClip);
-				cameras.append(cam);
+				AbstractCameraRef cam(new CameraOffAxis(topLeft, topRight, botLeft, botRight, initialHeadFrame, interOcularDistance, nearClip, farClip));
+				cameras.push_back(cam);
 			}
 			else if (cameraStr == "Traditional") {
 				// TODO: Implement this for use with systems like desktop haptics.
-				alwaysAssertM(false, "Traditional camera not yet implemented");
+				BOOST_ASSERT_MSG(false, "Traditional camera not yet implemented");
 			}
 			else {
-				alwaysAssertM(false, "Fatal error: Unrecognized value for " + viewportStr + "CameraType: " + cameraStr);
+				std::stringstream ss;
+				ss << "Fatal error: Unrecognized value for " << viewportStr << "CameraType: " << cameraStr;
+				BOOST_ASSERT_MSG(false, ss.str().c_str());
 			}
 		}
 
 		WindowRef window = createWindow(wSettings, cameras);
-		_windows.append(window);
+		_windows.push_back(window);
 	}
 
 	for (int i=0;i<_windows.size();i++) {
@@ -168,28 +196,30 @@ void AbstractMVREngine::setupWindowsAndViewports()
 
 void AbstractMVREngine::setupInputDevices()
 {
-	Array<std::string> devnames = splitStringIntoArray(_configMap->get( "InputDevices", ""));
+	std::vector<std::string> devnames = splitStringIntoArray(_configMap->get( "InputDevices", ""));
 
 	for (int i=0;i<devnames.size();i++) {
 		std::string type = _configMap->get(devnames[i] + "_Type", "");
 
 		if (type == "InputDeviceVRPNAnalog") {
-			_inputDevices.append(new InputDeviceVRPNAnalog(devnames[i], _log, _configMap));
+			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNAnalog(devnames[i], _configMap)));
 		}
 		else if (type == "InputDeviceVRPNButton") {
-			_inputDevices.append(new InputDeviceVRPNButton(devnames[i], _log, _configMap));
+			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNButton(devnames[i], _configMap)));
 		}
 		else if (type == "InputDeviceVRPNTracker") {
-			_inputDevices.append(new InputDeviceVRPNTracker(devnames[i], _log, _configMap));
+			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNTracker(devnames[i], _configMap)));
 		}
 		else if (type == "InputDeviceTUIOClient") { 
-			_inputDevices.append(new InputDeviceTUIOClient(devnames[i], _log, _configMap));
+			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceTUIOClient(devnames[i], _configMap)));
 		}
 		else if (type == "InputDeviceSpaceNav") {
-			_inputDevices.append(new InputDeviceSpaceNav(devnames[i], _log, _configMap));
+			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceSpaceNav(devnames[i], _configMap)));
 		}
 		else {
-			alwaysAssertM(false, "Fatal error: Unrecognized input device type" + type);
+			std::stringstream ss;
+			ss << "Fatal error: Unrecognized input device type" << type;
+			BOOST_ASSERT_MSG(false, ss.str().c_str());
 		}
 	}
 }
@@ -211,8 +241,8 @@ void AbstractMVREngine::setupRenderThreads()
 	_swapBarrier = boost::shared_ptr<boost::barrier>(new boost::barrier(RenderThread::numRenderingThreads));
 
 	for(int i=0; i < _windows.size(); i++) {
-		RenderThreadRef thread = new RenderThread(_windows[i], this, _app, _swapBarrier.get(), &_startRenderingMutex, &_renderingCompleteMutex, &_startRenderingCond, &_renderingCompleteCond);
-		_renderThreads.append(thread);
+		RenderThreadRef thread(new RenderThread(_windows[i], this, _app, _swapBarrier.get(), &_startRenderingMutex, &_renderingCompleteMutex, &_startRenderingCond, &_renderingCompleteCond));
+		_renderThreads.push_back(thread);
 	}
 }
 
@@ -275,7 +305,7 @@ void AbstractMVREngine::pollUserInput()
 	for (int i=0;i<_inputDevices.size();i++) { 
 		_inputDevices[i]->pollForInput(_events);
 	}
-	_events.sort();
+	std::sort(_events.begin(), _events.end());
 }
 
 void AbstractMVREngine::updateProjectionForHeadTracking() 

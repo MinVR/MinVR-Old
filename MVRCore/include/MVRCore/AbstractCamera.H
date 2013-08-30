@@ -28,13 +28,14 @@
 #ifndef ABSTRACTCAMERA_H
 #define ABSTRACTCAMERA_H
 
-#include <G3DLite/G3DLite.h>
+#include <boost/shared_ptr.hpp>
+#include <glm/glm.hpp>
 
 namespace MinVR {
 
-typedef G3DLite::ReferenceCountedPointer<class AbstractCamera> AbstractCameraRef;
+typedef boost::shared_ptr<class AbstractCamera> AbstractCameraRef;
 
-class AbstractCamera : public G3DLite::ReferenceCountedObject
+class AbstractCamera
 {
 public:
 	AbstractCamera() {}
@@ -49,7 +50,7 @@ public:
 	*
 	*  @remarks This should be implemented by any derived classes.
 	*/
-	virtual void updateHeadTrackingFrame(G3DLite::CoordinateFrame newHeadFrame) = 0;
+	virtual void updateHeadTrackingFrame(glm::mat4 newHeadFrame) = 0;
 
 	/*! @brief Sets the openGL matrices.
 	*
@@ -88,7 +89,7 @@ public:
 	*
 	*  @remarks This should be implemented by any derived classes.
 	*/
-	virtual void setObjectToWorldMatrix(G3DLite::CoordinateFrame obj2World) = 0;
+	virtual void setObjectToWorldMatrix(glm::mat4 obj2World) = 0;
 };
 
 } // end namespace

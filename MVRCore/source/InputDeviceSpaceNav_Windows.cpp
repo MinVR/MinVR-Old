@@ -39,8 +39,6 @@ using namespace ATL;
 
 #include "MVRCore/InputDeviceSpaceNav.h"
 
-using namespace G3DLite;
-
 #import "progid:TDxInput.Device.1" no_namespace
 
 CComPtr<ISensor> g3DSensor;
@@ -97,7 +95,7 @@ void InputDeviceSpaceNav::setup()
 }
 
 
-void InputDeviceSpaceNav::pollForInput(Array<EventRef> &events)
+void InputDeviceSpaceNav::pollForInput(std::vector<EventRef> &events)
 {
 	if(PeekMessage(&Message, 0, SN_MESS, SN_MESS, PM_REMOVE)){
 		DispatchMessage(&Message);
@@ -110,20 +108,20 @@ void InputDeviceSpaceNav::pollForInput(Array<EventRef> &events)
 					//calibrating the same as mac, windows results are (-1, 1) for rot
 					// and (-80, 80) for trans, mac are not so simple, also mac have some axis reversed, possibly
 					// settings stuff?
-					Vector3 trans(pTranslation->X / 80.0, pTranslation->Z / 80.0, -pTranslation->Y / 80.0);
-					Vector3 rot(pRotation->X, pRotation->Z, -pRotation->Y);
+					glm::vec3 trans(pTranslation->X / 80.0, pTranslation->Z / 80.0, -pTranslation->Y / 80.0);
+					glm::vec3 rot(pRotation->X, pRotation->Z, -pRotation->Y);
 
-					events.append(new Event("SpaceNav_Trans", trans));
-					events.append(new Event("SpaceNav_Rot", rot));
+					events.push_back(EventRef(new Event("SpaceNav_Trans", trans)));
+					events.push_back(EventRef(new Event("SpaceNav_Rot", rot)));
 					//cout << trans << " " << rot << endl;
 				}
 				else {
-					Vector3 trans = Vector3::zero();
-					Vector3 rot = Vector3::zero();
+					glm::vec3 trans(0.0);
+					glm::vec3 rot(0.0);
 
 
-					events.append(new Event("SpaceNav_Trans", trans));
-					events.append(new Event("SpaceNav_Rot", rot));
+					events.push_back(EventRef(new Event("SpaceNav_Trans", trans)));
+					events.push_back(EventRef(new Event("SpaceNav_Rot", rot)));
 				}
 
 			}

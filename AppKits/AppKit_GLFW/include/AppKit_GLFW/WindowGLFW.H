@@ -40,20 +40,20 @@
 
 #include "MVRCore/AbstractWindow.H"
 #include "MVRCore/Event.H"
-#include "G3DLite/G3DLite.h"
 #include <map>
 #include <boost/algorithm/string.hpp>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace MinVR {
 
 class WindowGLFW : public AbstractWindow
 {
 public:
-	WindowGLFW(WindowSettingsRef settings, G3DLite::Array<AbstractCameraRef> cameras);
+	WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras);
 	~WindowGLFW();
 
-	void pollForInput(G3DLite::Array<EventRef> &events);
+	void pollForInput(std::vector<EventRef> &events);
 	void swapBuffers();
 	void makeContextCurrent();
 	void releaseContext();
@@ -85,7 +85,7 @@ public:
 
 	/** Gets the most recently updated cursor position in this window
 	*/
-	G3DLite::Vector2 getCursorPosition();
+	glm::vec2 getCursorPosition();
 
 	/** This uglyness is caused because glfw is a C library so its callback functions for
 		key presses, size changes, etc. must be static or regular functions. Unfortunately,
@@ -109,8 +109,8 @@ private:
 	int _height;
 	int _xPos;
 	int _yPos;
-	G3DLite::Array<EventRef> _currentEvents;
-	G3DLite::Vector2 _cursorPosition;
+	std::vector<EventRef> _currentEvents;
+	glm::vec2 _cursorPosition;
 
 	void initGLEW();
 

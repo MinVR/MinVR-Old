@@ -30,11 +30,16 @@
 #define VRPNANALOGDEVICE_H
 
 // Note: This include ordering is important, don't screw with it!
-#include <G3DLite/G3DLite.h>
+#include <glm/glm.hpp>
+#include <vector>
 #include <iostream>
 
 #include "MVRCore/AbstractInputDevice.H"
 #include "MVRCore/ConfigMap.H"
+
+#include <boost/log/trivial.hpp>
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 #ifdef USE_VRPN
 class vrpn_Analog_Remote;
@@ -49,33 +54,33 @@ class InputDeviceVRPNAnalog : public AbstractInputDevice
 public:
 
 #ifdef USE_VRPN
-	InputDeviceVRPNAnalog(const std::string &vrpnAnalogDeviceName, const G3DLite::Array<std::string> &eventsToGenerate);
-	InputDeviceVRPNAnalog(const std::string name, G3DLite::Log* log, const ConfigMapRef map);
+	InputDeviceVRPNAnalog(const std::string &vrpnAnalogDeviceName, const std::vector<std::string> &eventsToGenerate);
+	InputDeviceVRPNAnalog(const std::string name, const ConfigMapRef map);
 
 	virtual ~InputDeviceVRPNAnalog();
 
-	void        pollForInput(G3DLite::Array<EventRef> &events);
+	void        pollForInput(std::vector<EventRef> &events);
 	void        sendEventIfChanged(int channelNumber, double data);
 	std::string getEventName(int channelNumber);
 	int         numChannels() { return _eventNames.size(); }
 
 private:
 	vrpn_Analog_Remote  *_vrpnDevice;
-	G3DLite::Array<std::string>   _eventNames;
-	G3DLite::Array<double>        _channelValues;
-	G3DLite::Array<EventRef>      _pendingEvents;
+	std::vector<std::string>   _eventNames;
+	std::vector<double>        _channelValues;
+	std::vector<EventRef>      _pendingEvents;
 #else
-	InputDeviceVRPNAnalog(const std::string &vrpnAnalogDeviceName, const G3DLite::Array<std::string> &eventsToGenerate)
+	InputDeviceVRPNAnalog(const std::string &vrpnAnalogDeviceName, const std::vector<std::string> &eventsToGenerate)
 	{
-		alwaysAssertM(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
 	}
-	InputDeviceVRPNAnalog(const std::string name, G3DLite::Log* log, const ConfigMapRef map)
+	InputDeviceVRPNAnalog(const std::string name, const ConfigMapRef map)
 	{
-		alwaysAssertM(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
 	}
 
 	virtual ~InputDeviceVRPNAnalog() {};
-	void pollForInput(G3DLite::Array<EventRef> &events) {};
+	void pollForInput(std::vector<EventRef> &events) {};
 #endif
 };
 

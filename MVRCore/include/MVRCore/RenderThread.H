@@ -32,8 +32,16 @@
 #include "MVRCore/AbstractWindow.H"
 #include "MVRCore/DataFileUtils.H"
 #include <boost/thread.hpp>
+#include <boost/shared_ptr.hpp>
+#include <vector>
+#include <boost/filesystem.hpp>
+#include "MVRCore/StringUtils.H"
+
+#ifdef WIN32
+#define NOMINMAX
+#include <windows.h>
+#endif
 #include <GL/gl.h>
-#include <GL/GLU.h>
 #include "GL/glext.h"
 
 namespace MinVR {
@@ -41,9 +49,9 @@ namespace MinVR {
 // forward declaration
 class AbstractMVREngine;
 
-typedef G3DLite::ReferenceCountedPointer<class RenderThread> RenderThreadRef;
+typedef boost::shared_ptr<class RenderThread> RenderThreadRef;
 
-class RenderThread : public G3DLite::ReferenceCountedObject
+class RenderThread
 {
 public:
 	enum RenderingState {

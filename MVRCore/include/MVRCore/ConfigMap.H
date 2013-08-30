@@ -28,10 +28,17 @@
 #ifndef CONFIGMAP_H
 #define CONFIGMAP_H
 
-#include <G3DLite/G3DLite.h>
 #include <sstream>
 #include "MVRCore/StringUtils.H"
 #include "MVRCore/DataFileUtils.H"
+#include <boost/shared_ptr.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <unordered_map>
+
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 namespace MinVR {
 
@@ -111,24 +118,22 @@ Vector3 v = myMap->get("MyVector", Vector3::zero());
 /// std::strings.  The ConfigVal function is used to access values and
 /// reinterpret them as different types.  The key/value pairs can be
 /// read in from a file(s), or set manually with the set function.
-typedef G3DLite::ReferenceCountedPointer<class ConfigMap> ConfigMapRef;
-class ConfigMap : public G3DLite::ReferenceCountedObject
+typedef boost::shared_ptr<class ConfigMap> ConfigMapRef;
+class ConfigMap
 {
 public:
 	/// Creates an empty map
-	ConfigMap(G3DLite::Log *log) {
-		_log = log;
+	ConfigMap() {
 	}
 
 	/// Creates a map by reading in the config file
-	ConfigMap(const std::string &filename, G3DLite::Log *log) {
-		_log = log;
+	ConfigMap(const std::string &filename) {
 		readFile(filename);
 	}
 
 	/// Create a map by reading in arguments that specify files to load
 	/// and/or individual mappings
-	ConfigMap(int argc, char **argv, G3DLite::Log *log, bool exitOnUnrecognizedArgument);
+	ConfigMap(int argc, char **argv, bool exitOnUnrecognizedArgument);
 
 	virtual ~ConfigMap() {}
 
@@ -157,18 +162,12 @@ public:
 				return val;
 			}
 			else {
-				if (_log) {
-					_log->printf("ConfigMap Error: cannot remap '%s'", valString.c_str());
-				}
-				printf("ConfigMap Error: cannot remap '%s'", valString.c_str());
+				BOOST_LOG_TRIVIAL(error) << "ConfigMap Error: cannot remap " << valString;
 				return defaultVal;
 			}
 		}
 		else {
-			if (_log) {
-				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
-			}
-			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
+			BOOST_LOG_TRIVIAL(error) << "ConfigMap Error: cannot find " << keyString;
 			return defaultVal;
 		}
 	}
@@ -177,10 +176,7 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			if (_log) {
-				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
-			}
-			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
+			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -189,10 +185,7 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			if (_log) {
-				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
-			}
-			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString);
+			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -201,10 +194,7 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			if (_log) {
-				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
-			}
-			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
+			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -213,10 +203,7 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			if (_log) {
-				_log->printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
-			}
-			printf("ConfigMap Warning: no mapping for '%s'.\n", keyString.c_str());
+			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -227,8 +214,7 @@ public:
 	void         debugPrint();
 
 private:
-	G3DLite::Table<std::string, std::string> _map;
-	G3DLite::Log* _log;
+	std::unordered_map<std::string, std::string> _map;
 };
 
 

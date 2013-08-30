@@ -36,9 +36,18 @@ based on tracker data from VRPN.
 #define VRPNTRACKERDEVICE_H
 
 // Note: This include ordering is important, don't screw with it!
-#include <G3DLite/G3DLite.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtx/orthonormalize.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <vector>
 #include "MVRCore/AbstractInputDevice.H"
 #include "MVRCore/ConfigMap.H"
+#include "MVRCore/StringUtils.H"
+
+#include <boost/log/trivial.hpp>
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 #ifdef USE_VRPN
 class vrpn_Tracker_Remote;
@@ -88,60 +97,60 @@ public:
 #ifdef USE_VRPN
 	InputDeviceVRPNTracker(
 		const std::string							   &vrpnTrackerDeviceName,
-		const G3DLite::Array<std::string>			   &eventsToGenerate,
+		const std::vector<std::string>				   &eventsToGenerate,
 		const double								   &trackerUnitsToRoomUnitsScale,
-		const G3DLite::CoordinateFrame				   &deviceToRoom,
-		const G3DLite::Array<G3DLite::CoordinateFrame> &propToTracker,
-		const G3DLite::Array<G3DLite::CoordinateFrame> &finalOffset,
+		const glm::mat4								   &deviceToRoom,
+		const std::vector<glm::mat4>			       &propToTracker,
+		const std::vector<glm::mat4>				   &finalOffset,
 		const bool									   &waitForNewReportInPoll,
 		const bool									   &convertLHtoRH = false,
 		const bool									   &ignoreZeroes = false);
 
-	InputDeviceVRPNTracker(const std::string name, G3DLite::Log* log, const ConfigMapRef map);
+	InputDeviceVRPNTracker(const std::string name, const ConfigMapRef map);
 
 	virtual ~InputDeviceVRPNTracker();
 
-	void processEvent(const G3DLite::CoordinateFrame &vrpnEvent, int sensorNum);
+	void processEvent(const glm::mat4 &vrpnEvent, int sensorNum);
 	std::string getEventName(int trackerNumber);
-	void pollForInput(G3DLite::Array<EventRef> &events);
+	void pollForInput(std::vector<EventRef> &events);
 	void setPrintSensor0(bool b) { _printSensor0 = b; }
 
 private:
 	vrpn_Connection        *_vrpnConnection;
 	vrpn_Tracker_Remote    *_vrpnDevice;
-	G3DLite::Array<std::string>      _eventNames;
+	std::vector<std::string>      _eventNames;
 	double                  _trackerUnitsToRoomUnitsScale;
-	G3DLite::CoordinateFrame         _deviceToRoom;
-	G3DLite::Array<G3DLite::CoordinateFrame>  _propToTracker;
-	G3DLite::Array<G3DLite::CoordinateFrame>  _finalOffset;
+	glm::mat4         _deviceToRoom;
+	std::vector<glm::mat4>  _propToTracker;
+	std::vector<glm::mat4>  _finalOffset;
 	bool                    _printSensor0;
 	bool                    _waitForNewReport;
 	bool                    _convertLHtoRH;
 	bool                    _ignoreZeroes;
 	bool                    _newReportFlag;
-	G3DLite::Array<EventRef>         _pendingEvents;
+	std::vector<EventRef>         _pendingEvents;
 #else
 	InputDeviceVRPNTracker(
 		const std::string							   &vrpnTrackerDeviceName,
-		const G3DLite::Array<std::string>			   &eventsToGenerate,
+		const std::vector<std::string>			   &eventsToGenerate,
 		const double								   &trackerUnitsToRoomUnitsScale,
-		const G3DLite::CoordinateFrame				   &deviceToRoom,
-		const G3DLite::Array<G3DLite::CoordinateFrame> &propToTracker,
-		const G3DLite::Array<G3DLite::CoordinateFrame> &finalOffset,
+		const glm::mat4				   &deviceToRoom,
+		const std::vector<glm::mat4> &propToTracker,
+		const std::vector<glm::mat4> &finalOffset,
 		const bool									   &waitForNewReportInPoll,
 		const bool									   &convertLHtoRH = false,
 		const bool									   &ignoreZeroes = false)
 	{
-		alwaysAssertM(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
 	}
 
-	InputDeviceVRPNTracker(const std::string name, G3DLite::Log* log, const ConfigMapRef map)
+	InputDeviceVRPNTracker(const std::string name, const ConfigMapRef map)
 	{
-		alwaysAssertM(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "VRPN is currently unsupported. Set cmake option USE_VRPN to ON and recompile.");
 	}
 
 	virtual ~InputDeviceVRPNTracker() {}
-	void pollForInput(G3DLite::Array<EventRef> &events) {}
+	void pollForInput(std::vector<EventRef> &events) {}
 
 #endif // USE_VRPN
 };

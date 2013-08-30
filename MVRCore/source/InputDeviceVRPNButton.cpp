@@ -37,8 +37,6 @@
 #define VRPN_CALLBACK
 #endif
 
-using namespace G3DLite;
-
 namespace MinVR {
 
 
@@ -49,30 +47,34 @@ void  VRPN_CALLBACK	buttonHandler(void *thisPtr, const vrpn_BUTTONCB info)
 
 
 
-InputDeviceVRPNButton::InputDeviceVRPNButton(const std::string &vrpnButtonDeviceName, const Array<std::string> &eventsToGenerate)
+InputDeviceVRPNButton::InputDeviceVRPNButton(const std::string &vrpnButtonDeviceName, const std::vector<std::string> &eventsToGenerate)
 {
 	_eventNames = eventsToGenerate;
 
 	_vrpnDevice = new vrpn_Button_Remote(vrpnButtonDeviceName.c_str());
 	if (!_vrpnDevice) {
-		alwaysAssertM(false, "Can't create VRPN Remote Button with name " + vrpnButtonDeviceName);
+		std::stringstream ss;
+		ss << "Can't create VRPN Remote Button with name " + vrpnButtonDeviceName;
+		BOOST_ASSERT_MSG(false, ss.str().c_str());
 	}
 
 	_vrpnDevice->register_change_handler(this, buttonHandler);
 }
 
-InputDeviceVRPNButton::InputDeviceVRPNButton(const std::string name, Log* log, const ConfigMapRef map)
+InputDeviceVRPNButton::InputDeviceVRPNButton(const std::string name, const ConfigMapRef map)
 {
 	std::string vrpnname = map->get( name + "_InputDeviceVRPNButtonName", "" );
 	std::string events   = map->get( name + "_EventsToGenerate","" );
 
-	log->println("Creating new InputDeviceVRPNButton (" + vrpnname + ")");
+	BOOST_LOG_TRIVIAL(info) << "Creating new InputDeviceVRPNButton (" + vrpnname + ")";
 
 	_eventNames = splitStringIntoArray( events );
 
 	_vrpnDevice = new vrpn_Button_Remote(vrpnname.c_str());
 	if (!_vrpnDevice) {
-		alwaysAssertM(false, "Can't create VRPN Remote Button with name " + vrpnname);
+		std::stringstream ss;
+		ss << "Can't create VRPN Remote Button with name " + vrpnname;
+		BOOST_ASSERT_MSG(false, ss.str().c_str());
 	}
 
 	_vrpnDevice->register_change_handler(this, buttonHandler);
@@ -96,18 +98,20 @@ void InputDeviceVRPNButton::sendEvent(int buttonNumber, bool down)
 {
 	std::string ename = getEventName(buttonNumber);
 	if (down) {
-		_pendingEvents.append(new Event(ename + "_down", nullptr, buttonNumber));
+		_pendingEvents.push_back(EventRef(new Event(ename + "_down", nullptr, buttonNumber)));
 	}
 	else {
-		_pendingEvents.append(new Event(ename + "_up", nullptr, buttonNumber));
+		_pendingEvents.push_back(EventRef(new Event(ename + "_up", nullptr, buttonNumber)));
 	}
 }
 
-void InputDeviceVRPNButton::pollForInput(Array<EventRef> &events)
+void InputDeviceVRPNButton::pollForInput(std::vector<EventRef> &events)
 {
 	_vrpnDevice->mainloop();
 	if (_pendingEvents.size()) {
-		events.append(_pendingEvents);
+		for(auto pending_it = _pendingEvents.begin(); pending_it != _pendingEvents.end(); ++ pending_it) {
+			events.push_back(*pending_it);
+		}
 		_pendingEvents.clear();
 	}
 }

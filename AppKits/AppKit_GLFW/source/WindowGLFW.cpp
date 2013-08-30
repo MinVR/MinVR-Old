@@ -41,7 +41,7 @@ std::map<GLFWwindow*, WindowGLFW*> WindowGLFW::initPointerToObjectMap()
 	return map;
 }
 
-WindowGLFW::WindowGLFW(WindowSettingsRef settings, G3DLite::Array<AbstractCameraRef> cameras) : AbstractWindow(settings, cameras)
+WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras) : AbstractWindow(settings, cameras)
 {
 	firstTime = true;
 
@@ -114,7 +114,7 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, G3DLite::Array<AbstractCamera
 	}
 	if (!_window) {
 		glfwTerminate();
-		alwaysAssertM(false, "Unable to create new GLFW window");
+		BOOST_ASSERT_MSG(false, "Unable to create new GLFW window");
 	}
 
 	WindowGLFW::pointerToObjectMap.insert(std::pair<GLFWwindow*, WindowGLFW*>(_window, this));
@@ -148,15 +148,17 @@ void WindowGLFW::initGLEW()
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
 	{
-		alwaysAssertM(false, "Unable to initialize GLEW");
+		BOOST_ASSERT_MSG(false, "Unable to initialize GLEW");
 	}
 	glfwMakeContextCurrent(NULL);
 	glfwDestroyWindow(tempWin);
 }
 
-void WindowGLFW::pollForInput(G3DLite::Array<EventRef> &events)
+void WindowGLFW::pollForInput(std::vector<EventRef> &events)
 {
-	events.append(_currentEvents);
+	for(auto event_it=_currentEvents.begin(); event_it!=_currentEvents.end(); ++event_it) {
+		events.push_back(*event_it);
+	}
 	_currentEvents.clear();
 	glfwPollEvents();
 }
@@ -251,7 +253,7 @@ GLFWwindow* WindowGLFW::getWindowPtr()
 
 void WindowGLFW::appendEvent(EventRef newEvent)
 {
-	_currentEvents.append(newEvent);
+	_currentEvents.push_back(newEvent);
 }
 
 void WindowGLFW::setCursorPosition(double x, double y)
@@ -260,7 +262,7 @@ void WindowGLFW::setCursorPosition(double x, double y)
 	_cursorPosition.y = y;
 }
 
-G3DLite::Vector2 WindowGLFW::getCursorPosition()
+glm::vec2 WindowGLFW::getCursorPosition()
 {
 	return _cursorPosition;
 }
@@ -276,7 +278,7 @@ void WindowGLFW::mouse_button_callback(GLFWwindow* window, int button, int actio
     name = name + "_" + getActionName(action);
 
 	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent = new Event(name, obj->getCursorPosition(), obj);
+	EventRef newEvent(new Event(name, obj->getCursorPosition(), WindowRef(obj)));
 	obj->appendEvent(newEvent);
 }
 
@@ -285,7 +287,7 @@ void WindowGLFW::cursor_position_callback(GLFWwindow* window, double x, double y
 	string name = "mouse_pointer";
     WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
 	obj->setCursorPosition(x, y);
-	EventRef newEvent = new Event(name, obj->getCursorPosition(), obj);
+	EventRef newEvent(new Event(name, obj->getCursorPosition(), WindowRef(obj)));
 	obj->appendEvent(newEvent);
 }
 
@@ -293,7 +295,7 @@ void WindowGLFW::cursor_enter_callback(GLFWwindow* window, int entered)
 {
 	string name = "mouse_pointer_" + entered ? "entered" : "left";
     WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent = new Event(name, obj);
+	EventRef newEvent(new Event(name, WindowRef(obj)));
 	obj->appendEvent(newEvent);
 }
 
@@ -301,7 +303,7 @@ void WindowGLFW::scroll_callback(GLFWwindow* window, double x, double y)
 {
 	string name = "mouse_scroll";
 	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent = new Event(name, G3DLite::Vector2(x, y), obj);
+	EventRef newEvent(new Event(name, glm::vec2(x, y), WindowRef(obj)));
 	obj->appendEvent(newEvent);
 }
 
@@ -318,7 +320,7 @@ void WindowGLFW::key_callback(GLFWwindow* window, int key, int scancode, int act
     name = name + "_" + getActionName(action);
 
 	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent = new Event(name, value, obj);
+	EventRef newEvent(new Event(name, value, WindowRef(obj)));
 	obj->appendEvent(newEvent);
 }
 

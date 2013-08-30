@@ -31,8 +31,6 @@
 #include "MVRCore/ConfigMap.H"
 #include <list>
 
-using namespace G3DLite;
-
 namespace MinVR {
 
 #ifdef USE_TUIO
@@ -47,13 +45,14 @@ InputDeviceTUIOClient::InputDeviceTUIOClient(int port, double xScale, double ySc
 	_tuioClient->connect();
 
 	if (!_tuioClient->isConnected())
-	{  std::cerr << "InputDeviceTUIOClient: Cannot connect on port " << port << "." << std::endl;
+	{  
+		std::cout << "InputDeviceTUIOClient: Cannot connect on port " << port << "." << std::endl;
 	}
 }
 
 
 
-InputDeviceTUIOClient::InputDeviceTUIOClient(const std::string name, Log* log, const ConfigMapRef map)
+InputDeviceTUIOClient::InputDeviceTUIOClient(const std::string name, const ConfigMapRef map)
 {
 	int  port = map->get( name + "_Port", TUIO_PORT );
 	double xs = map->get( name + "_XScaleFactor", 1.0 );
@@ -65,7 +64,8 @@ InputDeviceTUIOClient::InputDeviceTUIOClient(const std::string name, Log* log, c
 	_tuioClient->connect();
 
 	if (!_tuioClient->isConnected())
-	{  std::cout << "InputDeviceTUIOClient: Cannot connect on port " << port << "." << std::endl;
+	{ 
+		std::cout << "InputDeviceTUIOClient: Cannot connect on port " << port << "." << std::endl;
 	}
 }
 
@@ -77,41 +77,40 @@ InputDeviceTUIOClient::~InputDeviceTUIOClient()
 	}
 }
 
-void InputDeviceTUIOClient::pollForInput(Array<EventRef> &events)
+void InputDeviceTUIOClient::pollForInput(std::vector<EventRef> &events)
 {
 	// Send out events for TUIO "cursors" by polling the TuioClient for the current state  
 	std::list<TuioCursor*> cursorList = _tuioClient->getTuioCursors();
 	//_tuioClient->lockCursorList();
 
 	// Send "button" up events for cursors that were down last frame, but are now up.
-	Array<int> downLast = _cursorsDown.getMembers();
-	for (int i=0;i<downLast.size();i++) {
+	for ( auto downLast_it = _cursorsDown.begin(); downLast_it!= _cursorsDown.end(); ++downLast_it ) {
 		bool stillDown = false;
 		for (std::list<TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {
 			TuioCursor *tcur = (*iter);
-			if (tcur->getCursorID() == downLast[i]) {
+			if (tcur->getCursorID() == *downLast_it) {
 				stillDown = true;
 			}
 		}
 		if (!stillDown) {
-			events.append(new Event("TUIO_Cursor" + intToString(downLast[i]) + "_up", nullptr, downLast[i]));
-			_cursorsDown.remove(downLast[i]);
+			events.push_back(EventRef(new Event("TUIO_Cursor" + intToString(*downLast_it) + "_up", nullptr, *downLast_it)));
+			_cursorsDown.erase (downLast_it);
 		}
 	}
 
 	// Send "button" down events for cursors that are new and updated positions for all cursors
 	for (std::list<TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {
 		TuioCursor *tcur = (*iter);
-		Vector2 pos = Vector2(_xScale*tcur->getX(), _yScale*tcur->getY());
+		glm::vec2 pos = glm::vec2(_xScale*tcur->getX(), _yScale*tcur->getY());
 
-		if (!_cursorsDown.contains(tcur->getCursorID())) {
-			events.append(new Event("TUIO_Cursor" + intToString(tcur->getCursorID()) + "_down", pos, nullptr, tcur->getCursorID()));
+		if (_cursorsDown.find(tcur->getCursorID()) != _cursorsDown.end()) {
+			events.push_back(EventRef(new Event("TUIO_Cursor" + intToString(tcur->getCursorID()) + "_down", pos, nullptr, tcur->getCursorID())));
 			_cursorsDown.insert(tcur->getCursorID());
 		}
 
 		if (tcur->getMotionSpeed() > 0.0) {
-			Vector4 data = Vector4(pos, tcur->getMotionSpeed(), tcur->getMotionAccel());
-			events.append(new Event("TUIO_CursorMove" + intToString(tcur->getCursorID()), data, nullptr, tcur->getCursorID()));
+			glm::vec4 data = glm::vec4(pos, tcur->getMotionSpeed(), tcur->getMotionAccel());
+			events.push_back(EventRef(new Event("TUIO_CursorMove" + intToString(tcur->getCursorID()), data, nullptr, tcur->getCursorID())));
 		}
 
 		// Can also access several other properties of cursors (speed, acceleration, path followed, etc.)
@@ -141,7 +140,7 @@ void InputDeviceTUIOClient::pollForInput(Array<EventRef> &events)
 		float angle = tuioObject->getAngle()/M_PI*180.0;
 
 		std::string name = "TUIO_Obj" + intToString(id);
-		events.append(new Event(name, Vector3(xpos, ypos, angle)));
+		events.push_back(EventRef(new Event(name, glm::vec3(xpos, ypos, angle))));
 	}
 	_tuioClient->unlockObjectList();
 }

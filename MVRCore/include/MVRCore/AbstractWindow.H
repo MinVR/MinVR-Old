@@ -28,22 +28,25 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <G3DLite/G3DLite.h>
+#include <boost/shared_ptr.hpp>
+#include <glm/glm.hpp>
 #include "MVRCore/AbstractCamera.H"
 #include "MVRCore/Event.H"
 #include "MVRCore/WindowSettings.H"
+#include "MVRCore/Rect2D.H"
+#include <vector>
 
 namespace MinVR {
 
-typedef G3DLite::ReferenceCountedPointer<class AbstractWindow> WindowRef;
+typedef boost::shared_ptr<class AbstractWindow> WindowRef;
 
 /*! @brief Base class for windows
 */
-class AbstractWindow : public G3DLite::ReferenceCountedObject
+class AbstractWindow
 {
 public:
 	
-	AbstractWindow(WindowSettingsRef settings, G3DLite::Array<AbstractCameraRef> cameras);
+	AbstractWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras);
 	virtual ~AbstractWindow();
 
 	/*! @brief Collect window events
@@ -51,7 +54,7 @@ public:
 	 *  This method should be implemented for each derived class.
 	 *  It collects window events and adds them to the events array.
 	 */
-	virtual void pollForInput(G3DLite::Array<EventRef> &events) = 0;
+	virtual void pollForInput(std::vector<EventRef> &events) = 0;
 	
 	/*! @brief Swaps window buffers
 	 *
@@ -84,11 +87,11 @@ public:
 	 *
 	 *  @param[in] The new head position.
 	 */
-	virtual void updateHeadTrackingForAllViewports(G3DLite::CoordinateFrame headFrame);
+	virtual void updateHeadTrackingForAllViewports(glm::mat4 headFrame);
 
 	WindowSettings::StereoType getStereoType() { return _settings->stereoType; }
 	int getNumViewports() { return _viewports.size(); }
-	G3DLite::Rect2D getViewport(int n) { return _viewports[n]; }
+	MinVR::Rect2D getViewport(int n) { return _viewports[n]; }
 	AbstractCameraRef getCamera(int n) { return _cameras[n]; }
 	WindowSettingsRef getSettings() { return _settings; }
 
@@ -100,8 +103,8 @@ public:
 protected:
 
 	WindowSettingsRef _settings;
-	G3DLite::Array<G3DLite::Rect2D>    _viewports;
-	G3DLite::Array<AbstractCameraRef> _cameras;
+	std::vector<MinVR::Rect2D>    _viewports;
+	std::vector<AbstractCameraRef> _cameras;
 };
 
 

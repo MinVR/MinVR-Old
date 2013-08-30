@@ -26,17 +26,18 @@
 //========================================================================
 
 #include "MVRCore/CameraOffAxis.H"
-#include "G3DLite/G3DLite.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-using namespace G3DLite;
+#ifdef WIN32
+#define NOMINMAX
+#include <windows.h>
+#endif
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 namespace MinVR
 {
 
-CameraOffAxis::CameraOffAxis(Vector3 topLeft, Vector3 topRight, Vector3 botLeft, Vector3 botRight,
-	CoordinateFrame initialHeadFrame, double interOcularDistance, 
+CameraOffAxis::CameraOffAxis(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 botLeft, glm::vec3 botRight,
+	glm::mat4 initialHeadFrame, double interOcularDistance, 
 	double nearClipDist, double farClipDist) : AbstractCamera()
 {
 	_topLeft = topLeft;
@@ -47,35 +48,40 @@ CameraOffAxis::CameraOffAxis(Vector3 topLeft, Vector3 topRight, Vector3 botLeft,
 	_iod = interOcularDistance;
 	_nearClip = nearClipDist;
 	_farClip = farClipDist;
-	_halfWidth = (_topRight - _topLeft).length() / 2.0;
-	_halfHeight = (_topRight - _botRight).length() / 2.0;
+	_halfWidth = glm::length(_topRight - _topLeft) / 2.0;
+	_halfHeight = glm::length(_topRight - _botRight) / 2.0;
 
-	Vector3 center = (topLeft + topRight + botLeft + botRight) / 4.0;
-	Vector3 x = (topRight - topLeft).unit();
-	Vector3 y = (topLeft - botLeft).unit();
-	Vector3 z = x.cross(y).unit();
-	Matrix3 rot(x.x, y.x, z.x, x.y, y.y, z.y, x.z, y.z, z.z);
-	CoordinateFrame tile2room(rot, center);
-	_room2tile = tile2room.inverse();
+	glm::vec3 center = (topLeft + topRight + botLeft + botRight);
+	center.x = center.x / 4.0;
+	center.y = center.y / 4.0;
+	center.z = center.z / 4.0;
+	glm::vec3 x = glm::normalize(topRight - topLeft);
+	glm::vec3 y = glm::normalize(topLeft - botLeft);
+	glm::vec3 z = glm::normalize(glm::cross(x, y));
+	glm::mat4 tile2room(x.x, y.x, z.x, center.x,
+						x.y, y.y, z.y, center.y,
+						x.z, y.z, z.z, center.z,
+						0, 0, 0, 1); 
+	_room2tile = glm::inverse(tile2room);
 }
 
 CameraOffAxis::~CameraOffAxis()
 {
 }
 
-void CameraOffAxis::updateHeadTrackingFrame(CoordinateFrame newHeadFrame)
+void CameraOffAxis::updateHeadTrackingFrame(glm::mat4 newHeadFrame)
 {
 	_headFrame = newHeadFrame;
 
 	// 1. Get the center of the camera (the eye) position from the head position
-	CoordinateFrame head2Room = _headFrame;
-	CoordinateFrame leftEye2Room = getLeftEyeFrame();
-	CoordinateFrame rightEye2Room = getRightEyeFrame();
+	glm::mat4 head2Room = _headFrame;
+	glm::mat4 leftEye2Room = getLeftEyeFrame();
+	glm::mat4 rightEye2Room = getRightEyeFrame();
   
 	// 2. Setup projection matrix
-	Vector3 head = (_room2tile * head2Room).translation;
-	Vector3 left = (_room2tile * leftEye2Room).translation;
-	Vector3 right = (_room2tile * rightEye2Room).translation;
+	glm::vec3 head = glm::column((_room2tile * head2Room), 3).xyz;
+	glm::vec3 left = glm::column((_room2tile * leftEye2Room), 3).xyz;
+	glm::vec3 right = glm::column((_room2tile * rightEye2Room), 3).xyz;
 	
 
 	double lHead = (-_halfWidth - head.x);
@@ -92,35 +98,64 @@ void CameraOffAxis::updateHeadTrackingFrame(CoordinateFrame newHeadFrame)
 	double k = _nearClip / dist;
 
 	// 3. Add eye position to the projection (eye is in tile coordinates)
-	CoordinateFrame r2t = CoordinateFrame(-head) * _room2tile;
-	CoordinateFrame r2tLeft = CoordinateFrame(-left) * _room2tile;
-	CoordinateFrame r2tRight = CoordinateFrame(-right) * _room2tile;
+	glm::mat4 r2t = glm::column(glm::mat4(1.0), 3, glm::vec4(-head, 1.0)) * _room2tile;
+	glm::mat4 r2tLeft = glm::column(glm::mat4(1.0), 3, glm::vec4(-left, 1.0)) * _room2tile;
+	glm::mat4 r2tRight = glm::column(glm::mat4(1.0), 3, glm::vec4(-right, 1.0)) * _room2tile;
 
-	_projection = invertYMat() * Matrix4::perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
-	_projectionLeft = invertYMat() * Matrix4::perspectiveProjection(lLeft*k, rLeft*k, b*k, t*k, _nearClip, _farClip);
-	_projectionRight = invertYMat() * Matrix4::perspectiveProjection(lRight*k, rRight*k, b*k, t*k, _nearClip, _farClip);
-	_view = Matrix4(r2t);//.inverse();
-	_viewLeft = Matrix4(r2tLeft);//.inverse();
-	_viewRight = Matrix4(r2tRight);//.inverse();
+	_projection = invertYMat() * perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
+	_projectionLeft = invertYMat() * perspectiveProjection(lLeft*k, rLeft*k, b*k, t*k, _nearClip, _farClip);
+	_projectionRight = invertYMat() * perspectiveProjection(lRight*k, rRight*k, b*k, t*k, _nearClip, _farClip);
+	_view = r2t;//.inverse();
+	_viewLeft = r2tLeft;//.inverse();
+	_viewRight = r2tRight;//.inverse();
 }
 
-Matrix4 CameraOffAxis::invertYMat()
+glm::mat4 CameraOffAxis::invertYMat()
 {
-	static Matrix4 M(1,  0, 0, 0,
+	static glm::mat4 M(1,  0, 0, 0,
 					  0, -1, 0, 0,
 					  0,  0, 1, 0,
 					  0,  0, 0, 1);
 	return M;
 }
 
-CoordinateFrame	CameraOffAxis::getLeftEyeFrame()
+glm::mat4 CameraOffAxis::perspectiveProjection(double left, double right, double bottom, double top, double nearval, double farval, float upDirection)
 {
-	return _headFrame * CoordinateFrame(Vector3(-_iod/2.0, 0.0, 0.0));
+    double x, y, a, b, c, d;
+
+    x = (2.0*nearval) / (right-left);
+    y = (2.0*nearval) / (top-bottom);
+    a = (right+left) / (right-left);
+    b = (top+bottom) / (top-bottom);
+
+    if (farval >= std::numeric_limits<double>::max()) {
+       // Infinite view frustum
+       c = -1.0;
+       d = -2.0 * nearval;
+    } else {
+       c = -(farval+nearval) / (farval-nearval);
+       d = -(2.0*farval*nearval) / (farval-nearval);
+    }
+
+    BOOST_ASSERT_MSG(abs(upDirection) == 1.0, "upDirection must be -1 or +1");
+    y *= upDirection;
+    b *= upDirection;
+
+    return glm::mat4(
+        (float)x,  0,  (float)a,  0,
+        0,  (float)y,  (float)b,  0,
+        0,  0,  (float)c,  (float)d,
+        0,  0, -1,  0);
 }
 
-CoordinateFrame	CameraOffAxis::getRightEyeFrame()
+glm::mat4 CameraOffAxis::getLeftEyeFrame()
 {
-	return _headFrame * CoordinateFrame(Vector3( _iod/2.0, 0.0, 0.0));
+	return _headFrame * glm::column(glm::mat4(1.0), 3, glm::vec4(-_iod/2.0, 0.0, 0.0, 1.0));
+}
+
+glm::mat4 CameraOffAxis::getRightEyeFrame()
+{
+	return _headFrame * glm::column(glm::mat4(1.0), 3, glm::vec4(_iod/2.0, 0.0, 0.0, 1.0));
 }
 
 void CameraOffAxis::applyProjectionAndCameraMatrices()
@@ -138,11 +173,11 @@ void CameraOffAxis::applyProjectionAndCameraMatricesForRightEye()
 	applyProjectionAndCameraMatrices(_projectionRight, _viewRight);
 }
 
-void CameraOffAxis::setObjectToWorldMatrix(G3DLite::CoordinateFrame obj2World)
+void CameraOffAxis::setObjectToWorldMatrix(glm::mat4 obj2World)
 {
 	_object2World = obj2World;
 	glMatrixMode(GL_MODELVIEW);
-	Matrix4 modelView = _currentViewMatrix * _object2World;
+	glm::mat4 modelView = _currentViewMatrix * _object2World;
 	GLfloat matrix[16];
     for (int r = 0; r < 4; ++r) {
         for (int c = 0; c < 4; ++c) {
@@ -154,7 +189,7 @@ void CameraOffAxis::setObjectToWorldMatrix(G3DLite::CoordinateFrame obj2World)
 }
 
 
-void CameraOffAxis::applyProjectionAndCameraMatrices(const Matrix4& projectionMat, const Matrix4& viewMat)
+void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat)
 {
 	_currentViewMatrix = viewMat;
 	glMatrixMode(GL_PROJECTION);
@@ -168,7 +203,7 @@ void CameraOffAxis::applyProjectionAndCameraMatrices(const Matrix4& projectionMa
 	glLoadMatrixf(matrix);
 
 	glMatrixMode(GL_MODELVIEW);
-	Matrix4 modelView = viewMat * _object2World;
+	glm::mat4 modelView = viewMat * _object2World;
 	for (int r = 0; r < 4; ++r) {
         for (int c = 0; c < 4; ++c) {
             // Transpose

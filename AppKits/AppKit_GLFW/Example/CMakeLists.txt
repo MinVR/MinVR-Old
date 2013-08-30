@@ -27,7 +27,7 @@ include_directories (
   .
   ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/../include
-  ${CMAKE_SOURCE_DIR}/dependencies/G3DLite/include
+  ${CMAKE_SOURCE_DIR}/dependencies/glm
   ${CMAKE_SOURCE_DIR}/MVRCore/include
   ${GLFW_INCLUDE_DIR}
 )
@@ -35,7 +35,6 @@ include_directories (
 link_directories (
   ${AppKit_GLFW_BINARY_DIR}
   ${MVRCore_BINARY_DIR}
-  ${G3DLite_BINARY_DIR}
 )
 
 # Windows Section #
@@ -83,6 +82,6 @@ endif()
 # Build Target
 add_executable ( ${PROJECT_NAME} ${HEADERFILES} ${SOURCEFILES} )
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "Examples")
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${GLFW_LIBRARY} ${LIBS_OPT} ${LIBS_DEBUG} ${LIBS_ALL} debug G3DLite debug MVRCore debug AppKit_GLFW)
-add_dependencies( ${PROJECT_NAME} boost G3DLite MVRCore glfw AppKit_GLFW)
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${GLFW_LIBRARY} ${LIBS_OPT} ${LIBS_DEBUG} ${LIBS_ALL} debug MVRCore debug AppKit_GLFW)
+add_dependencies( ${PROJECT_NAME} boost MVRCore glfw AppKit_GLFW)
 

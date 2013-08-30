@@ -5,10 +5,12 @@
 #include "MVRCore/AbstractMVRApp.H"
 #include "MVRCore/AbstractCamera.H"
 #include "MVRCore/AbstractWindow.H"
-#include "G3DLite/G3DLite.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "MVRCore/Event.H"
 #include <GLFW/glfw3.h>
 #include <boost/thread.hpp>
+#include <vector>
 
 class GLFWDemoApp : public MinVR::AbstractMVRApp
 {
@@ -16,7 +18,7 @@ public:
 	GLFWDemoApp();
 	~GLFWDemoApp();
 
-	void doUserInputAndPreDrawComputation(const G3DLite::Array<MinVR::EventRef> &events, double synchronizedTime);
+	void doUserInputAndPreDrawComputation(const std::vector<MinVR::EventRef> &events, double synchronizedTime);
 	void initializeContextSpecificVars(int threadId, MinVR::WindowRef window);
 	void drawGraphics(int threadId, MinVR::AbstractCameraRef camera, MinVR::WindowRef window);
 

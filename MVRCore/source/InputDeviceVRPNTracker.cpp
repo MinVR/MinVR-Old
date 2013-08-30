@@ -36,8 +36,6 @@
 #include <iostream>
 using namespace std;
 
-using namespace G3DLite;
-
 namespace MinVR {
 
 
@@ -49,11 +47,9 @@ namespace MinVR {
 // Callback function for VRPN, void* pointer points to a VRPNTrackerDevice
 void VRPN_CALLBACK trackerHandler(void *thisPtr, const vrpn_TRACKERCB info)
 {
-	CoordinateFrame vrpnEvent;
-	vrpnEvent.rotation = Quat(info.quat[0],info.quat[1],
-		info.quat[2],info.quat[3]).toRotationMatrix();
-	vrpnEvent.rotation.orthonormalize();
-	vrpnEvent.translation = Vector3(info.pos[0],info.pos[1],info.pos[2]);
+	glm::mat4 vrpnEvent;
+	vrpnEvent = glm::mat4_cast(glm::quat(info.quat[0],info.quat[1], info.quat[2],info.quat[3]));
+	glm::column(vrpnEvent, 3, glm::vec4(info.pos[0],info.pos[1],info.pos[2], 1.0));
 
 	InputDeviceVRPNTracker* device = ((InputDeviceVRPNTracker*)thisPtr);
 	device->processEvent(vrpnEvent, info.sensor);
@@ -61,11 +57,11 @@ void VRPN_CALLBACK trackerHandler(void *thisPtr, const vrpn_TRACKERCB info)
 
 InputDeviceVRPNTracker::InputDeviceVRPNTracker(
 	const std::string            &vrpnTrackerDeviceName,
-	const Array<std::string>     &eventsToGenerate,
+	const std::vector<std::string>     &eventsToGenerate,
 	const double                 &trackerUnitsToRoomUnitsScale,
-	const CoordinateFrame        &deviceToRoom,
-	const Array<CoordinateFrame> &propToTracker,
-	const Array<CoordinateFrame> &finalOffset,
+	const glm::mat4        &deviceToRoom,
+	const std::vector<glm::mat4> &propToTracker,
+	const std::vector<glm::mat4> &finalOffset,
 	const bool                   &waitForNewReportInPoll,
 	const bool                   &convertLHtoRH,
 	const bool                   &ignoreZeroes)
@@ -81,37 +77,79 @@ InputDeviceVRPNTracker::InputDeviceVRPNTracker(
 	_printSensor0                 = false;
 
 	_vrpnDevice = new vrpn_Tracker_Remote(vrpnTrackerDeviceName.c_str());
-	alwaysAssertM(_vrpnDevice, "Can't create VRPN Remote Tracker with name " + vrpnTrackerDeviceName);
+	std::stringstream ss;
+	ss << "Can't create VRPN Remote Tracker with name " + vrpnTrackerDeviceName;
+	BOOST_ASSERT_MSG(_vrpnDevice, ss.str().c_str());
 	_vrpnDevice->register_change_handler(this, trackerHandler);
 }
 
-InputDeviceVRPNTracker::InputDeviceVRPNTracker( const std::string name, Log* log, const ConfigMapRef map)
+InputDeviceVRPNTracker::InputDeviceVRPNTracker( const std::string name, const ConfigMapRef map)
 {
 	std::string vrpnname  = map->get( name + "_InputDeviceVRPNTrackerName", "" );
 	std::string eventsStr = map->get( name + "_EventsToGenerate", "" );
-	Array<std::string> events = splitStringIntoArray(eventsStr);
+	std::vector<std::string> events = splitStringIntoArray(eventsStr);
 
 	double scale = map->get( name + "_TrackerUnitsToRoomUnitsScale", 1.0 );
-	CoordinateFrame d2r = map->get( name + "_DeviceToRoom", CoordinateFrame() );
-	d2r.rotation.orthonormalize();
+	glm::mat4 d2r = map->get( name + "_DeviceToRoom", glm::mat4(1.0) );
+	
+	// orthonormalize
+	glm::mat3 rot(d2r[0][0], d2r[0][1], d2r[0][2],
+				  d2r[1][0], d2r[1][1], d2r[1][2],
+				  d2r[2][0], d2r[2][1], d2r[2][2]);
+	rot = glm::orthonormalize(rot);
+	d2r[0][0] = rot[0][0];
+	d2r[0][1] = rot[0][1];
+	d2r[0][2] = rot[0][2];
+	d2r[1][0] = rot[1][0];
+	d2r[1][1] = rot[1][1];
+	d2r[1][2] = rot[1][2];
+	d2r[2][0] = rot[2][0];
+	d2r[2][1] = rot[2][1];
+	d2r[2][2] = rot[2][2];
 
-	Array<CoordinateFrame> p2t;
-	Array<CoordinateFrame> fo;
+	std::vector<glm::mat4> p2t;
+	std::vector<glm::mat4> fo;
 
 	for (int  i = 0; i < events.size(); i++)
-	{ CoordinateFrame cf = map->get(events[i] + "_PropToTracker", CoordinateFrame());
-	cf.rotation.orthonormalize();
-	p2t.append(cf);
-	CoordinateFrame cf2 = map->get(events[i] + "_FinalOffset", CoordinateFrame());
-	cf2.rotation.orthonormalize();
-	fo.append(cf2);
+	{
+		glm::mat4 cf = map->get(events[i] + "_PropToTracker", glm::mat4(1.0));
+		glm::mat3 rot(cf[0][0], cf[0][1], cf[0][2],
+				  cf[1][0], cf[1][1], cf[1][2],
+				  cf[2][0], cf[2][1], cf[2][2]);
+		rot = glm::orthonormalize(rot);
+		cf[0][0] = rot[0][0];
+		cf[0][1] = rot[0][1];
+		cf[0][2] = rot[0][2];
+		cf[1][0] = rot[1][0];
+		cf[1][1] = rot[1][1];
+		cf[1][2] = rot[1][2];
+		cf[2][0] = rot[2][0];
+		cf[2][1] = rot[2][1];
+		cf[2][2] = rot[2][2];
+
+		p2t.push_back(cf);
+		glm::mat4 cf2 = map->get(events[i] + "_FinalOffset", glm::mat4(1.0));
+		glm::mat3 rot2(cf2[0][0], cf2[0][1], cf2[0][2],
+				  cf2[1][0], cf2[1][1], cf2[1][2],
+				  cf2[2][0], cf2[2][1], cf2[2][2]);
+		rot2 = glm::orthonormalize(rot2);
+		cf2[0][0] = rot2[0][0];
+		cf2[0][1] = rot2[0][1];
+		cf2[0][2] = rot2[0][2];
+		cf2[1][0] = rot2[1][0];
+		cf2[1][1] = rot2[1][1];
+		cf2[1][2] = rot2[1][2];
+		cf2[2][0] = rot2[2][0];
+		cf2[2][1] = rot2[2][1];
+		cf2[2][2] = rot2[2][2];
+		fo.push_back(cf2);
 	}
 
 	bool wait          = map->get( name + "_WaitForNewReportInPoll", false );
 	bool convertLHtoRH = map->get( name + "_ConvertLHtoRH", false );
 	bool ignoreZeroes  = map->get( name + "_IgnoreZeroes", false );
 
-	log->println( "Creating new InputDeviceVRPNTracker ( " + vrpnname + ")" );
+	BOOST_LOG_TRIVIAL(info) << "Creating new InputDeviceVRPNTracker ( " + vrpnname + ")";
 
 	_eventNames                   = events;
 	_trackerUnitsToRoomUnitsScale = scale;
@@ -125,7 +163,9 @@ InputDeviceVRPNTracker::InputDeviceVRPNTracker( const std::string name, Log* log
 
 	_vrpnConnection = vrpn_get_connection_by_name(vrpnname.c_str());
 	_vrpnDevice = new vrpn_Tracker_Remote(vrpnname.c_str(), _vrpnConnection);
-	alwaysAssertM(_vrpnDevice, "Can't create VRPN Remote Tracker with name " + vrpnname);
+	std::stringstream ss;
+	ss <<  "Can't create VRPN Remote Tracker with name " + vrpnname;
+	BOOST_ASSERT_MSG(_vrpnDevice, ss.str().c_str());
 	_vrpnDevice->register_change_handler(this, trackerHandler);
 }
 
@@ -146,16 +186,17 @@ room space.  You can think of this as what rotation, then
 translation would move the origin of RoomSpace to the origin of
 tracking device.  This is the deviceToRoom coordinate frame.
 */
-void InputDeviceVRPNTracker::processEvent(const CoordinateFrame &vrpnEvent, int sensorNum)
+void InputDeviceVRPNTracker::processEvent(const glm::mat4 &vrpnEvent, int sensorNum)
 {
-	if(_ignoreZeroes && vrpnEvent.translation == Vector3::zero()){
+
+	if(_ignoreZeroes && glm::column(vrpnEvent, 3) == glm::vec4(0.0, 0.0, 0.0, 1.0)){
 		return;
 	}
 	_newReportFlag = true;
 
 	// first, adjust units of trackerToDevice.  after this, everything
 	// is in RoomSpace units (typically feet for VRG3D).
-	CoordinateFrame trackerToDevice = vrpnEvent;
+	glm::mat4 trackerToDevice = vrpnEvent;
 
 	// convert a left handed coordinate system to a right handed one
 	// not sure if this actually works..
@@ -171,22 +212,25 @@ void InputDeviceVRPNTracker::processEvent(const CoordinateFrame &vrpnEvent, int 
 		// Coordinates to Right-Handed Coordinates" by David Eberly,
 		// available online:
 		// http://www.geometrictools.com/Documentation/LeftHandedToRightHanded.pdf
-		trackerToDevice.translation[2] = -trackerToDevice.translation[2];
+		trackerToDevice[2][3] = -trackerToDevice[2][3];
 
-		trackerToDevice.rotation[0][2] = -trackerToDevice.rotation[0][2];
-		trackerToDevice.rotation[1][2] = -trackerToDevice.rotation[1][2];
-		trackerToDevice.rotation[2][0] = -trackerToDevice.rotation[2][0];
-		trackerToDevice.rotation[2][1] = -trackerToDevice.rotation[2][1];
+		trackerToDevice[0][2] = -trackerToDevice[0][2];
+		trackerToDevice[1][2] = -trackerToDevice[1][2];
+		trackerToDevice[2][0] = -trackerToDevice[2][0];
+		trackerToDevice[2][1] = -trackerToDevice[2][1];
 	}
 
-	trackerToDevice.translation *= _trackerUnitsToRoomUnitsScale;
+	trackerToDevice[0][3] *= _trackerUnitsToRoomUnitsScale;
+	trackerToDevice[1][3] *= _trackerUnitsToRoomUnitsScale;
+	trackerToDevice[2][3] *= _trackerUnitsToRoomUnitsScale;
 
-	CoordinateFrame eventRoom = _finalOffset[sensorNum] * _deviceToRoom * trackerToDevice * _propToTracker[sensorNum];
+	glm::mat4 eventRoom = _finalOffset[sensorNum] * _deviceToRoom * trackerToDevice * _propToTracker[sensorNum];
 
 	if ((_printSensor0) && (sensorNum == 0)) {
-		std::cout << eventRoom.translation << std::endl;
+		glm::vec4 translation = glm::column(eventRoom, 3);
+		std::cout << translation << std::endl;
 	}
-	_pendingEvents.append(new Event(getEventName(sensorNum), eventRoom, nullptr, sensorNum));
+	_pendingEvents.push_back(EventRef(new Event(getEventName(sensorNum), eventRoom, nullptr, sensorNum)));
 }
 
 std::string InputDeviceVRPNTracker::getEventName(int trackerNumber)
@@ -197,7 +241,7 @@ std::string InputDeviceVRPNTracker::getEventName(int trackerNumber)
 		return _eventNames[trackerNumber];
 }
 
-void InputDeviceVRPNTracker::pollForInput(Array<EventRef> &events)
+void InputDeviceVRPNTracker::pollForInput(std::vector<EventRef> &events)
 {
 	// If this poll routine isn't called fast enough then the UDP buffer can fill up and
 	// the most recent tracker records will be dropped, introducing lag in the system.
@@ -214,7 +258,9 @@ void InputDeviceVRPNTracker::pollForInput(Array<EventRef> &events)
 		_vrpnDevice->mainloop();
 	}
 
-	events.append(_pendingEvents);
+	for(auto pending_it=_pendingEvents.begin(); pending_it != _pendingEvents.end(); ++pending_it) {
+		events.push_back(*pending_it);
+	}
 	_pendingEvents.clear();
 }
 

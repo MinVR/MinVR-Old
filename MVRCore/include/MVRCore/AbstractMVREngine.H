@@ -44,10 +44,30 @@
 #include "MVRCore/RenderThread.H"
 #include "MVRCore/DataFileUtils.H"
 #include "MVRCore/Event.H"
-#include "G3DLite/G3DLite.h"
+#include <glm/glm.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/sinks/sync_frontend.hpp>
+#include <boost/log/sinks/text_ostream_backend.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/sources/record_ostream.hpp>
+#include <boost/log/utility/empty_deleter.hpp>
+#include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
+
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 namespace MinVR {
 
@@ -76,7 +96,7 @@ public:
 	 *	@param[in] A map of configuration parameters.
 	 *  @param[in] Log file.
 	 */
-	virtual void init(ConfigMapRef configMap, G3DLite::Log* log);
+	virtual void init(ConfigMapRef configMap);
 
 	/*! @brief Start the main loop.
 	 *
@@ -105,6 +125,12 @@ public:
 	 */
 	virtual void initializeContextSpecificVars(int threadId, WindowRef window);
 
+	/*! @brief Initialize Boost Log v2.0
+	 *
+	 *  Sets up the logging file to the console and log file using Boost.Log v2.0
+	 */
+	virtual void initializeLogging();
+
 protected:
 
 	/*! @brief Creates windows and viewports
@@ -124,7 +150,7 @@ protected:
 	 *
 	 *  @sa setupWindowsAndViewports
 	 */
-	virtual WindowRef createWindow(WindowSettingsRef settings, G3DLite::Array<AbstractCameraRef> cameras) = 0;
+	virtual WindowRef createWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras) = 0;
 
 	/*! @brief Creates Input Devices
 	 *
@@ -155,12 +181,11 @@ protected:
 	virtual void updateProjectionForHeadTracking();
 
 	AbstractMVRAppRef         _app;
-	G3DLite::Log*			_log;
 	ConfigMapRef      _configMap;
-	G3DLite::Array<EventRef> _events;
-	G3DLite::Array<WindowRef>  _windows;
-	G3DLite::Array<AbstractInputDeviceRef> _inputDevices;
-	G3DLite::Array<RenderThreadRef> _renderThreads;
+	std::vector<EventRef> _events;
+	std::vector<WindowRef>  _windows;
+	std::vector<AbstractInputDeviceRef> _inputDevices;
+	std::vector<RenderThreadRef> _renderThreads;
 	boost::mutex _startRenderingMutex;
 	boost::condition_variable _startRenderingCond;
 	boost::mutex _renderingCompleteMutex;

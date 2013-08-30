@@ -11,7 +11,7 @@ GLFWDemoApp::~GLFWDemoApp()
 	glDeleteBuffersARB(1, _vboId.get());
 }
 
-void GLFWDemoApp::doUserInputAndPreDrawComputation(const G3DLite::Array<MinVR::EventRef> &events, double synchronizedTime)
+void GLFWDemoApp::doUserInputAndPreDrawComputation(const std::vector<MinVR::EventRef> &events, double synchronizedTime)
 {
 }
 
@@ -191,7 +191,10 @@ void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef
     glColorPointer(3, GL_FLOAT, 0, (void*)((sizeof(GLfloat)*108)+(sizeof(GLfloat)*108)));
     glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	camera->setObjectToWorldMatrix(G3DLite::CoordinateFrame(G3DLite::Matrix3::fromAxisAngle(G3DLite::Vector3(1,0,0), 0.7)*G3DLite::Matrix3::fromAxisAngle(G3DLite::Vector3(0,1,0), 0.785), G3DLite::Vector3(0,0,-5)));
+	glm::mat4 translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+	glm::vec2 rotAngles(0.7, 0.785);
+	glm::mat4 rotate1 = glm::rotate(translate, rotAngles.y, glm::vec3(0.0,1.0,0.0));
+	camera->setObjectToWorldMatrix(glm::rotate(rotate1, rotAngles.x, glm::vec3(1.0,0,0)));
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
@@ -201,7 +204,7 @@ void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 	
 	/*
-	camera->setObjectToWorldMatrix(G3DLite::CoordinateFrame());
+	camera->setObjectToWorldMatrix(glm::mat4(1.0));
 	glBegin(GL_TRIANGLES);
 	glColor3f(1.f, 0.f, 0.f);
 	glVertex3f(-0.3f, -0.2f, -1.f);

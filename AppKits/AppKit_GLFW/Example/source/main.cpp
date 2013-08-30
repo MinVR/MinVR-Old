@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 
 	MinVR::AbstractMVREngine *engine = new MinVR::MVREngineGLFW();
 	engine->init(argc, argv);
-	MinVR::AbstractMVRAppRef app = new GLFWDemoApp();
+	MinVR::AbstractMVRAppRef app(new GLFWDemoApp());
 	engine->runApp(app);
 	delete engine;
 }

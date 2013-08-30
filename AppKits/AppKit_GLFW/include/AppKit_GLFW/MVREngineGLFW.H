@@ -54,7 +54,7 @@ public:
 
 	/*! @brief Creates  GLFW window
 	*/
-	WindowRef createWindow(WindowSettingsRef settings, G3DLite::Array<AbstractCameraRef> cameras);
+	WindowRef createWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras);
 
 	/*! @brief GLFW error callback
 	 *

@@ -29,78 +29,53 @@
 
 #include <sstream>
 
-using namespace G3DLite;
 using namespace std;
 
 namespace MinVR {
 
-void growAABox(AABox &box, const Vector3 &point) {
-	box = AABox(G3DLite::min(point, box.low()), G3DLite::max(point, box.high()));
-}
-
-void growAABox(AABox &box, const AABox &box2) {
-	box = AABox(G3DLite::min(box.low(), box2.low()), G3DLite::max(box.high(), box2.high()));
-}
-
-Color3 Color3FromUints(G3DLite::uint8 r, G3DLite::uint8 g, G3DLite::uint8 b)
-{
-	return Color3((double)r/255.0, (double)g/255.0, (double)b/255.0);
-}
-
-
-// This could definately be implemented more smartly.. but it works.. Turn the double
-// into a string, then use the usual code for computing a hash code from a string.
-unsigned int hashCode(const double d) 
-{
-	std::ostringstream ostr;
-	// if using strstream rather than stringstream, the following call
-	// requires a   << "\0"   at the end.
-	ostr << d;  
-	std::string a = std::string(ostr.str());
-	int s = (int)a.length();
-	int i = 0;
-	unsigned int key = s;
-	s = G3DLite::iMin(s, 5);
-	while (i < s) {
-		key = key ^ ((unsigned int)a[i] << ((i & 3) * 8));
-		++i;
-	}
-	return key;
-}
-
-
-std::ostream & operator<< ( std::ostream &os, const Vector2 &vec2) {
+std::ostream & operator<< ( std::ostream &os, const glm::vec2 &vec2) {
 	// format:  (x, y)
-	return os << vec2.toString();
+	return os << "("<<vec2.x<<", "<<vec2.y<<")";
 }
 
-std::istream & operator>> ( std::istream &is, Vector2 &vec2) {
+std::istream & operator>> ( std::istream &is, glm::vec2 &vec2) {
 	// format:  (x, y)
 	char dummy;
 	return is >> dummy >> vec2.x >> dummy >> vec2.y >> dummy;
 }
 
-/*  This is now defined inside G3D:
-std::ostream & operator<< ( std::ostream &os, const Vector3 &vec3) {
-// format:  (x, y, z)
-return os << vec3.toString();
+std::ostream & operator<< ( std::ostream &os, const glm::vec3 &vec3) {
+	// format:  (x, y, z)
+	return os << "("<<vec3.x<<", "<<vec3.y<<", "<<vec3.z<<")";
 }
-*/
 
-std::istream & operator>> ( std::istream &is, Vector3 &vec3) {
+
+std::istream & operator>> ( std::istream &is, glm::vec3 &vec3) {
 	// format:  (x, y, z)
 	char dummy;
 	return is >> dummy >> vec3.x >> dummy >> vec3.y >> dummy >> vec3.z >> dummy;
 }
 
-std::ostream & operator<< ( std::ostream &os, const Matrix3 &m) {
+std::ostream & operator<< ( std::ostream &os, const glm::vec4 &vec4) {
+	// format:  (x, y, z, w)
+	return os << "("<<vec4.x<<", "<<vec4.y<<", "<<vec4.z<<", "<<vec4.w<<")";
+}
+
+
+std::istream & operator>> ( std::istream &is, glm::vec4 &vec4) {
+	// format:  (x, y, z, w)
+	char dummy;
+	return is >> dummy >> vec4.x >> dummy >> vec4.y >> dummy >> vec4.z >> dummy >> vec4.w >> dummy;
+}
+
+std::ostream & operator<< ( std::ostream &os, const glm::mat3 &m) {
 	// format:  ((r1c1, r1c2, r1c3), (r2c1, r2c2, r2c3), (r3c1, r3c2, r3c3)) 
 	return os << "((" << m[0][0] << ", " << m[0][1] << ", " << m[0][2] << "), "
 		<< "(" << m[1][0] << ", " << m[1][1] << ", " << m[1][2] << "), "
 		<< "(" << m[2][0] << ", " << m[2][1] << ", " << m[2][2] << "))";
 }
 
-std::istream & operator>> ( std::istream &is, Matrix3&m) {
+std::istream & operator>> ( std::istream &is, glm::mat3&m) {
 	// format:  ((r1c1, r1c2, r1c3), (r2c1, r2c2, r2c3), (r3c1, r3c2, r3c3)) 
 	char c;
 	return is >> c >> c >> m[0][0] >> c >> m[0][1] >> c >> m[0][2] >> c >> c
@@ -108,7 +83,7 @@ std::istream & operator>> ( std::istream &is, Matrix3&m) {
 		>> c >> m[2][0] >> c >> m[2][1] >> c >> m[2][2] >> c >> c;
 }
 
-std::ostream & operator<< ( std::ostream &os, const Matrix4 &m) {
+std::ostream & operator<< ( std::ostream &os, const glm::mat4 &m) {
 	// format:  ((r1c1, r1c2, r1c3, r1c4), (r2c1, r2c2, r2c3, r2c4), etc.. ) 
 	return os << "((" << m[0][0] << ", " << m[0][1] << ", " << m[0][2] << ", " << m[0][3] << "), "
 		<< "(" << m[1][0] << ", " << m[1][1] << ", " << m[1][2] << ", " << m[1][3] << "), "
@@ -116,7 +91,7 @@ std::ostream & operator<< ( std::ostream &os, const Matrix4 &m) {
 		<< "(" << m[3][0] << ", " << m[3][1] << ", " << m[3][2] << ", " << m[3][3] << "))";
 }
 
-std::istream & operator>> ( std::istream &is, Matrix4 &m) {
+std::istream & operator>> ( std::istream &is, glm::mat4 &m) {
 	// format:  ((r1c1, r1c2, r1c3, r1c4), (r2c1, r2c2, r2c3, r2c4), etc.. ) 
 	char c;
 	return is >> c >> c >> m[0][0] >> c >> m[0][1] >> c >> m[0][2] >> c >> m[0][3] >> c >> c
@@ -124,68 +99,6 @@ std::istream & operator>> ( std::istream &is, Matrix4 &m) {
 		>> c >> m[2][0] >> c >> m[2][1] >> c >> m[2][2] >> c >> m[2][3] >> c >> c
 		>> c >> m[3][0] >> c >> m[3][1] >> c >> m[3][2] >> c >> m[3][3] >> c >> c;
 }
-
-
-// This orthonormalizes the rotation matrix, which means you will loose any scale
-// that is in there, but you will gain orthonormal axes, which otherwise you wouldn't
-// necessarily have due to precision errors when reading/writing out data to a string.
-// If you want to keep scaling info use a Matrix4 instead.
-std::istream & operator>> ( std::istream &is, CoordinateFrame &m) {
-	// format:  ((r1c1, r1c2, r1c3, r1c4), (r2c1, r2c2, r2c3, r2c4), etc.. ) 
-	char c;
-	double d;
-	Matrix3 r(1,0,0,0,1,0,0,0,1);
-	Vector3 t;
-	is >> c >> c >> r[0][0] >> c >> r[0][1] >> c >> r[0][2] >> c >> t[0] >> c >> c
-		>> c >> r[1][0] >> c >> r[1][1] >> c >> r[1][2] >> c >> t[1] >> c >> c
-		>> c >> r[2][0] >> c >> r[2][1] >> c >> r[2][2] >> c >> t[2] >> c >> c
-		>> c >> d >> c >> d >> c >> d >> c >> d >> c >> c;
-	r.orthonormalize();
-	m = CoordinateFrame(r,t);
-	return is;
-}
-
-std::ostream & operator<< ( std::ostream &os, const Color3 &c) {
-	// format:  (x, y)
-	return os << c.toString();
-}
-
-std::istream & operator>> ( std::istream &is, Color3 &c) {
-	// format:  (x, y)
-	char dummy;
-	return is >> dummy >> c[0] >> dummy >> c[1] >> dummy >> c[2] >> dummy;
-}
-
-std::ostream & operator<< ( std::ostream &os, const Color4 &c) {
-	// format:  (x, y)
-	return os << c.toString();
-}
-
-std::istream & operator>> ( std::istream &is, Color4 &c) {
-	// format:  (x, y)
-	char dummy;
-	return is >> dummy >> c[0] >> dummy >> c[1] >> dummy >> c[2] >> dummy >> c[3] >> dummy;
-}
-
-std::string matrix4ToString(Matrix4 m) {
-	// format:  ((r1c1, r1c2, r1c3, r1c4), (r2c1, r2c2, r2c3, r2c4), etc.. ) 
-
-	// in the past, this was output with only 2 decimal places of
-	// precision.  that is BAD if you're using this routine to store
-	// CoordinateFrames in XML.  So, changing it to output full
-	// precision.
-
-	return format("((%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f))",
-		m[0][0], m[0][1], m[0][2], m[0][3],
-		m[1][0], m[1][1], m[1][2], m[1][3],
-		m[2][0], m[2][1], m[2][2], m[2][3],
-		m[3][0], m[3][1], m[3][2], m[3][3]);
-}
-
-std::string coordinateFrameToString(CoordinateFrame cf) {
-	return matrix4ToString(cf.toMatrix4());
-}
-
 
 int iMinNonNeg(int i1, int i2) 
 {
@@ -200,9 +113,28 @@ int iMinNonNeg(int i1, int i2)
 		return i2;
 }
 
+std::string trimWhitespace(const std::string& s)
+{
+	if (s.length() == 0) {
+        return s;
+    }
+    size_t left = 0;
+    
+    // Trim from left
+    while ((left < s.length()) && iswspace(s[left])) {
+        ++left;
+    }
 
-bool 
-	popNextToken(std::string &in, std::string &token, bool returnFalseOnSemiColon)
+    size_t right = s.length() - 1;
+    // Trim from right
+    while ((right > left) && iswspace(s[right])) {
+        --right;
+    }
+    
+    return s.substr(left, right - left + 1);
+}
+
+bool popNextToken(std::string &in, std::string &token, bool returnFalseOnSemiColon)
 {
 	in = trimWhitespace(in);
 
@@ -228,14 +160,13 @@ bool
 	return (token.size() > 0);
 }
 
-Array<std::string> 
-	splitStringIntoArray(const std::string &in)
+std::vector<std::string> splitStringIntoArray(const std::string &in)
 {
-	Array<std::string> a;
+	std::vector<std::string> a;
 	std::string s = in;
 	std::string token;
 	while (popNextToken(s, token, false)) {
-		a.append(token);
+		a.push_back(token);
 	}
 	return a;
 }
@@ -247,8 +178,7 @@ std::string decygifyPath(const std::string &in)
 	size_t startofcyg = input.find("/cygdrive/");
 	if (startofcyg != std::string::npos) {
 		std::string drive = input.substr(startofcyg + 10, 1);
-		std::string newpath = input.substr(0,startofcyg) + drive + 
-			std::string(":") + input.substr(startofcyg + 11);
+		std::string newpath = input.substr(0,startofcyg) + drive + std::string(":") + input.substr(startofcyg + 11);
 		// recursive call
 		return decygifyPath(newpath);
 	}
@@ -288,8 +218,7 @@ std::string	replaceEnvVars(const std::string &in)
 	return instr;
 }
 
-std::string
-	intToString(int i)
+std::string	intToString(int i)
 {
 	std::ostringstream ostr;
 	// if using strstream rather than stringstream, the following call
@@ -298,8 +227,7 @@ std::string
 	return std::string(ostr.str());
 }
 
-int
-	stringToInt(const std::string &in)
+int	stringToInt(const std::string &in)
 {
 	int i;
 	std::istringstream istr(in.c_str());
@@ -307,8 +235,7 @@ int
 	return i;
 }
 
-std::string
-	realToString(double r)
+std::string	realToString(double r)
 {
 	std::ostringstream ostr;
 	// if using strstream rather than stringstream, the following call
@@ -317,8 +244,7 @@ std::string
 	return std::string(ostr.str());
 }
 
-double
-	stringToReal(const std::string &in)
+double stringToReal(const std::string &in)
 {
 	double r;
 	std::istringstream istr(in.c_str());
@@ -326,8 +252,7 @@ double
 	return r;
 }
 
-std::string
-	joinIntoString( const Array<std::string>& in, const std::string& delimiter )
+std::string	joinIntoString( const std::vector<std::string>& in, const std::string& delimiter )
 {
 	std::string s;
 	if ( in.size() ) {
@@ -340,11 +265,9 @@ std::string
 
 
 
-Array< Array< std::string > >
-	readDelimitedData(const std::string &csvString, const std::string &delimiter,
-	bool removeQuotes)
+std::vector< std::vector< std::string > > readDelimitedData(const std::string &csvString, const std::string &delimiter,	bool removeQuotes)
 {
-	Array < Array< std::string> > data;
+	std::vector< std::vector< std::string> > data;
 	std::string csv;
 
 	// first remove '\r' characters to make DOS/Windows style returns
@@ -361,17 +284,17 @@ Array< Array< std::string > >
 		int endofline = iMinNonNeg(nl, l);
 		if (endofline > 0) {
 			std::string line = csv.substr(0,endofline);
-			Array<std::string> dataLine;
+			std::vector<std::string> dataLine;
 
 			while (line.length() > 0) {
 				int end = iMinNonNeg(line.find(delimiter), line.length());
 				std::string item = line.substr(0,end);
 				if ((removeQuotes) && (item[0] == '"') && (item[item.length()-1] == '"'))
 					item = item.substr(1,item.length()-2);
-				dataLine.append(item);
+				dataLine.push_back(item);
 				if (end+1 >= line.length()) {
 					if (line[line.length()-1] == ',')
-						dataLine.append("");
+						dataLine.push_back("");
 					line = "";
 				}
 				else
@@ -379,7 +302,7 @@ Array< Array< std::string > >
 			}
 
 			if (dataLine.size())
-				data.append(dataLine);
+				data.push_back(dataLine);
 
 			csv = csv.substr(endofline+1);
 		}
@@ -391,8 +314,7 @@ Array< Array< std::string > >
 }
 
 
-bool
-	popUntilSemicolon(std::string &in, std::string &popped)
+bool popUntilSemicolon(std::string &in, std::string &popped)
 {
 	int semi = in.find(";");
 	if (semi == in.npos)
@@ -404,8 +326,7 @@ bool
 	}
 }
 
-std::string 
-	convertNewlinesAndTabsToSpaces(std::string input) 
+std::string	convertNewlinesAndTabsToSpaces(std::string input) 
 {
 	int i = 0;
 	while (i < (int)input.size()) {
@@ -417,8 +338,7 @@ std::string
 }
 
 
-std::string 
-	spacesString(int num)
+std::string spacesString(int num)
 {
 	std::string s;
 	for (int i=0;i<num;i++)
@@ -427,8 +347,7 @@ std::string
 }
 
 
-int
-	numSubstringOccurances(const std::string &str, const std::string &substr)
+int	numSubstringOccurances(const std::string &str, const std::string &substr)
 {
 	int n = 0;
 	std::string s = str;
@@ -441,8 +360,7 @@ int
 }
 
 
-int
-	findNth(const std::string &str, const std::string &substr, const int n)
+int	findNth(const std::string &str, const std::string &substr, const int n)
 {
 	std::string s = str;
 	int nthIndex = 0;
@@ -459,9 +377,33 @@ int
 	return nthIndex;
 }
 
+std::string readWholeFile(const std::string& filename)
+{
+	string instr;
+	if (boost::filesystem::exists(filename))
+	{
+		boost::filesystem::ifstream fIn;
+		fIn.open(filename.c_str(),std::ios::in);
 
-bool  
-	getXMLField(const std::string &input, const std::string &fieldName,
+		if (!fIn) {
+			BOOST_ASSERT_MSG(false, "Error: Unable to load file");
+		}
+		std::stringstream ss;
+		ss << fIn.rdbuf();
+    
+		instr =  ss.str();
+	}
+	else
+	{  
+		std::stringstream ss;
+		ss << "Cannot locate file " << filename;
+		BOOST_ASSERT_MSG(false, ss.str().c_str());
+	}
+	return instr;
+}
+
+/*
+bool getXMLField(const std::string &input, const std::string &fieldName,
 	Table<std::string, std::string> &propertiesAndValues,
 	std::string &fieldData,
 	std::string &leftoverInput)
@@ -587,7 +529,7 @@ void delete2DCharArray(char **ptr, int size)
 	delete [] ptr;
 }
 
-
+*/
 
 } // end namespace
 

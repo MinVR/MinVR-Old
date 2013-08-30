@@ -28,19 +28,19 @@
 #ifndef ABSTRACTINPUTDEVICE_H
 #define ABSTRACTINPUTDEVICE_H
 
-#include <G3DLite/G3DLite.h>
+#include <boost/shared_ptr.hpp>
 #include "MVRCore/Event.H"
 
 namespace MinVR {
 
-typedef G3DLite::ReferenceCountedPointer<class AbstractInputDevice> AbstractInputDeviceRef;
+typedef boost::shared_ptr<class AbstractInputDevice> AbstractInputDeviceRef;
 
 /*! @brief Base class for InputDevices.
  *  Input Devices should be polled once
  *  per frame and append Events that were generated since the last
  *  call to poll to the array passed into the poll routine.
  */
-class AbstractInputDevice : public G3DLite::ReferenceCountedObject
+class AbstractInputDevice
 {
 public:
   AbstractInputDevice() {}
@@ -52,7 +52,7 @@ public:
 	*
 	*  @remarks This should be implemented by any derived classes.
 	*/
-  virtual void pollForInput(G3DLite::Array<EventRef> &events) = 0;
+  virtual void pollForInput(std::vector<EventRef> &events) = 0;
 };
 
 } // end namespace

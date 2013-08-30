@@ -28,7 +28,7 @@
 #ifndef MINVR_TUIOEVENTS_H
 #define MINVR_TUIOEVENTS_H
 
-#include  <G3DLite/G3DLite.h>
+#include  <glm/glm.hpp>
 
 #ifdef USE_TUIO
 #include  <TuioClient.h>
@@ -38,6 +38,11 @@
 #include "MVRCore/AbstractInputDevice.h"
 #include "MVRCore/ConfigMap.H"
 #include "MVRCore/Event.H"
+#include <vector>
+#include <unordered_set>
+
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 
 
@@ -51,31 +56,31 @@ public:
 
 #ifdef USE_TUIO
 	InputDeviceTUIOClient(int port = TUIO_PORT, double  xScaleFactor = 1.0, double  yScaleFactor=1.0 );
-	InputDeviceTUIOClient( const std::string name, G3DLite::Log *log, const ConfigMapRef map );
+	InputDeviceTUIOClient( const std::string name, const ConfigMapRef map );
 	virtual ~InputDeviceTUIOClient();
 	
-	void pollForInput( G3DLite::Array<EventRef>  &events );
+	void pollForInput( std::vector<EventRef>  &events );
 
 
 private:
 	TUIO::TuioClient *_tuioClient;
-	G3DLite::Set<int>    _cursorsDown;
+	std::unordered_set<int>    _cursorsDown;
 	double      _xScale;
 	double      _yScale;
 
 #else
 	InputDeviceTUIOClient(int port = TUIO_PORT, double  xScaleFactor = 1.0, double  yScaleFactor=1.0 )
 	{
-		alwaysAssertM(false, "TUIO is currently unsupported. Set cmake option USE_TUIO to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "TUIO is currently unsupported. Set cmake option USE_TUIO to ON and recompile.");
 	}
 
-	InputDeviceTUIOClient( const std::string name, G3DLite::Log *log, const ConfigMapRef map )
+	InputDeviceTUIOClient( const std::string name, const ConfigMapRef map )
 	{
-		alwaysAssertM(false, "TUIO is currently unsupported. Set cmake option USE_TUIO to ON and recompile.");
+		BOOST_ASSERT_MSG(false, "TUIO is currently unsupported. Set cmake option USE_TUIO to ON and recompile.");
 	}
 
 	virtual ~InputDeviceTUIOClient() {}
-	void pollForInput( G3DLite::Array<EventRef> &events) {}
+	void pollForInput( std::vector<EventRef> &events) {}
 
 
 #endif                   // USE_TUIO
@@ -83,4 +88,4 @@ private:
 
 }                        // end namespace
 
-#endif                  // VRG3D_TUIOEVENTS_H
+#endif                  

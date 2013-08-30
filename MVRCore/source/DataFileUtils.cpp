@@ -27,8 +27,6 @@
 
 #include "MVRCore/DataFileUtils.H"
 
-using namespace G3DLite;
-
 namespace MinVR
 {
 
@@ -68,24 +66,24 @@ void DataFileUtils::addFileSearchPath(const std::string &path)
 
 DataFileUtils::DataFileUtils()
 {
-	_dataFilePaths.append("");
-	_dataFilePaths.append("share/");
-	_dataFilePaths.append("share/vrsetup/");
-	_dataFilePaths.append("share/shaders/");
-	_dataFilePaths.append("../../share/");
-	_dataFilePaths.append("../../share/vrsetup/");
-	_dataFilePaths.append("../../share/shaders/");
-	_dataFilePaths.append(INSTALLPATH);
-	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "share/"));
-	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "share/vrsetup"));
-	_dataFilePaths.append(FilePath::concat(INSTALLPATH, "share/shaders"));
+	_dataFilePaths.push_back("");
+	_dataFilePaths.push_back("share/");
+	_dataFilePaths.push_back("share/vrsetup/");
+	_dataFilePaths.push_back("share/shaders/");
+	_dataFilePaths.push_back("../../share/");
+	_dataFilePaths.push_back("../../share/vrsetup/");
+	_dataFilePaths.push_back("../../share/shaders/");
+	_dataFilePaths.push_back(INSTALLPATH);
+	_dataFilePaths.push_back((boost::filesystem::path(INSTALLPATH) / boost::filesystem::path("share/")).string());
+	_dataFilePaths.push_back((boost::filesystem::path(INSTALLPATH) / boost::filesystem::path("share/vrsetup")).string());
+	_dataFilePaths.push_back((boost::filesystem::path(INSTALLPATH) / boost::filesystem::path("share/shaders")).string());
 }
 
 std::string DataFileUtils::_findDataFile(const std::string &filename)
 {
 	for (int i = 0; i < _dataFilePaths.size(); i++)	{ 
-		std::string fname = FilePath::concat(_dataFilePaths[i], filename);
-		if (FileSystem::exists(fname)) {
+		std::string fname = (boost::filesystem::path(_dataFilePaths[i]) / boost::filesystem::path(filename)).string();
+		if (boost::filesystem::exists(fname)) {
 			return fname;
 		}
 	}
@@ -93,7 +91,7 @@ std::string DataFileUtils::_findDataFile(const std::string &filename)
 	std::cout << "Could not find data file as either:" << std::endl;
 
 	for (int i = 0; i < _dataFilePaths.size(); i++) {  
-		std::string fname = FilePath::concat(_dataFilePaths[i], filename);
+		std::string fname = (boost::filesystem::path(_dataFilePaths[i]) / boost::filesystem::path(filename)).string();
 		std::cout << i << ". " << fname << std::endl;
 	}
 
@@ -103,7 +101,7 @@ std::string DataFileUtils::_findDataFile(const std::string &filename)
 void DataFileUtils::_addFileSearchPath(const std::string &path)
 {
 	// Add to the front so that user added paths get searched first
-	_dataFilePaths.insert(0, replaceEnvVars(path));
+	_dataFilePaths.insert(_dataFilePaths.begin(), replaceEnvVars(path));
 }
 
 } // end namespace

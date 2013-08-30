@@ -33,15 +33,11 @@
 #include <3DconnexionClient/ConnexionClientAPI.h>
 
 #include  "MVRCore/InputDeviceSpaceNav.H"
-
-using namespace G3DLite;
+#include <boost/thread.hpp>
 
 UInt16 gClientID;
-GMutex  gEventBufferMutex;
-static Array<MinVR::EventRef> gEventBuffer;
-G3DLite::Stopwatch gClockPump;
-G3DLite::Stopwatch gClockTwistRight;
-G3DLite::Stopwatch gClockTwistLeft;
+boost::mutex  gEventBufferMutex;
+static std::vector<MinVR::EventRef> gEventBuffer;
 
 // Mark these function for weak-linking to avoid runtime issues if the
 // 3dconnexion framework is not installed -- not sure if we really
@@ -99,196 +95,23 @@ void messageHandlerProc(io_connect_t connection, natural_t messageType,	void *me
 					static Boolean wasZero = FALSE;
 
 					if (isZero = (memcmp(state->axis, zerodata, sizeof(zerodata)) == 0)) {
-						if (wasZero == FALSE) {
-							Vector3 trans = Vector3::zero();
-							Vector3 rot = Vector3::zero();
-							//cout << "Trans: " << trans << endl;
-							//cout << "Rot:   " << rot << endl;
-
-							if (trans[2] > 185  && !sPushedDown) {
-								sPushedDown = true;
-								gClockPump.tick();
-							}
-
-							// Check for "pump" gesture.
-							if (trans[2] < 40 && sPushedDown) {
-								gClockPump.tock();
-								sPushedDown = false;
-
-								if (gClockPump.elapsedTime() < 0.35f) {
-									gEventBufferMutex.lock();
-									gEventBuffer.append(new MinVR::Event("SpaceNav_Pump_Gesture"));
-									gEventBufferMutex.unlock();
-								}
-							}
-
-							if (rot[2] > 130 && !sTwistRight) {
-								sTwistRight = true;
-								//cout << "Twisted right!" << endl;
-							}
-
-							if (sTwistRight && rot[2] < 75) {
-								// A single right twist has occurred.
-								// Queue event.
-								gEventBufferMutex.lock();
-								gEventBuffer.append(new MinVR::Event("SpaceNav_TwistRight"));
-								gEventBufferMutex.unlock();
-
-								// Start timer to check for double twist gesture.
-								gClockTwistRight.tick();
-								sTimedTwistRight = true;
-								sTwistRight = false;
-							}
-
-							if (sTimedTwistRight && sTwistRight) {
-								gClockTwistRight.tock();
-
-								if (gClockTwistRight.elapsedTime() < 0.3f) {
-									// Queue event.
-									gEventBufferMutex.lock();
-									gEventBuffer.append(new MinVR::Event("SpaceNav_DoubleTwistRight"));
-									gEventBufferMutex.unlock();
-									// cout << "Double twist right!" << endl;
-									sTimedTwistRight = false;
-									sTwistRight = false;
-								} else {
-									sTimedTwistRight = false;
-								}
-							}
-
-							if (rot[2] < -150 && !sTwistLeft) {
-								sTwistLeft = true;
-								//cout << "Twisted left!" << endl;
-							}
-
-							if (sTwistLeft && rot[2] > -75) {
-								// A single left twist has occurred.
-								// Queue event.
-								gEventBufferMutex.lock();
-								gEventBuffer.append(new MinVR::Event("SpaceNav_TwistLeft"));
-								gEventBufferMutex.unlock();
-
-								// Start timer to check for double twist gesture.
-								gClockTwistLeft.tick();
-								sTimedTwistLeft = true;
-								sTwistLeft = false;
-							}
-
-							if (sTimedTwistLeft && sTwistLeft) {
-								gClockTwistLeft.tock();
-
-								if (gClockTwistLeft.elapsedTime() < 0.3f) {
-									// Queue event.
-									gEventBufferMutex.lock();
-									gEventBuffer.append(new MinVR::Event("SpaceNav_DoubleTwistLeft"));
-									gEventBufferMutex.unlock();
-									//cout << "Double twist left!" << endl;
-									sTimedTwistLeft = false;
-									sTwistLeft = false;
-								} else {
-									sTimedTwistLeft = false;
-								}
-							}
-
-							gEventBufferMutex.lock();
-							gEventBuffer.append(new MinVR::Event("SpaceNav_Trans", trans));
-							gEventBuffer.append(new MinVR::Event("SpaceNav_Rot", rot));
-							gEventBufferMutex.unlock();
-						}
+						glm::vec3 trans(0.0);
+						glm::vec3 rot(0.0);
+							
+						gEventBufferMutex.lock();
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Trans", trans)));
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Rot", rot)));
+						gEventBufferMutex.unlock();
 					}
 					else {
-						Vector3 trans(state->axis[0], state->axis[1], state->axis[2]);
-						Vector3 rot(state->axis[3], state->axis[4], state->axis[5]);
+						glm::vec3 trans(state->axis[0], state->axis[1], state->axis[2]);
+						glm::vec3 rot(state->axis[3], state->axis[4], state->axis[5]);
 						//cout << "Trans: " << trans << endl;
 						//cout << "Rot:   " << rot << endl;
 
-						if (trans[2] > 185 && !sPushedDown) {
-							sPushedDown = true;
-							gClockPump.tick();
-						}
-
-						// Check for "pump" gesture.
-						if (trans[2] < 40 && sPushedDown) {
-							gClockPump.tock();
-							sPushedDown = false;
-							if (gClockPump.elapsedTime() < 0.35f) {
-								gEventBufferMutex.lock();
-								gEventBuffer.append(new MinVR::Event("SpaceNav_Pump_Gesture"));
-								gEventBufferMutex.unlock();
-							}
-						}
-
-						if (rot[2] > 130 && !sTwistRight) {
-							sTwistRight = true;
-							//cout << "Twisted right!" << endl;
-						}
-
-						if (sTwistRight && rot[2] < 75) {
-							// A single right twist has occurred.
-							// Queue event.
-							gEventBufferMutex.lock();
-							gEventBuffer.append(new MinVR::Event("SpaceNav_TwistRight"));
-							gEventBufferMutex.unlock();
-
-							// Start timer to check for double twist gesture.
-							gClockTwistRight.tick();
-							sTimedTwistRight = true;
-							sTwistRight = false;
-						}
-
-						if (sTimedTwistRight && sTwistRight) {
-							gClockTwistRight.tock();
-
-							if (gClockTwistRight.elapsedTime() < 0.3f) {
-								// Queue event.
-								gEventBufferMutex.lock();
-								gEventBuffer.append(new MinVR::Event("SpaceNav_DoubleTwistRight"));
-								gEventBufferMutex.unlock();
-								//cout << "Double twist right!" << endl;
-								sTimedTwistRight = false;
-								sTwistRight = false;
-							} else {
-								sTimedTwistRight = false;
-							}
-						}
-
-						if (rot[2] < -130 && !sTwistLeft) {
-							sTwistLeft = true;
-							//cout << "Twisted left!" << endl;
-						}
-
-						if (sTwistLeft && rot[2] > -75) {
-							// A single left twist has occurred.
-							// Queue event.
-							gEventBufferMutex.lock();
-							gEventBuffer.append(new MinVR::Event("SpaceNav_TwistLeft"));
-							gEventBufferMutex.unlock();
-
-							// Start timer to check for a double twist.
-							gClockTwistLeft.tick();
-							sTimedTwistLeft = true;
-							sTwistLeft = false;
-						}
-
-						if (sTimedTwistLeft && sTwistLeft) {
-							gClockTwistLeft.tock();
-
-							if (gClockTwistLeft.elapsedTime() < 0.3f) {
-								// Queue event.
-								gEventBufferMutex.lock();
-								gEventBuffer.append(new MinVR::Event("SpaceNav_DoubleTwistLeft"));
-								gEventBufferMutex.unlock();
-								//cout << "Double twist left!" << endl;
-								sTimedTwistLeft = false;
-								sTwistLeft = false;
-							} else {
-								sTimedTwistLeft = false;
-							}
-						}
-
 						gEventBufferMutex.lock();
-						gEventBuffer.append(new MinVR::Event("SpaceNav_Trans", trans));
-						gEventBuffer.append(new MinVR::Event("SpaceNav_Rot", rot));
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Trans", trans)));
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Rot", rot)));
 						gEventBufferMutex.unlock();
 					}
 					break;
@@ -303,28 +126,28 @@ void messageHandlerProc(io_connect_t connection, natural_t messageType,	void *me
 					if ((state->buttons & 1) && (!buttonPressed[0])) {
 						//cout << "btn 1 down" << endl;
 						gEventBufferMutex.lock();
-						gEventBuffer.append(new MinVR::Event("SpaceNav_Btn1_down"));
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Btn1_down")));
 						gEventBufferMutex.unlock();
 						buttonPressed[0] = true;
 					}
 					else if ((!(state->buttons & 1)) && (buttonPressed[0])) {
 						//cout << "btn 1 up" << endl;
 						gEventBufferMutex.lock();
-						gEventBuffer.append(new MinVR::Event("SpaceNav_Btn1_up"));
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Btn1_up")));
 						gEventBufferMutex.unlock();
 						buttonPressed[0] = false;
 					}
 					if ((state->buttons & 2) && (!buttonPressed[1])) {
 						//cout << "btn 2 down" << endl;
 						gEventBufferMutex.lock();
-						gEventBuffer.append(new MinVR::Event("SpaceNav_Btn2_down"));
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Btn2_down")));
 						gEventBufferMutex.unlock();
 						buttonPressed[1] = true;
 					}
 					else if ((!(state->buttons & 2)) && (buttonPressed[1])) {
 						//cout << "btn 2 up" << endl;
 						gEventBufferMutex.lock();
-						gEventBuffer.append(new MinVR::Event("SpaceNav_Btn2_up"));
+						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Btn2_up")));
 						gEventBufferMutex.unlock();
 						buttonPressed[1] = false;
 					}
@@ -397,10 +220,10 @@ void InputDeviceSpaceNav::setup()
 }
 
 
-void InputDeviceSpaceNav::pollForInput(Array<MinVR::EventRef> &events)
+void InputDeviceSpaceNav::pollForInput(std::vector<MinVR::EventRef> &events)
 {
 	gEventBufferMutex.lock();
-	events.append(gEventBuffer);
+	events.push_back(gEventBuffer);
 	gEventBuffer.clear();
 	gEventBufferMutex.unlock();
 }

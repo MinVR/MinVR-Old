@@ -27,8 +27,10 @@
 
 #include "MVRCore/Event.H"
 #include "MVRCore/StringUtils.H"
+#include <boost/format.hpp>
 
-using namespace G3DLite;
+#define BOOST_ASSERT_MSG_OSTREAM std::cout
+#include <boost/assert.hpp>
 
 namespace MinVR {
 	
@@ -51,7 +53,7 @@ Event::Event(const std::string &name, const double data, const WindowRef window/
 	_window = window;
 }
 
-Event::Event(const std::string &name, const G3DLite::Vector2 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/)
+Event::Event(const std::string &name, const glm::vec2 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/)
 { 
 	_name = name;
 	_data2D = data;
@@ -61,7 +63,7 @@ Event::Event(const std::string &name, const G3DLite::Vector2 &data, const Window
 	_window = window;
 }
 
-Event::Event(const std::string &name, const G3DLite::Vector3 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
+Event::Event(const std::string &name, const glm::vec3 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
 { 
 	_name = name;
 	_data3D = data;
@@ -71,7 +73,7 @@ Event::Event(const std::string &name, const G3DLite::Vector3 &data, const Window
 	_window = window;
 }
 
-Event::Event(const std::string &name, const G3DLite::Vector4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
+Event::Event(const std::string &name, const glm::vec4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
 { 
 	_name = name;
 	_data4D = data;
@@ -82,7 +84,7 @@ Event::Event(const std::string &name, const G3DLite::Vector4 &data, const Window
 }
 
 
-Event::Event(const std::string &name, const G3DLite::CoordinateFrame &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
+Event::Event(const std::string &name, const glm::mat4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
 { 
 	_name = name;
 	_dataCF = data;
@@ -136,22 +138,22 @@ double Event::get1DData()
 	return _data1D;
 }
 
-Vector2	Event::get2DData()
+glm::vec2 Event::get2DData()
 {
 	return _data2D;
 }
 
-Vector3	Event::get3DData()
+glm::vec3	Event::get3DData()
 {
 	return _data3D;
 }
 
-Vector4	Event::get4DData()
+glm::vec4	Event::get4DData()
 {
 	return _data4D;
 }
 
-CoordinateFrame	Event::getCoordinateFrameData()
+glm::mat4	Event::getCoordinateFrameData()
 {
 	return _dataCF;
 }
@@ -180,21 +182,22 @@ std::string	Event::toString()
 {
 	switch (_type) {
 	case EVENTTYPE_1D:
-		return format("%s (Data: %.2f; Id: %d; Window ptr: %s)", _name.c_str(), _data1D, _id, _window);
+		return boost::str(boost::format("%s (Data: %.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data1D % _id % _window);
 		break;
 	case EVENTTYPE_2D:
-		return format("%s (Data: %.2f,%.2f; Id: %d; Window ptr: %s)", _name.c_str(), _data2D[0], _data2D[1]);
+		return boost::str(boost::format("%s (Data: %.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data2D[0] % _data2D[1]);
 		break;
 	case EVENTTYPE_3D:
-		return format("%s (Data: %.2f,%.2f,%.2f; Id: %d; Window ptr: %s)", _name.c_str(), _data3D[0], _data3D[1], _data3D[2]);
+		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data3D[0] % _data3D[1] % _data3D[2]);
 		break;
 	case EVENTTYPE_4D:
-		return format("%s (Data: %.2f,%.2f,%.2f,%.2f; Id: %d; Window ptr: %s)", _name.c_str(), _data4D[0], _data4D[1], _data4D[2], _data4D[3]);
+		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data4D[0] % _data4D[1] % _data4D[2] % _data4D[3]);
 		break;
 	case EVENTTYPE_COORDINATEFRAME:
-		return format("%s (Data: %s; Id: %d; Window ptr: %s)", _name.c_str(), matrix4ToString(_dataCF.toMatrix4()), _id, _window);
+		return boost::str(boost::format("%s (Data: ((%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f)); Id: %d; Window ptr: %s)") % _name.c_str() % _dataCF[0][0] % _dataCF[0][1] % _dataCF[0][2]  % _dataCF[0][2]
+							 % _dataCF[1][0]  % _dataCF[1][1]  % _dataCF[1][2]  % _dataCF[1][2] % _dataCF[2][0] % _dataCF[2][1] % _dataCF[2][2] % _dataCF[2][3] % _dataCF[3][0] % _dataCF[3][1] % _dataCF[3][2] % _dataCF[3][3] % _id % _window);
 	case EVENTTYPE_MSG:
-		return format("%s (Data: %s; Id: %d; Window ptr: %s)", _name.c_str(), _dataMsg, _id, _window);
+		return boost::str(boost::format("%s (Data: %s; Id: %d; Window ptr: %s)") % _name.c_str() % _dataMsg % _id % _window);
 		break;
 	default:
 		return _name;
@@ -203,102 +206,32 @@ std::string	Event::toString()
 }
 
 
-void Event::serialize(BinaryOutput &b) const
-{
-	b.writeInt32(_name.size());
-	b.writeString(_name);
-	b.writeInt8((int8)_type);
-	switch (_type) {
-	case EVENTTYPE_STANDARD:
-		break;
-	case EVENTTYPE_1D: {
-		float64 d = _data1D;
-		b.writeFloat64(d);
-		break;
-						}
-	case EVENTTYPE_2D:
-		b.writeVector2(_data2D);
-		break;
-	case EVENTTYPE_3D:
-		b.writeVector3(_data3D);
-		break;
-	case EVENTTYPE_4D:
-		b.writeVector4(_data4D);
-		break;
-	case EVENTTYPE_COORDINATEFRAME:
-		_dataCF.serialize(b);
-		break;
-	case EVENTTYPE_MSG:
-		b.writeInt32(_dataMsg.size());
-		b.writeString(_dataMsg);
-		break;
-	}
-	b.writeInt32(_id);
-}
-
-void Event::deserialize(BinaryInput &b)
-{
-	int size = b.readInt32();
-	_name    = b.readString(size+1);
-	_type    = (EventType)b.readInt8();
-	switch (_type) {
-	case EVENTTYPE_STANDARD:
-		break;
-	case EVENTTYPE_1D:
-		_data1D  = b.readFloat64();
-		break;
-	case EVENTTYPE_2D:
-		_data2D  = b.readVector2();
-		break;
-	case EVENTTYPE_3D:
-		_data3D  = b.readVector3();
-		break;
-	case EVENTTYPE_4D:
-		_data4D  = b.readVector4();
-		break;
-	case EVENTTYPE_COORDINATEFRAME:
-		_dataCF.deserialize(b);
-		_dataCF.rotation.orthonormalize();
-		break;
-	case EVENTTYPE_MSG: {
-		int size = b.readInt32();
-		_dataMsg = b.readString(size+1);
-		break;
-						}
-	default:
-		// I got to this with windows server/client at Duke's Cave!!
-		alwaysAssertM(false, "Error, unknown eventtype in deserialize method.");
-		break;
-	}
-	_id = b.readInt32();
-}
-
 EventRef createCopyOfEvent(EventRef e)
 {
 	switch (e->getType()) {
 		case Event::EVENTTYPE_STANDARD:
-			return new Event(e->getName(), e->getWindow(), e->getId());
+			return boost::shared_ptr<Event>(new Event(e->getName(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_1D:
-			return new Event(e->getName(),e->get1DData(), e->getWindow(), e->getId());
+			return boost::shared_ptr<Event>(new Event(e->getName(),e->get1DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_2D:
-			return new Event(e->getName(),e->get2DData(), e->getWindow(), e->getId());
+			return boost::shared_ptr<Event>(new Event(e->getName(),e->get2DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_3D:
-			return new Event(e->getName(),e->get3DData(), e->getWindow(), e->getId());
+			return boost::shared_ptr<Event>(new Event(e->getName(),e->get3DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_4D:
-			return new Event(e->getName(),e->get4DData(), e->getWindow(), e->getId());
+			return boost::shared_ptr<Event>(new Event(e->getName(),e->get4DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_COORDINATEFRAME:
-			return new Event(e->getName(),e->getCoordinateFrameData(), e->getWindow(), e->getId());
+			return boost::shared_ptr<Event>(new Event(e->getName(),e->getCoordinateFrameData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_MSG:
-			return new Event(e->getName(),e->getMsgData(), e->getWindow(), e->getId());
+			return boost::shared_ptr<Event>(new Event(e->getName(),e->getMsgData(), e->getWindow(), e->getId()));
 			break;
 		default:
-			alwaysAssertM(false, "createCopyOfEvent: Unknown event type!");
+			BOOST_ASSERT_MSG(false, "createCopyOfEvent: Unknown event type!");
 			return NULL;
 			break;
 	}
