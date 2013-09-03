@@ -131,7 +131,7 @@ void GLFWDemoApp::initGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
      // track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -192,7 +192,7 @@ void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef
     glVertexPointer(3, GL_FLOAT, 0, 0);
 
 	glm::mat4 translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-	glm::vec2 rotAngles(0.7, 0.785);
+	glm::vec2 rotAngles(-20.0, 45.0);
 	glm::mat4 rotate1 = glm::rotate(translate, rotAngles.y, glm::vec3(0.0,1.0,0.0));
 	camera->setObjectToWorldMatrix(glm::rotate(rotate1, rotAngles.x, glm::vec3(1.0,0,0)));
 	glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -202,7 +202,7 @@ void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef
     glDisableClientState(GL_NORMAL_ARRAY);
 
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-	
+
 	/*
 	camera->setObjectToWorldMatrix(glm::mat4(1.0));
 	glBegin(GL_TRIANGLES);

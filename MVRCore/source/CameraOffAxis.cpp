@@ -58,10 +58,10 @@ CameraOffAxis::CameraOffAxis(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 bo
 	glm::vec3 x = glm::normalize(topRight - topLeft);
 	glm::vec3 y = glm::normalize(topLeft - botLeft);
 	glm::vec3 z = glm::normalize(glm::cross(x, y));
-	glm::mat4 tile2room(x.x, y.x, z.x, center.x,
-						x.y, y.y, z.y, center.y,
-						x.z, y.z, z.z, center.z,
-						0, 0, 0, 1); 
+	glm::mat4 tile2room(x.x, x.y, x.z, 0,
+						y.x, y.y, y.z, 0,
+						z.x, z.y, z.z, 0,
+						center.x, center.y, center.z, 1);
 	_room2tile = glm::inverse(tile2room);
 }
 
@@ -102,12 +102,13 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::mat4 newHeadFrame)
 	glm::mat4 r2tLeft = glm::column(glm::mat4(1.0), 3, glm::vec4(-left, 1.0)) * _room2tile;
 	glm::mat4 r2tRight = glm::column(glm::mat4(1.0), 3, glm::vec4(-right, 1.0)) * _room2tile;
 
-	_projection = invertYMat() * perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
+	_projection = perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
 	_projectionLeft = invertYMat() * perspectiveProjection(lLeft*k, rLeft*k, b*k, t*k, _nearClip, _farClip);
 	_projectionRight = invertYMat() * perspectiveProjection(lRight*k, rRight*k, b*k, t*k, _nearClip, _farClip);
 	_view = r2t;//.inverse();
 	_viewLeft = r2tLeft;//.inverse();
 	_viewRight = r2tRight;//.inverse();
+
 }
 
 glm::mat4 CameraOffAxis::invertYMat()
@@ -141,11 +142,10 @@ glm::mat4 CameraOffAxis::perspectiveProjection(double left, double right, double
     y *= upDirection;
     b *= upDirection;
 
-    return glm::mat4(
-        (float)x,  0,  (float)a,  0,
-        0,  (float)y,  (float)b,  0,
-        0,  0,  (float)c,  (float)d,
-        0,  0, -1,  0);
+    return glm::mat4((float)x, 0, 0, 0,
+					 0, (float)y, 0, 0,
+					 (float)a, (float)b, (float)c, -1,
+					 0, 0, (float)d, 0);
 }
 
 glm::mat4 CameraOffAxis::getLeftEyeFrame()
@@ -179,11 +179,10 @@ void CameraOffAxis::setObjectToWorldMatrix(glm::mat4 obj2World)
 	glMatrixMode(GL_MODELVIEW);
 	glm::mat4 modelView = _currentViewMatrix * _object2World;
 	GLfloat matrix[16];
-    for (int r = 0; r < 4; ++r) {
-        for (int c = 0; c < 4; ++c) {
-            // Transpose
-            matrix[c * 4 + r] = modelView[r][c];
-        }
+    for (int c = 0; c < 4; ++c) {
+		for(int r = 0; r < 4; ++r) {
+			matrix[c*4+r] = modelView[c][r];
+		}
     }
 	glLoadMatrixf(matrix);
 }
@@ -194,21 +193,19 @@ void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::mat4& projection
 	_currentViewMatrix = viewMat;
 	glMatrixMode(GL_PROJECTION);
     GLfloat matrix[16];
-    for (int r = 0; r < 4; ++r) {
-        for (int c = 0; c < 4; ++c) {
-            // Transpose
-            matrix[c * 4 + r] = projectionMat[r][c];
-        }
+    for (int c = 0; c < 4; ++c) {
+		for(int r = 0; r < 4; ++r) {
+			matrix[c*4+r] = projectionMat[c][r];
+		}
     }
 	glLoadMatrixf(matrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glm::mat4 modelView = viewMat * _object2World;
-	for (int r = 0; r < 4; ++r) {
-        for (int c = 0; c < 4; ++c) {
-            // Transpose
-            matrix[c * 4 + r] = modelView[r][c];
-        }
+	for (int c = 0; c < 4; ++c) {
+		for(int r = 0; r < 4; ++r) {
+			matrix[c*4+r] = modelView[c][r];
+		}
     }
 	glLoadMatrixf(matrix);
 }

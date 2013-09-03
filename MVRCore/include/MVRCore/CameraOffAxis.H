@@ -31,6 +31,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include "MVRCore/AbstractCamera.H"
+#include "MVRCore/StringUtils.H"
 
 namespace MinVR {
 
