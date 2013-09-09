@@ -92,7 +92,7 @@ Now make sure that everything is commited and pushed back to your fork on github
 @code
 $ git commit -a
 # commit the changes
-$ git push origin/mybranch
+$ git push origin mybranch
 # push your changes on mybranch back to origin (i.e. github fork)
 @endcode
 
