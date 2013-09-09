@@ -19,7 +19,7 @@ Core Library Features:
 
 ###Dependencies and Design Philosophy
 
-MinVR's primary design philosophy is to minimize potential dependency conflicts with other libraries you may be using. The core library depends on [Boost](http://boost.org) for its threading and timing libraries, a reduced subset of G3D's classes (called G3DLite) for matrix and other math operations, and [VRPN](http://www.cs.unc.edu/Research/vrpn/) and [TUIO](http://http://www.tuio.org/) for connecting with input devices.
+MinVR's primary design philosophy is to minimize potential dependency conflicts with other libraries you may be using. The core library depends on [Boost](http://boost.org), the header-only OpenGL Math Library (http://glm.g-truc.net), and [VRPN](http://www.cs.unc.edu/Research/vrpn/) and [TUIO](http://http://www.tuio.org/) for connecting with input devices.
 
 In addition to the core library, individual App Kits are included for interfacing with a variety of common graphics libraries. Examples for each AppKit are included in their respective directories.
 

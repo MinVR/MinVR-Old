@@ -17,7 +17,7 @@ Once MinVR and the specific App Kit are compiled, you are ready to start writing
 To create your App class, you will need to override the following methods:
 
 @code
-virtual void doUserInputAndPreDrawComputation(const G3DLite::Array<EventRef> &events, double synchronizedTime) = 0;
+virtual void doUserInputAndPreDrawComputation(const std::vector<EventRef> &events, double synchronizedTime) = 0;
 virtual void initializeContextSpecificVars(int threadId, WindowRef window) = 0;
 virtual void drawGraphics(int threadId, AbstractCameraRef camera, WindowRef window) = 0;
 @endcode
@@ -55,7 +55,7 @@ The `drawGraphics` method is where you should place your application's drawing c
 
 When this method is called by each render thread, the correct viewport and perspective matrices are already set. All you need to do is declare your rendering code. For example, to draw a triangle you might do something like this:
 
-	camera->setObjectToWorldMatrix(G3DLite::CoordinateFrame(G3DLite::Vector3(1.0, 0, 0)));
+	camera->setObjectToWorldMatrix(glm::mat4(1.0));
 	glBegin(GL_TRIANGLES);
 	glColor3f(1.f, 0.f, 0.f);
 	glVertex3f(-0.3f, -0.2f, -1.f);
@@ -65,7 +65,7 @@ When this method is called by each render thread, the correct viewport and persp
 	glVertex3f(0.f, 0.3f, -1.f);
 	glEnd();
 
-Notice in the above example how to set the object to world matrix. In this case, we are moving the triangle one foot down the x-axis from the roomspace origin. The camera for the specific render thread context is passed as an argument to the method. A unique thread id for the calling thead is also passed. These ids start at zero and increment so that they can be used as array indices if needed.
+Notice in the above example how to set the object to world matrix. The camera for the specific render thread context is passed as an argument to the method. A unique thread id for the calling thread is also passed. These ids start at zero and increment so that they can be used as array indices if needed.
 	
 @subsection using_creating_main Creating a main function
 
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
 	MinVR::AbstractMVREngine *engine = new MinVR::MVREngineGLFW();
 	engine->init(argc, argv);
-	MinVR::AbstractMVRAppRef app = new GLFWDemoApp();
+	MinVR::AbstractMVRAppRef app(new GLFWDemoApp());
 	engine->runApp(app);
 	delete engine;
 }
@@ -141,7 +141,7 @@ Example: config-file.cfg
 In your application:
 	
 	double l  = ConfigVal("MyLength", 0.0);
-	Vector3 v = ConfigVal("MyVector", Vector3::zero());
+	Vector3 v = ConfigVal("MyVector", glm::vec3(0.0));
 	
 To pass files to your application, use the `--configfile` or `-f` commandline parameters:
 

@@ -125,7 +125,7 @@ protected:
 
 	glm::mat4 _currentViewMatrix;
 
-	void applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat);
+	virtual void applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat);
 	glm::mat4 invertYMat();
 	glm::mat4 perspectiveProjection(double left, double right, double bottom, double top, double nearval, double farval, float upDirection = -1.0);
 

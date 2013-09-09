@@ -173,7 +173,8 @@ if (USE_APPKIT_G3D9)
 endif()
 
 if (BUILD_EXAMPLES)
-	add_subdirectory(AppKits/AppKit_GLFW/Example)
+	add_subdirectory(AppKits/AppKit_GLFW/example)
+	add_subdirectory(AppKits/AppKit_G3D9/example)
 endif()
 
 #Configure MinVRConfig.cmake

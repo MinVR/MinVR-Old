@@ -30,6 +30,7 @@
 
 #include "AppKit_G3D9/WindowG3D9.H"
 #include "MVRCore/AbstractMVREngine.H"
+#include "AppKit_G3D9/OffAxisCameraG3D9.H"
 
 namespace MinVR {
 
@@ -44,9 +45,29 @@ public:
 	MVREngineG3D9();
 	~MVREngineG3D9();
 
+	/*! @brief Initialize thread specific variables
+	 *
+	 * Called from each renderthread to initialize needed variables
+	 *
+	 * @param[in] A thread specific id
+	 * @param[in] Window reference for the calling renderthread.
+	 */
+	virtual void initializeContextSpecificVars(int threadId, WindowRef window);
+
 	/*! @brief Creates  G3D9 window
 	*/
-	WindowRef createWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras);
+	virtual WindowRef createWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras);
+
+protected:
+
+	/*! @brief Creates windows and viewports
+	 *
+	 *  Called from init to create windows and viewports based on the vrsetup file
+	 *  This is an override to create G3D9 specific cameras.
+	 *  
+	 *  @sa init
+	 */
+	virtual void setupWindowsAndViewports();
 };
 
 } // end namespace

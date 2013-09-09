@@ -17,38 +17,42 @@ include/AppKit_G3D9/OffAxisCameraG3D9.H
 
 source_group("Header Files" FILES ${HEADERFILES})
 
-set(g3d9_checkout_Dir ${CMAKE_SOURCE_DIR}/dependencies/G3D9)
-make_directory(${g3d9_checkout_Dir})
+#set(g3d9_checkout_Dir ${CMAKE_SOURCE_DIR}/dependencies/G3D9)
+#make_directory(${g3d9_checkout_Dir})
 
-include(ExternalProject)
-set(g3d9_PREFIX "${g3d9_checkout_Dir}")
-set(g3d9_INSTALL_DIR "${MINVR_INSTALL_DIR}/G3D9")
-if (MSVC)
-	#set the permissions to execute
-	#set(g3d9_CONFIGURE_COMMAND "icacls <SOURCE_DIR>/buildg3d.bat /grant Everyone:RX; icacls <SOURCE_DIR>/buildg3d /grant Everyone:RX; icacls <SOURCE_DIR>/bin /grant Everyone:(OI)(CI)RX")
-	set(g3d9_CONFIGURE_COMMAND  ${CMAKE_COMMAND} -E echo Configuring G3D)
-	set(g3d9_BUILD_COMMAND  <SOURCE_DIR>/buildg3d.bat --install ${g3d9_INSTALL_DIR} lib)
-else ()
-	set(g3d9_CONFIGURE_COMMAND "chmod +x <SOURCE_DIR>/buildg3d; chmod +x <SOURCE_DIR>/bin/*")
-	set(g3d9_BUILD_COMMAND  <SOURCE_DIR>/buildg3d --install ${g3d9_INSTALL_DIR} lib)
-endif()
-set(g3d9_DIR "${g3d9_INSTALL_DIR}")
+# include(ExternalProject)
+# set(g3d9_PREFIX "${g3d9_checkout_Dir}")
+# set(g3d9_INSTALL_DIR "${MINVR_INSTALL_DIR}/G3D9")
+# if (MSVC)
+	# #set the permissions to execute
+	# #set(g3d9_CONFIGURE_COMMAND "icacls <SOURCE_DIR>/buildg3d.bat /grant Everyone:RX; icacls <SOURCE_DIR>/buildg3d /grant Everyone:RX; icacls <SOURCE_DIR>/bin /grant Everyone:(OI)(CI)RX")
+	# set(g3d9_CONFIGURE_COMMAND  ${CMAKE_COMMAND} -E echo Configuring G3D)
+	# #set(g3d9_BUILD_COMMAND  <SOURCE_DIR>/buildg3d.bat --install ${g3d9_INSTALL_DIR} lib)
+	# set(g3d9_BUILD_COMMAND  <SOURCE_DIR>/buildg3d.bat --install ${g3d9_INSTALL_DIR} lib)
+# else ()
+	# #set(g3d9_CONFIGURE_COMMAND "chmod +x <SOURCE_DIR>/buildg3d; chmod +x <SOURCE_DIR>/bin/*")
+	# set(g3d9_CONFIGURE_COMMAND  ${CMAKE_COMMAND} -E echo Configuring G3D)
+	# set(g3d9_BUILD_COMMAND  <SOURCE_DIR>/buildg3d --install ${g3d9_INSTALL_DIR} lib)
+# endif()
+# set(g3d9_DIR "${g3d9_INSTALL_DIR}")
 
-ExternalProject_add(G3D9
-		PREFIX ${g3d9_PREFIX}
-		URL http://sourceforge.net/projects/g3d/files/g3d-cpp/9.00/G3D-9.00-src.zip
-		URL_MD5 fe0d95eebdc90ef95aca13762372155f
-		CONFIGURE_COMMAND ${g3d9_CONFIGURE_COMMAND}
-		BUILD_COMMAND ${g3d9_BUILD_COMMAND}
-		INSTALL_DIR ${g3d9_INSTALL_DIR}
-		BUILD_IN_SOURCE 1
- )
- 
-set_property(TARGET G3D9 PROPERTY FOLDER "Dependencies")
+# ExternalProject_add(G3D9
+		# PREFIX ${g3d9_PREFIX}
+		# URL http://sourceforge.net/projects/g3d/files/g3d-cpp/9.00/G3D-9.00-src.zip
+		# URL_MD5 fe0d95eebdc90ef95aca13762372155f
+		# CONFIGURE_COMMAND ${g3d9_CONFIGURE_COMMAND}
+		# BUILD_COMMAND ${g3d9_BUILD_COMMAND}
+		# INSTALL_COMMAND ""
+		# INSTALL_DIR ${g3d9_INSTALL_DIR}
+		# BUILD_IN_SOURCE 1
+ # )
 
-set(G3D9_INCLUDE_DIRS ${g3d9_INSTALL_DIR}/G3D/include CACHE INTERNAL "Directory of G3D9 header files")
-set(G3D9_LIBRARIES "optimized ${g3d9_INSTALL_DIR}/G3D/lib/G3D.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/G3Dd.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/GLG3D.lib debug ${g3d9_INSTALL_DIR}/lib/GLG3Dd.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/assimp.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/assimpd.lib ${g3d9_INSTALL_DIR}/G3D/lib/avcodec.lib ${g3d9_INSTALL_DIR}/G3D/lib/avformat.lib ${g3d9_INSTALL_DIR}/G3D/lib/avutil.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/civetweb.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/civetwebd.lib ${g3d9_INSTALL_DIR}/G3D/lib/enet.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/freeimage.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/freeimaged.lib ${g3d9_INSTALL_DIR}/G3D/lib/glfw.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/qrencode.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/qrencoded.lib ${g3d9_INSTALL_DIR}/G3D/lib/swscale.lib ${g3d9_INSTALL_DIR}/G3D/lib/zip.lib ${g3d9_INSTALL_DIR}/G3D/lib/zlib.lib" CACHE INTERNAL "G3D lib files")
+# set_property(TARGET G3D9 PROPERTY FOLDER "Dependencies")
 
+# set(G3D9_INCLUDE_DIRS ${g3d9_INSTALL_DIR}/G3D/include CACHE INTERNAL "Directory of G3D9 header files")
+# set(G3D9_LIBRARIES optimized ${g3d9_INSTALL_DIR}/G3D/lib/G3D.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/G3Dd.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/GLG3D.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/GLG3Dd.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/assimp.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/assimpd.lib ${g3d9_INSTALL_DIR}/G3D/lib/avcodec.lib ${g3d9_INSTALL_DIR}/G3D/lib/avformat.lib ${g3d9_INSTALL_DIR}/G3D/lib/avutil.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/civetweb.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/civetwebd.lib ${g3d9_INSTALL_DIR}/G3D/lib/enet.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/freeimage.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/freeimaged.lib ${g3d9_INSTALL_DIR}/G3D/lib/glfw.lib optimized ${g3d9_INSTALL_DIR}/G3D/lib/qrencode.lib debug ${g3d9_INSTALL_DIR}/G3D/lib/qrencoded.lib ${g3d9_INSTALL_DIR}/G3D/lib/swscale.lib ${g3d9_INSTALL_DIR}/G3D/lib/zip.lib ${g3d9_INSTALL_DIR}/G3D/lib/zlib.lib CACHE INTERNAL "G3D lib files")
+
+find_package(G3D9 REQUIRED)
 include_directories(${G3D9_INCLUDE_DIRS})
 
 # Include Directories

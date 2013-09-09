@@ -38,18 +38,18 @@ WindowG3D9::WindowG3D9(WindowSettingsRef settings, std::vector<AbstractCameraRef
 
 WindowG3D9::~WindowG3D9()
 {
-	if (_renderDevice != nullptr) {
-		_renderDevice->cleanup();
-		delete _renderDevice;
-	}
 }
 
 void WindowG3D9::createRenderDevice()
 {
 	debugAssertM(_renderDevice == nullptr, "RenderDevice has already been created");
-	_renderDevice = new G3D::RenderDevice();
+	_renderDevice.reset(new G3D::RenderDevice());
 	_renderDevice->init(_window);
 	_renderDevice->setSwapBuffersAutomatically(false);
+
+	for(int i=0; i < _cameras.size(); i++) {
+		dynamic_cast<OffAxisCameraG3D9*>(_cameras[i].get())->setRenderDevice(_renderDevice);
+	}
 }
 
 void WindowG3D9::pollForInput(std::vector<EventRef> &events)
@@ -97,7 +97,7 @@ int WindowG3D9::getYPos()
 	return _window->clientRect().y0();
 }
 
-G3D::RenderDevice* WindowG3D9::getRenderDevice()
+shared_ptr<G3D::RenderDevice> WindowG3D9::getRenderDevice()
 {
 	return _renderDevice;
 }

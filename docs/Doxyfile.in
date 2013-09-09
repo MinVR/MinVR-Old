@@ -657,6 +657,8 @@ INPUT                  = @CMAKE_SOURCE_DIR@/docs/main.dox \
 						 @CMAKE_SOURCE_DIR@/docs/vrsetup.dox \
 						 @CMAKE_SOURCE_DIR@/docs/usingMinVR.dox \
 						 @CMAKE_SOURCE_DIR@/docs/events.dox \
+						 @CMAKE_SOURCE_DIR@/docs/creatingAppKits.dox \
+						 @CMAKE_SOURCE_DIR@/docs/contributing.dox \
 						 @CMAKE_SOURCE_DIR@/MVRCore/include/MVRCore/ \
 						 @CMAKE_SOURCE_DIR@/dependencies/G3DLite/include/G3DLite/ \
 						 @CMAKE_SOURCE_DIR@/AppKits/AppKit_GLFW/include/AppKit_GLFW

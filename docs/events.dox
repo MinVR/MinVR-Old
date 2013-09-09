@@ -13,19 +13,19 @@ However, because events are not subclassed, different events will contain differ
 
 @section events_handling Handling events in your application
 
-Before drawing each frame of your application, the MinVR engine will query the input devices and application windows to poll them for input. Events are added to an array that is passed to the doUserInputAndPreDrawComputation(const G3DLite::Array<EventRef> &events, double synchronizedTime) method in your application.
+Before drawing each frame of your application, the MinVR engine will query the input devices and application windows to poll them for input. Events are added to an array that is passed to the doUserInputAndPreDrawComputation(const std::vector<EventRef> &events, double synchronizedTime) method in your application.
 Note, that the events in the events array are sorted by increasing time and may contain duplicate events. For instance, if your framerate is slow, you may have multiple mouse move events in the array, etc.
 
 For example, here is how you might handle head position updates or a keyboard event:
 	
 @code
-void MyApp::doUserInputAndPreDrawComputation(const G3DLite::Array<EventRef> &events, double synchronizedTime)
+void MyApp::doUserInputAndPreDrawComputation(const std::vector<EventRef> &events, double synchronizedTime)
 {
 	for(int i=0; i < events.size(); i++) {
 		string name = events[i]->getName();
 		if (name == "Head_Tracker")
 		{
-			G3DLite::CoordinateFrame headPosition = events[i]->getCoordinateFrameData();
+			glm::mat4 headPosition = events[i]->getCoordinateFrameData();
         }
 		else if (name == "kbd_A_down")
 		{ 
@@ -41,7 +41,7 @@ The following sections describe the individual event types.
 
 @subsubsection events_handling_names_device_vrpn VRPN events
 
-VRPN tracker device events contain a G3DLite CoordinateFrame representing the trackers rotation and translation from the room space origin. The name of the event is based on the `<name>_EventsToGenerate` string in the input devices config file.
+VRPN tracker device events contain a glm::mat4 representing the trackers rotation and translation from the room space origin. The name of the event is based on the `<name>_EventsToGenerate` string in the input devices config file.
 
 VRPN button events are named after the `<name>_EventsToGenerate` with a suffix of `_up` or `_down` depending on whether the button was pressed or released. They also contain an id value corresponding with the order in the `<name>_EventsToGenerate` string. For example, if multiple vrpn buttons are available, the string might look like:
 

@@ -1,0 +1,103 @@
+/*!
+
+@page contributing Contributing and Collaborating on MinVR
+
+@tableofcontents
+
+@section contributing_intro Introduction
+
+Whether you want to contribute a new AppKit, bug fix, or new feature, we welcome your collaboration through Github's pull request functionality. In the following sections, we will discuss how to create a fork of MinVR, make changes, and how to submit them for inclusion in the repository.
+
+@section contributing_fork Forking the repository
+
+To contribute, first create a fork of the repository. This is most easily accomplished on Github. The steps are outlined in detail in the [Github Forking Help](https://help.github.com/articles/fork-a-repo). Briefly, the steps are:
+
+	1. Create a Github account
+	2. Press the "Fork" button on the MinVR repository page
+	3. Clone a copy of your fork to your local machine.
+	
+@section contributing_change Making changes
+
+Our recommended approach is to create a new branch for your changes. This will make it easier to merge your changes with changes to the master branch later.
+
+@code
+$ cd MinVR
+$ git branch mybranch
+# creates a new branch in the repository called mybranch
+$ git checkout mybranch
+# switches the active branch to "mybranch"
+@endcode
+
+After you have created a new branch, make the changes you want. You can commit as many times as needed.
+
+@code
+$ git commit -a
+@endcode
+
+@section contributing_merge Merging changes from the main repository
+
+If you are working on changes in your branch, it is likely that the main repository may have additional commits beyond when you originally forked the repository. This is why it is best practice to make changes on a separate branch from master.
+
+To merge changes from the main repository with your fork, run the following commands:
+
+@code
+$ git remote add upstream https://github.com/MinVR/MinVR.git
+# Assigns the original repository to a remote called "upstream"
+$ git fetch upstream
+# Pulls in changes not present in your local repository, without modifying your files
+$ git merge upstream/master
+# Merges any remote changes fetched into your working files on the master branch
+$ git checkout mybranch
+# make your feature branch active
+$ git rebase master
+# replays any changes you have on mybranch on top of the master changes
+@endcode
+
+The last rebase command is important for the next step. Essentially, it changes the order of the commits so that any commits to mybranch are always most recent.
+
+@section contributing_pull Creating a pull request
+
+When you are ready to merge your changes back into the main MinVR repository, first make sure that you have merged in the newest changes to avoid conflicts, as described in the previous section.
+
+If you have made multiple commits while working on your feature or bug fix, we would prefer that you squash them into one commit. This makes it much easier to do a pull request.
+
+To squash multiple commits on your feature branch, run the following commands. Note that this requires that all of your changes have been replayed on top of master:
+
+@code
+$ git checkout mybranch
+# make sure that your feature branch is active
+$ git rebase -i master
+@endcode
+
+Your editor will the open a file that looks like this:
+
+@code
+pick fda59df commit 1
+pick x536897 commit 2
+pick c01a668 commit 3
+@endcode
+
+Each line represents a commit in chronological order from first to last. Find the commit where you first diverged from master and change the "pick" in lines below it to read "squash" like this:
+
+@code
+pick fda59df commit 1
+squash x536897 commit 2
+squash c01a668 commit 3
+@endcode
+
+After saving the squash settings, your editor will open once again to ask for a new commit message. Make sure that it adequately describes the changes you have made.
+
+Now make sure that everything is commited and pushed back to your fork on github:
+
+@code
+$ git commit -a
+# commit the changes
+$ git push origin/mybranch
+# push your changes on mybranch back to origin (i.e. github fork)
+@endcode
+
+You are now ready to create the pull request. Follow the instructions on Github for [Creating a pull request](https://help.github.com/articles/creating-a-pull-request).
+
+
+*/
+

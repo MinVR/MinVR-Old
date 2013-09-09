@@ -1,0 +1,264 @@
+/*!
+
+@page creatingappkits Creating a new AppKit
+
+@tableofcontents
+
+@section creatingappkits_intro Introduction
+
+The MinVR core library is designed for interfacing with multiple VR input devices and display configurations. To use additional graphics toolkits, the library includes specific AppKits. For example, to use the G3D Graphics library (http://g3d.sourceforge.net/) with MinVR, you would use the AppKit_G3D9. Although, we have written AppKits for several common graphics libraries, this document specifies how to create a new one.
+
+@section creatingappkits_struct Directory structure
+
+AppKits are stored in the `AppKits` directory at the root of the source tree. Start by creating new directories that look like this:
+
+@code
+MinVR/
+	AppKits/
+		AppKit_<new appkit name>/
+			include/
+				AppKit_<new name>/
+			source/
+			example/
+			CMakeLists.txt
+@endcode
+
+@section creatingappkits_files Code files
+
+There are two MinVR classes that every AppKit must subclass: AbstractMVREngine and AbstractWindow.
+
+@subsection creatingappkits_files_window Subclassing AbstractWindow
+Because most graphics toolkits have the functionality to create their own window, AbstractWindow has been designed to be as flexible as possible. Each AppKit should subclass AbstractWindow and fill in the following methods:
+
+	virtual int getWidth() = 0;
+	virtual int getHeight() = 0;
+	virtual int getXPos() = 0;
+	virtual int getYPos() = 0;
+	virtual void swapBuffers() = 0;
+	virtual void pollForInput(std::vector<EventRef> &events) = 0;
+	virtual void makeContextCurrent() = 0;
+	virtual void releaseContext() = 0;
+	
+Ideally, the constructor will take the WindowSettings object and create a graphic toolkit specific window object accordingly. Most of the other methods that must be overridden are self explanatory.
+
+The `pollForInput` method should handle window-system keyboard, mouse, and joystick events. For a list of specific event names, see [Handling MinVR Events](@ref events).
+
+@subsection creatingappkits_files_engine Subclassing AbstractMVREngine
+
+The AppKit specific MVREngine must at a minimum override `virtual WindowRef createWindow(WindowSettingsRef settings, std::vector<AbstractCameraRef> cameras)` in order to create an AppKit specific window object.
+
+Depending on the graphics toolkit, other objects may need be be initialized in the `virtual void initializeContextSpecificVars(int threadId, WindowRef window)` method. This is called by each renderthread to initialize thread specific variable that depend on the OpenGL context being current.
+
+@section creatingappkits_build Create the build system files
+
+To build your AppKit with the default cmake build system, you need to include a CMakeLists.txt file in your AppKit directory. In the following code, we will take you through the process of creating the GLFW AppKit's CMakeLists.txt. The full source can be found in `MinVR/AppKits/AppKit_GLFW/CMakeLists.txt`
+
+@subsection creatingappkits_build_cmakelist Creating a CMakeLists.txt file
+
+First, define the project name and any cmake specific variables
+@code
+project (AppKit_GLFW)
+cmake_minimum_required (VERSION 2.8.2)
+set (CMAKE_VERBOSE_MAKEFILE TRUE)
+@endcode
+
+Then, define the source and header files:
+@code
+#------------------------------------------
+# Define the source and header files
+#------------------------------------------
+set (SOURCEFILES 
+source/MVREngineGLFW.cpp
+source/WindowGLFW.cpp
+source/glew.c
+)
+
+set (HEADERFILES
+include/AppKit_GLFW/MVREngineGLFW.H
+include/AppKit_GLFW/WindowGLFW.H
+include/GL/glew.h
+)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	set (HEADERFILES ${HEADERFILES} include/GL/wglew.h)
+else ()
+	set (HEADERFILES ${HEADERFILES} include/GL/glxew.h)
+endif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
+source_group("Header Files" FILES ${HEADERFILES})
+@endcode
+
+Most AppKits will have a library dependency for the specific graphics toolkit. Although you can include the library in your code directories, if the library is publicly available, it is better to just link to it. This can be accomplished using CMake's externalproject_add module. Here, we are downloading a slightly modified version of the glfw library. If you don't need a modified version, a better practice would be first to find whether the dependency library already exists on the system using a cmake find module.
+
+@code
+#------------------------------------------
+# Download dependencies
+#------------------------------------------
+set(glfw_checkout_Dir ${CMAKE_SOURCE_DIR}/dependencies/glfw)
+make_directory(${glfw_checkout_Dir})
+include(ExternalProject)
+set(glfw_PREFIX "${glfw_checkout_Dir}")
+set(glfw_INSTALL_DIR "${MINVR_INSTALL_DIR}/glfw")
+set(glfw_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${glfw_INSTALL_DIR})
+set(glfw_DIR "${glfw_INSTALL_DIR}")
+
+ExternalProject_add(glfw
+		PREFIX ${glfw_PREFIX}
+		GIT_REPOSITORY https://github.com/bretjackson/glfw.git
+		GIT_TAG gpu-affinity
+		INSTALL_DIR ${glfw_INSTALL_DIR}
+		CMAKE_ARGS ${glfw_CMAKE_ARGS}
+ )
+ 
+set_property(TARGET glfw PROPERTY FOLDER "Dependencies")
+
+set(GLFW_INCLUDE_DIR ${glfw_INSTALL_DIR}/include CACHE INTERNAL "Directory of GLFW header files")
+set(GLFW_LIBRARY ${glfw_INSTALL_DIR}/lib/glfw3.lib CACHE INTERNAL "GLFW lib file")
+include_directories(${GLFW_INCLUDE_DIR})
+@endcode
+
+Include the dependency directories and preprocesser defines
+
+@code
+#------------------------------------------
+# Include Directories
+#------------------------------------------
+include_directories (
+  .
+  ${PROJECT_SOURCE_DIR}/include
+  ${CMAKE_SOURCE_DIR}/dependencies/glm
+  ${CMAKE_SOURCE_DIR}/MVRCore/include
+)
+
+#------------------------------------------
+# Specific preprocessor defines
+#------------------------------------------
+add_definitions(-DGLEW_STATIC)
+
+# Windows Section #
+if (MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	# Tell MSVC to use main instead of WinMain for Windows subsystem executables
+    set_target_properties(${WINDOWS_BINARIES} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif()
+@endcode
+
+Set the output of the build to the correct directories and handle library naming schemes for debug, etc.
+@code
+#------------------------------------------
+# Set output directories to lib, and bin
+#------------------------------------------
+make_directory(${CMAKE_BINARY_DIR}/lib)
+make_directory(${CMAKE_BINARY_DIR}/bin)
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+foreach (CONF ${CMAKE_CONFIGURATION_TYPES})
+	string (TOUPPER ${CONF} CONF)
+	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONF} ${CMAKE_BINARY_DIR}/bin)
+	set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONF} ${CMAKE_BINARY_DIR}/lib)
+	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF} ${CMAKE_BINARY_DIR}/lib)
+endforeach(CONF CMAKE_CONFIGURATION_TYPES)
+
+#------------------------------------------
+# Handle library naming
+#------------------------------------------
+set(CMAKE_DEBUG_POSTFIX "d")
+set(CMAKE_RELEASE_POSTFIX "")
+set(CMAKE_RELWITHDEBINFO_POSTFIX "rd")
+set(CMAKE_MINSIZEREL_POSTFIX "s")
+#set the build postfix extension according to the current configuration
+if (CMAKE_BUILD_TYPE MATCHES "Release")
+	set(CMAKE_BUILD_POSTFIX "${CMAKE_RELEASE_POSTFIX}")
+elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+	set(CMAKE_BUILD_POSTFIX "${CMAKE_MINSIZEREL_POSTFIX}")
+elseif (CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+	set(CMAKE_BUILD_POSTFIX "${CMAKE_RELWITHDEBINFO_POSTFIX}")
+elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
+	set(CMAKE_BUILD_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
+else()
+	set(CMAKE_BUILD_POSTFIX "")
+endif()
+@code
+
+Finally, set add the library as a build target. Note how the Folder property is set so that it is added to the `App Kits` folder in Visual Studio, and other supported IDEs. The install target should copy the include files into the install directory
+@code
+#------------------------------------------
+# Build Target
+#------------------------------------------
+add_library ( ${PROJECT_NAME} ${HEADERFILES} ${SOURCEFILES} )
+set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "App Kits")
+add_dependencies(${PROJECT_NAME} boost glfw MVRCore)
+
+#------------------------------------------
+# Install Target
+#------------------------------------------
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${MINVR_INSTALL_DIR}/include")
+@endcode
+
+@subsection creatingappkits_build_cmakemain Modifying the main CMakeLists.txt
+
+To make your AppKit build with the rest of the library, you need to modify the CMakeLists.txt at the root level of the MinVR repository.
+
+Open `MinVR/CMakeLists.txt`. At the top of the file define a new option to specify whether your AppKit should be built:
+
+	option(USE_APPKIT_<appkit name> "Enable to use the <appkit name> app kit" OFF)
+	
+At the bottom of the file, specify your new AppKit directory:
+	
+	if (USE_APPKIT_<appkit name>)
+		add_subdirectory (AppKits/AppKit_<appkit name>)
+	endif()
+
+Finally, add your example to the build examples if statement:
+
+if (BUILD_EXAMPLES)
+	add_subdirectory(AppKits/AppKit_GLFW/example)
+	add_subdirectory(AppKits/AppKit_G3D9/example)
+	add_subdirectory(AppKits/AppKit_<appkit name>/example)
+endif()
+
+@subsection creatingappkits_build_find Modifying the MinVR find modules
+
+The cmake build system will automatically generate MinVR cmake find modules that make it easier for external projects to find and link against the library. In order for people to use your new AppKit, it should be added to these files.
+
+Open `MinVR/cmake/minvr_minvrconfig.cmake`. In the section titled "Handle AppKit components and dependencies", add the following lines:
+
+@code
+	if (USE_APPKIT_<appkit name>)
+		set(MVRCONFIG_AVAILABLE_COMPONENTS "${MVRCONFIG_AVAILABLE_COMPONENTS} AppKit_<appkit name>")
+		set(MVRCONFIG_AVAILABLE_COMPONENTS_LIST "${MVRCONFIG_AVAILABLE_COMPONENTS_LIST}\n# - AppKit_<appkit name>")
+		set(MVRCONFIG_DEPENDENCIES "${MVRCONFIG_DEPENDENCIES}set(minvr_appkit_<appkit name>_dep MVRCore <the cmake project names of any dependences>\n")
+	endif(USE_APPKIT_<appkit name>)
+@endcode
+
+Then, open `MinVR/cmake/MinVRConfig.cmake.in`. Find the 3rdparty libraries macro section. Add a new macro for each library dependency your appkit has. For example, the GLFW appkit depends on the glfw library, so the added macro looks like this:
+
+@code
+macro(find_glfw)
+	set(glfw_DIR "@MINVR_INSTALL_DIR@/glfw/lib/cmake/glfw")
+	find_package(glfw ${QUIET_})
+	set(GLFW_FOUND ${glfw_FOUND})
+	set(GLFW_INCLUDE_DIRS ${GLFW_INCLUDE_DIR})
+	set(GLFW_LIBRARY_DIRS ${GLFW_LIBRARY_DIR})
+	set(GLFW_LIBRARIES ${GLFW_LIBRARY})
+endmacro(find_glfw)
+@endcode
+
+Finally, add a new else statement to the `find_external_library` macro to reference the dependency macro. For example, the glfw one listed above looks like this:
+
+@code
+elseif("${_lib}" STREQUAL "glfw")
+    find_glfw()
+@endcode
+
+@section creatingappkits_doc Documentation
+
+If your AppKit requires special build instructions, make sure to update or add to the documentation in `MinVR/doc`. 
+
+@section creatingappkits_commit Committing your new AppKit
+
+Once your AppKit is finished, make sure to test that it works and your example builds correctly. When you are happy with it, please contribute it back to the MinVR repository so that others may use it as well. This is accomplished by creating a Git pull request. For information on how to do this, see [How to Contribute](@ref contributing).
+
+*/
+

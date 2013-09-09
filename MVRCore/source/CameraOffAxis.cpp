@@ -102,7 +102,7 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::mat4 newHeadFrame)
 	glm::mat4 r2tLeft = glm::column(glm::mat4(1.0), 3, glm::vec4(-left, 1.0)) * _room2tile;
 	glm::mat4 r2tRight = glm::column(glm::mat4(1.0), 3, glm::vec4(-right, 1.0)) * _room2tile;
 
-	_projection = perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
+	_projection = invertYMat() * perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
 	_projectionLeft = invertYMat() * perspectiveProjection(lLeft*k, rLeft*k, b*k, t*k, _nearClip, _farClip);
 	_projectionRight = invertYMat() * perspectiveProjection(lRight*k, rRight*k, b*k, t*k, _nearClip, _farClip);
 	_view = r2t;//.inverse();
