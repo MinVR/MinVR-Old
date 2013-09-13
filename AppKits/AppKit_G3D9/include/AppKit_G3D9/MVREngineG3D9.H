@@ -31,6 +31,8 @@
 #include "AppKit_G3D9/WindowG3D9.H"
 #include "MVRCore/AbstractMVREngine.H"
 #include "AppKit_G3D9/OffAxisCameraG3D9.H"
+#include <G3D/G3D.h>
+#include <GLG3D/GLG3D.h>
 
 namespace MinVR {
 

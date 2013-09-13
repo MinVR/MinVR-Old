@@ -31,9 +31,11 @@
 #include "MVRCore/AbstractWindow.H"
 #include "MVRCore/Event.H"
 #include "AppKit_G3D9/OffAxisCameraG3D9.H"
-#include <G3D/G3D.h>
-#include <GLG3D/GLG3D.h>
+#include <GLG3D/RenderDevice.h>
+#include <GLG3D/GKey.h>
+#include <GLG3D/GEvent.h>
 #include <GLG3D/GLFWWindow.h>
+#include <boost/thread.hpp>
 
 namespace MinVR {
 
@@ -52,12 +54,18 @@ public:
 	int getXPos();
 	int getYPos();
 	void createRenderDevice();
-	shared_ptr<G3D::RenderDevice> getRenderDevice(); 
+	G3D::RenderDevice* getRenderDevice(); 
 	
 private:
-	shared_ptr<G3D::RenderDevice> _renderDevice;
+	G3D::RenderDevice* _renderDevice;
 	G3D::GLFWWindow* _window;
-	
+	glm::vec2 _cursorPosition;
+
+	std::string getKeyName(G3D::GKey::Value key);
+	std::string getModName(G3D::GKeyMod mod);
+	std::string getKeyValue(G3D::GKey::Value key, G3D::GKeyMod mod);
+
+	static boost::mutex _RDMUTEX;	
 };
 
 } // end namespace

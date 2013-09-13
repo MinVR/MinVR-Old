@@ -577,6 +577,10 @@ string WindowGLFW::getButtonName(int button)
             return "mouse_btn_right";
         case GLFW_MOUSE_BUTTON_MIDDLE:
             return "mouse_btn_middle";
+		default:
+			std::stringstream ss;
+			ss << "mouse_btn_"<<button;
+			return ss.str();
     }
 
     return "";
@@ -584,16 +588,17 @@ string WindowGLFW::getButtonName(int button)
 
 string WindowGLFW::getModsName(int mods)
 {
+	string modName = "";
     if (mods & GLFW_MOD_SHIFT)
-        return "SHIFT";
+        modName += "SHIFT";
     if (mods & GLFW_MOD_CONTROL)
-        return "CTRL";
+        modName += "CTRL";
     if (mods & GLFW_MOD_ALT)
-        return "ALT";
+        modName += "ALT";
     if (mods & GLFW_MOD_SUPER)
-        return "SUPER";
+        modName += "SUPER";
 
-    return "";
+    return modName;
 }
 
 void WindowGLFW::formatDebugOutputARB(char outStr[], size_t outStrSize, GLenum source, GLenum type, GLuint id, GLenum severity, const char *msg)

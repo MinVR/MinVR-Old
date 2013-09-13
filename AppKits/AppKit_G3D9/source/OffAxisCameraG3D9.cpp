@@ -72,7 +72,7 @@ void OffAxisCameraG3D9::setObjectToWorldMatrix(glm::mat4 obj2World)
 	_renderDevice->setObjectToWorldMatrix(frame);
 }
 
-void OffAxisCameraG3D9::setRenderDevice(shared_ptr<G3D::RenderDevice> rd)
+void OffAxisCameraG3D9::setRenderDevice(G3D::RenderDevice* rd)
 {
 	_renderDevice = rd;
 }

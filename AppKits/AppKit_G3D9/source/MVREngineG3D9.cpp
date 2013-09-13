@@ -31,6 +31,7 @@ namespace MinVR {
 
 MVREngineG3D9::MVREngineG3D9() : AbstractMVREngine()
 {
+	G3D::initGLG3D();
 }
 
 MVREngineG3D9::~MVREngineG3D9()

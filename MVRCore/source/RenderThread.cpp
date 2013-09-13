@@ -45,14 +45,17 @@ int RenderThread::numThreadsReceivedStartRendering = 0;
 int RenderThread::numThreadsReceivedRenderingComplete = 0;
 int RenderThread::numRenderingThreads = 0;
 int RenderThread::nextThreadId = 0;
+int RenderThread::numThreadsInitComplete = 0;
 
-RenderThread::RenderThread(WindowRef window, AbstractMVREngine* engine, AbstractMVRAppRef app, boost::barrier* swapBarrier, boost::mutex* startRenderingMutex,
-	boost::mutex* renderingCompleteMutex, boost::condition_variable* startRenderingCond, boost::condition_variable* renderingCompleteCond)
+RenderThread::RenderThread(WindowRef window, AbstractMVREngine* engine, AbstractMVRAppRef app, boost::barrier* swapBarrier,  boost::mutex* initializedMutex, boost::condition_variable* initializedCondition,
+	boost::mutex* startRenderingMutex, boost::mutex* renderingCompleteMutex, boost::condition_variable* startRenderingCond, boost::condition_variable* renderingCompleteCond)
 {
 	_window = window;
 	_engine = engine;
 	_app = app;
 	_swapBarrier = swapBarrier;
+	_initMutex = initializedMutex;
+	_initCond = initializedCondition;
 	_startRenderingMutex = startRenderingMutex;
 	_renderingCompleteMutex = renderingCompleteMutex;
 	_startRenderingCond = startRenderingCond;
@@ -91,6 +94,12 @@ void RenderThread::render()
 		std::cout << "openGL ERROR in start of render(): "<<err<<std::endl;
 	}
 
+	// Signal that the thread is initialized
+	_initMutex->lock();
+	numThreadsInitComplete++;
+	_initCond->notify_all();
+	_initMutex->unlock();
+
 	bool running = true;
 	while (running) {
 
@@ -112,7 +121,7 @@ void RenderThread::render()
 		}
 		startRenderingLock.unlock();
 
-		cout <<"\t Thread "<<_threadId<<" received start rendering"<<endl;
+		//cout <<"\t Thread "<<_threadId<<" received start rendering"<<endl;
 
 		// Draw the scene
 		// Monoscopic
@@ -219,12 +228,12 @@ void RenderThread::render()
 			glUseProgram(0);
 		}
 
-		cout << "\tThread "<<_threadId<<" finished rendering"<<endl;
+		//cout << "\tThread "<<_threadId<<" finished rendering"<<endl;
 
 		// Wait for the other threads to get here before swapping buffers
 		_swapBarrier->wait();
 
-		cout << "\tThread "<<_threadId<<" swapping buffers"<<endl;
+		//cout << "\tThread "<<_threadId<<" swapping buffers"<<endl;
 		_window->swapBuffers();
 
 		// Signal that this rendering thread has completed drawing
@@ -239,26 +248,26 @@ void RenderThread::initExtensions()
 {
 #ifdef _WIN32
 	// get pointers to GL functions
-	glGenFramebuffers                     = (PFNGLGENFRAMEBUFFERSPROC)wglGetProcAddress("glGenFramebuffers");
-	glDeleteFramebuffers                  = (PFNGLDELETEFRAMEBUFFERSPROC)wglGetProcAddress("glDeleteFramebuffers");
-	glBindFramebuffer                     = (PFNGLBINDFRAMEBUFFERPROC)wglGetProcAddress("glBindFramebuffer");
-	glCheckFramebufferStatus              = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)wglGetProcAddress("glCheckFramebufferStatus");
-	glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)wglGetProcAddress("glGetFramebufferAttachmentParameteriv");
-	glGenerateMipmap                      = (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
-	glFramebufferTexture2D                = (PFNGLFRAMEBUFFERTEXTURE2DPROC)wglGetProcAddress("glFramebufferTexture2D");
-	glFramebufferRenderbuffer             = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)wglGetProcAddress("glFramebufferRenderbuffer");
-	glGenRenderbuffers                    = (PFNGLGENRENDERBUFFERSPROC)wglGetProcAddress("glGenRenderbuffers");
-	glDeleteRenderbuffers                 = (PFNGLDELETERENDERBUFFERSPROC)wglGetProcAddress("glDeleteRenderbuffers");
-	glBindRenderbuffer                    = (PFNGLBINDRENDERBUFFERPROC)wglGetProcAddress("glBindRenderbuffer");
-	glRenderbufferStorage                 = (PFNGLRENDERBUFFERSTORAGEPROC)wglGetProcAddress("glRenderbufferStorage");
-	glGetRenderbufferParameteriv          = (PFNGLGETRENDERBUFFERPARAMETERIVPROC)wglGetProcAddress("glGetRenderbufferParameteriv");
-	glIsRenderbuffer                      = (PFNGLISRENDERBUFFERPROC)wglGetProcAddress("glIsRenderbuffer");
+	pglGenFramebuffers                     = (PFNGLGENFRAMEBUFFERSPROC)wglGetProcAddress("glGenFramebuffers");
+	pglDeleteFramebuffers                  = (PFNGLDELETEFRAMEBUFFERSPROC)wglGetProcAddress("glDeleteFramebuffers");
+	pglBindFramebuffer                     = (PFNGLBINDFRAMEBUFFERPROC)wglGetProcAddress("glBindFramebuffer");
+	pglCheckFramebufferStatus              = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)wglGetProcAddress("glCheckFramebufferStatus");
+	pglGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)wglGetProcAddress("glGetFramebufferAttachmentParameteriv");
+	pglGenerateMipmap                      = (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
+	pglFramebufferTexture2D                = (PFNGLFRAMEBUFFERTEXTURE2DPROC)wglGetProcAddress("glFramebufferTexture2D");
+	pglFramebufferRenderbuffer             = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)wglGetProcAddress("glFramebufferRenderbuffer");
+	pglGenRenderbuffers                    = (PFNGLGENRENDERBUFFERSPROC)wglGetProcAddress("glGenRenderbuffers");
+	pglDeleteRenderbuffers                 = (PFNGLDELETERENDERBUFFERSPROC)wglGetProcAddress("glDeleteRenderbuffers");
+	pglBindRenderbuffer                    = (PFNGLBINDRENDERBUFFERPROC)wglGetProcAddress("glBindRenderbuffer");
+	pglRenderbufferStorage                 = (PFNGLRENDERBUFFERSTORAGEPROC)wglGetProcAddress("glRenderbufferStorage");
+	pglGetRenderbufferParameteriv          = (PFNGLGETRENDERBUFFERPARAMETERIVPROC)wglGetProcAddress("glGetRenderbufferParameteriv");
+	pglIsRenderbuffer                      = (PFNGLISRENDERBUFFERPROC)wglGetProcAddress("glIsRenderbuffer");
 
 	// check once again FBO extension
-	if(!glGenFramebuffers || !glDeleteFramebuffers || !glBindFramebuffer || !glCheckFramebufferStatus ||
-		!glGetFramebufferAttachmentParameteriv || !glGenerateMipmap || !glFramebufferTexture2D || !glFramebufferRenderbuffer ||
-		!glGenRenderbuffers || !glDeleteRenderbuffers || !glBindRenderbuffer || !glRenderbufferStorage ||
-		!glGetRenderbufferParameteriv || !glIsRenderbuffer)
+	if(!pglGenFramebuffers || !pglDeleteFramebuffers || !pglBindFramebuffer || !pglCheckFramebufferStatus ||
+		!pglGetFramebufferAttachmentParameteriv || !pglGenerateMipmap || !pglFramebufferTexture2D || !pglFramebufferRenderbuffer ||
+		!pglGenRenderbuffers || !pglDeleteRenderbuffers || !pglBindRenderbuffer || !pglRenderbufferStorage ||
+		!pglGetRenderbufferParameteriv || !pglIsRenderbuffer)
 	{
 		BOOST_ASSERT_MSG(false, "Video card does NOT support GL_ARB_framebuffer_object.");
 	}
@@ -277,9 +286,9 @@ void RenderThread::initExtensions()
 	pglUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");
 	pglUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
 
-	if (!glCreateProgram || !glCreateShader || !glShaderSource || !glCompileShader || !glGetObjectParameterivARB ||
-		!glAttachShader || !glLinkProgram || !glGetShaderiv || !glGetProgramivARB || !glUseProgram ||
-		!glGetUniformLocation || !glUniform2f || !glUniform1i )
+	if (!pglCreateProgram || !pglCreateShader || !pglShaderSource || !pglCompileShader || !pglGetObjectParameterivARB ||
+		!pglAttachShader || !pglLinkProgram || !pglGetShaderiv || !pglGetProgramivARB || !pglUseProgram ||
+		!pglGetUniformLocation || !pglUniform2f || !pglUniform1i )
 	{
 		BOOST_ASSERT_MSG(false, "Video card does NOT support loading shader extensions.");
 	}
@@ -288,13 +297,13 @@ void RenderThread::initExtensions()
 	pglGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
 	pglBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
 
-	if (!glBindBuffer || !glGenBuffers || !glBufferData) {
+	if (!pglBindBuffer || !pglGenBuffers || !pglBufferData) {
 		BOOST_ASSERT_MSG(false, "Video card does NOT support vertex buffer objects.");
 	}
 
 	pglActiveTexture = (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
 
-	if (!glActiveTexture) {
+	if (!pglActiveTexture) {
 		BOOST_ASSERT_MSG(false, "Video card does NOT support glActiveTexture");
 	}
 

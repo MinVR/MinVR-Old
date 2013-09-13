@@ -237,11 +237,12 @@ void AbstractMVREngine::setupRenderThreads()
 	RenderThread::numThreadsReceivedRenderingComplete = 0;
 	RenderThread::numThreadsReceivedStartRendering = 0;
 	RenderThread::nextThreadId = 0;
+	RenderThread::numThreadsInitComplete = 0;
 
 	_swapBarrier = boost::shared_ptr<boost::barrier>(new boost::barrier(RenderThread::numRenderingThreads));
 
 	for(int i=0; i < _windows.size(); i++) {
-		RenderThreadRef thread(new RenderThread(_windows[i], this, _app, _swapBarrier.get(), &_startRenderingMutex, &_renderingCompleteMutex, &_startRenderingCond, &_renderingCompleteCond));
+		RenderThreadRef thread(new RenderThread(_windows[i], this, _app, _swapBarrier.get(), &_threadsInitializedMutex, &_threadsInitializedCond, &_startRenderingMutex, &_renderingCompleteMutex, &_startRenderingCond, &_renderingCompleteCond));
 		_renderThreads.push_back(thread);
 	}
 }
@@ -251,6 +252,12 @@ void AbstractMVREngine::runApp(AbstractMVRAppRef app)
 	_app = app;
 
 	setupRenderThreads();
+	// Wait for threads to finish being initialized
+	boost::unique_lock<boost::mutex> threadsInitializedLock(_threadsInitializedMutex);
+	while (RenderThread::numThreadsInitComplete < _windows.size()) {
+		_threadsInitializedCond.wait(threadsInitializedLock);
+	}
+	threadsInitializedLock.unlock();
 
 	_frameCount = 0;
 	
@@ -270,6 +277,12 @@ void AbstractMVREngine::runOneFrameOfApp(AbstractMVRAppRef app)
 	}
 	if (_renderThreads.size() == 0) {
 		setupRenderThreads();
+		// Wait for threads to finish being initialized
+		boost::unique_lock<boost::mutex> threadsInitializedLock(_threadsInitializedMutex);
+		while (RenderThread::numThreadsInitComplete < _windows.size()) {
+			_threadsInitializedCond.wait(threadsInitializedLock);
+		}
+		threadsInitializedLock.unlock();
 	}
 
 	pollUserInput();
@@ -280,7 +293,7 @@ void AbstractMVREngine::runOneFrameOfApp(AbstractMVRAppRef app)
 	double syncTime = diff.total_seconds();
 	_app->doUserInputAndPreDrawComputation(_events, syncTime);
 
-	std::cout << "Notifying rendering threads to start rendering frame: "<<_frameCount++<<std::endl;
+	//std::cout << "Notifying rendering threads to start rendering frame: "<<_frameCount++<<std::endl;
 	_startRenderingMutex.lock();
 	RenderThread::renderingState = RenderThread::RENDERING_START;
 	_startRenderingCond.notify_all();
@@ -291,7 +304,7 @@ void AbstractMVREngine::runOneFrameOfApp(AbstractMVRAppRef app)
 	while (RenderThread::numThreadsReceivedRenderingComplete < _windows.size()) {
 		_renderingCompleteCond.wait(renderingCompleteLock);
 	}
-	std::cout << "All threads finished rendering"<<std::endl;
+	//std::cout << "All threads finished rendering"<<std::endl;
 	RenderThread::numThreadsReceivedRenderingComplete = 0;
 	renderingCompleteLock.unlock();
 }

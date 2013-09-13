@@ -9,9 +9,9 @@
 #include "MVRCore/Event.H"
 #include <boost/thread.hpp>
 #include <vector>
+#include "AppKit_G3D9/WindowG3D9.H"
 #include <G3D/G3D.h>
 #include <GLG3D/GLG3D.h>
-#include "AppKit_G3D9/WindowG3D9.H"
 
 class G3D9DemoApp : public MinVR::AbstractMVRApp
 {
@@ -30,7 +30,7 @@ private:
 	boost::thread_specific_ptr<G3D::AttributeArray> _gpuColors;
 	boost::thread_specific_ptr<G3D::IndexStream> _gpuIndex;
 
-	boost::thread_specific_ptr<G3D::VertexBuffer> _vbuffer;
+	//boost::thread_specific_ptr<G3D::VertexBuffer> _vbuffer;
 	
 };
 

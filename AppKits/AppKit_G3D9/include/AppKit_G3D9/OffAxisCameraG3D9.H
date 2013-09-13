@@ -32,8 +32,13 @@
 #include <glm/gtc/matrix_access.hpp>
 #include "MVRCore/CameraOffAxis.H"
 #include "MVRCore/StringUtils.H"
-#include <G3D/G3D.h>
-#include <GLG3D/GLG3D.h>
+#include <G3D/Vector3.h>
+#include <G3D/Matrix3.h>
+#include <G3D/Matrix4.h>
+#include <G3D/CoordinateFrame.h>
+#include <G3D/Projection.h>
+#include <G3D/debugAssert.h>
+#include <GLG3D/RenderDevice.h>
 
 namespace MinVR {
 
@@ -59,10 +64,10 @@ public:
 
 	/*! @brief Set the associated render device
 	*/
-	void setRenderDevice(shared_ptr<G3D::RenderDevice> rd);
+	void setRenderDevice(G3D::RenderDevice* rd);
 
 protected:
-	shared_ptr<G3D::RenderDevice> _renderDevice;
+	G3D::RenderDevice* _renderDevice;
 
 	virtual void applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat);
 };

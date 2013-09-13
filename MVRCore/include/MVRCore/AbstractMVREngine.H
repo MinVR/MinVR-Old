@@ -186,6 +186,8 @@ protected:
 	std::vector<WindowRef>  _windows;
 	std::vector<AbstractInputDeviceRef> _inputDevices;
 	std::vector<RenderThreadRef> _renderThreads;
+	boost::mutex _threadsInitializedMutex;
+	boost::condition_variable _threadsInitializedCond;
 	boost::mutex _startRenderingMutex;
 	boost::condition_variable _startRenderingCond;
 	boost::mutex _renderingCompleteMutex;

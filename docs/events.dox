@@ -91,7 +91,7 @@ Mouse event names and their valid data values are found in the table below.
 
 In MinVR, the names of keyboard events start with the prefix `kbd_`. Each event contains a reference to the focused window, and if it make sense, a string value for the key. Each keyboard event ends with an action suffix, either `down`, `up`, or `repeat`. For example when the A key is pressed, the event name would be `kbd_A_down`.
 
-It is also possible to have modifiers, for example to hold shift and press the A key. In this case, the possible modifier names are `SHIFT`, `ALT`, `CTRL`, and `SUPER`. These are added to the name string before the action. So, for the example above, the name would be `kbd_A_SHIFT_down`. For the shift keys with letters, the string value is automatically modified. The string for the previous event would be `"A"` rather than the usual `"a"`.
+It is also possible to have modifiers, for example to hold shift and press the A key. In this case, the possible modifier names are `SHIFT`, `ALT`, `CTRL`, and `SUPER`. These are added to the name string before the action. So, for the example above, the name would be `kbd_A_SHIFT_down`. For the shift keys with letters, the string value is automatically modified. The string for the previous event would be `"A"` rather than the usual `"a"`. It is possible to have multiple modifiers. For example, `kbd_A_SHIFTCTRL_down` is valid.
 
 | Name                             | Data                         | Notes                  |
 | -------------------------------- | ---------------------------- | ---------------------- |

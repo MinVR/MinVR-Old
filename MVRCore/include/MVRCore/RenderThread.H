@@ -60,7 +60,7 @@ public:
 		RENDERING_TERMINATE
 	};
 
-	RenderThread(WindowRef window, AbstractMVREngine* engine, AbstractMVRAppRef app, boost::barrier* swapBarrier, boost::mutex* startRenderingMutex, boost::mutex* renderingCompleteMutex, boost::condition_variable* startRenderingCond, boost::condition_variable* renderingCompleteCond);
+	RenderThread(WindowRef window, AbstractMVREngine* engine, AbstractMVRAppRef app, boost::barrier* swapBarrier, boost::mutex* initializedMutex, boost::condition_variable* initializedCondition, boost::mutex* startRenderingMutex, boost::mutex* renderingCompleteMutex, boost::condition_variable* startRenderingCond, boost::condition_variable* renderingCompleteCond);
 	~RenderThread();
 
 	static RenderingState renderingState;
@@ -68,6 +68,7 @@ public:
 	static int numThreadsReceivedRenderingComplete;
 	static int numRenderingThreads;
 	static int nextThreadId;
+	static int numThreadsInitComplete;
 
 private:
 	void render();
@@ -83,8 +84,10 @@ private:
 	int		_numRenderingThreads;
 	boost::shared_ptr<boost::thread> _thread;
 	boost::barrier* _swapBarrier;
+	boost::mutex* _initMutex;
 	boost::mutex* _startRenderingMutex;
 	boost::mutex* _renderingCompleteMutex;
+	boost::condition_variable* _initCond;
 	boost::condition_variable* _startRenderingCond;
 	boost::condition_variable* _renderingCompleteCond;
 	int _threadId;
@@ -102,7 +105,7 @@ private:
 	// Unfortunately windows does not default to supporting opengl > 1.1
 	// This is a hack to load the framebuffer and shader extensions needed to support
 	// interlaced and checkerboard stereo rendering. We have chosen not to use glew to avoid
-	// and additional dependency that can cause versioning conflicts with app kits that also use glew.
+	// an additional dependency that can cause versioning conflicts with app kits that also use glew.
 #ifdef _WIN32
 	// Framebuffer object
 	PFNGLGENFRAMEBUFFERSPROC                     pglGenFramebuffers;                      // FBO name generation procedure
@@ -141,41 +144,103 @@ private:
 	// Textures
 	PFNGLACTIVETEXTUREPROC						 pglActiveTexture;
 	
-	#define glGenFramebuffers                        pglGenFramebuffers
-	#define glDeleteFramebuffers                     pglDeleteFramebuffers
-	#define glBindFramebuffer                        pglBindFramebuffer
-	#define glCheckFramebufferStatus                 pglCheckFramebufferStatus
-	#define glGetFramebufferAttachmentParameteriv    pglGetFramebufferAttachmentParameteriv
-	#define glGenerateMipmap                         pglGenerateMipmap
-	#define glFramebufferTexture2D                   pglFramebufferTexture2D
-	#define glFramebufferRenderbuffer                pglFramebufferRenderbuffer
+	#ifndef glGenFramebuffers
+		#define glGenFramebuffers                        pglGenFramebuffers
+	#endif
+	#ifndef glDeleteFramebuffers
+		#define glDeleteFramebuffers                     pglDeleteFramebuffers
+	#endif
+	#ifndef glBindFramebuffer
+		#define glBindFramebuffer                        pglBindFramebuffer
+	#endif
+	#ifndef glCheckFramebufferStatus
+		#define glCheckFramebufferStatus                 pglCheckFramebufferStatus
+	#endif
+	#ifndef glGetFramebufferAttachmentParameteriv
+		#define glGetFramebufferAttachmentParameteriv    pglGetFramebufferAttachmentParameteriv
+	#endif
+	#ifndef glGenerateMipmap
+		#define glGenerateMipmap                         pglGenerateMipmap
+	#endif
+	#ifndef glFramebufferTexture2D
+		#define glFramebufferTexture2D                   pglFramebufferTexture2D
+	#endif
+	#ifndef glFramebufferRenderbuffer
+		#define glFramebufferRenderbuffer                pglFramebufferRenderbuffer
+	#endif
 
-	#define glGenRenderbuffers                       pglGenRenderbuffers
-	#define glDeleteRenderbuffers                    pglDeleteRenderbuffers
-	#define glBindRenderbuffer                       pglBindRenderbuffer
-	#define glRenderbufferStorage                    pglRenderbufferStorage
-	#define glGetRenderbufferParameteriv             pglGetRenderbufferParameteriv
-	#define glIsRenderbuffer                         pglIsRenderbuffer
+	#ifndef glGenRenderbuffers
+		#define glGenRenderbuffers                       pglGenRenderbuffers
+	#endif
+	#ifndef glDeleteRenderbuffers
+		#define glDeleteRenderbuffers                    pglDeleteRenderbuffers
+	#endif
+	#ifndef glBindRenderbuffer
+		#define glBindRenderbuffer                       pglBindRenderbuffer
+	#endif
+	#ifndef glRenderbufferStorage
+		#define glRenderbufferStorage                    pglRenderbufferStorage
+	#endif
+	#ifndef glGetRenderbufferParameteriv
+		#define glGetRenderbufferParameteriv             pglGetRenderbufferParameteriv
+	#endif
+	#ifndef glIsRenderBuffer
+		#define glIsRenderbuffer                         pglIsRenderbuffer
+	#endif
 
-	#define glCreateProgram							 pglCreateProgram
-	#define glCreateShader							 pglCreateShader
-	#define glShaderSource							 pglShaderSource
-	#define glCompileShader							 pglCompileShader
-	#define glGetObjectParameterivARB				 pglGetObjectParameterivARB
-	#define glAttachShader							 pglAttachShader
-	#define glLinkProgram							 pglLinkProgram
-	#define glGetShaderiv							 pglGetShaderiv
-	#define glGetProgramivARB						 pglGetProgramivARB
-	#define glUseProgram							 pglUseProgram
-	#define glGetUniformLocation					 pglGetUniformLocation
-	#define glUniform2f								 pglUniform2f
-	#define glUniform1i								 pglUniform1i
+	#ifndef glCreateProgram
+		#define glCreateProgram							 pglCreateProgram
+	#endif
+	#ifndef glCreateShader
+		#define glCreateShader							 pglCreateShader
+	#endif
+	#ifndef glShaderSource
+		#define glShaderSource							 pglShaderSource
+	#endif
+	#ifndef glCompileShader
+		#define glCompileShader							 pglCompileShader
+	#endif
+	#ifndef glGetObjectParameterivARB
+		#define glGetObjectParameterivARB				 pglGetObjectParameterivARB
+	#endif
+	#ifndef glAttachShader
+		#define glAttachShader							 pglAttachShader
+	#endif
+	#ifndef glLinkProgram
+		#define glLinkProgram							 pglLinkProgram
+	#endif	
+	#ifndef glGetShaderiv
+		#define glGetShaderiv							 pglGetShaderiv
+	#endif
+	#ifndef glGetProgramivARB
+		#define glGetProgramivARB						 pglGetProgramivARB
+	#endif
+	#ifndef glUseProgram
+		#define glUseProgram							 pglUseProgram
+	#endif
+	#ifndef glGetUniformLocation
+		#define glGetUniformLocation					 pglGetUniformLocation
+	#endif
+	#ifndef glUniform2f
+		#define glUniform2f								 pglUniform2f
+	#endif
+	#ifndef glUniform1i
+		#define glUniform1i								 pglUniform1i
+	#endif
 
-	#define glBindBuffer							 pglBindBuffer
-	#define glGenBuffers							 pglGenBuffers
-	#define glBufferData							 pglBufferData
+	#ifndef glBindBuffer
+		#define glBindBuffer							 pglBindBuffer
+	#endif
+	#ifndef glGenBuffers
+		#define glGenBuffers							 pglGenBuffers
+	#endif
+	#ifndef glBufferData
+		#define glBufferData							 pglBufferData
+	#endif
 
-	#define glActiveTexture							 pglActiveTexture
+	#ifndef glActiveTexture
+		#define glActiveTexture							 pglActiveTexture
+	#endif
 
 #endif
 };
