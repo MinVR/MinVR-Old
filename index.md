@@ -26,12 +26,14 @@ Tutorials and guides:
 - [Using MinVR in your project](docs/latest/using.html)
 - [Specifying a VR configuration](docs/latest/vrsetup.html)
 - [Handling MinVR events](docs/latest/events.html)
+- [Creating a new AppKit](docs/latest/creatingappkits.html)
+- [Contributing to MinVR](docs/latest/contributing.html)
 
 ###Questions and Issues
 
 If you have a question about how to use MinVR, a bug report to submit, or a feature request, please submit an issue or pull request on the [MinVR Repository issue tracker](https://github.com/MinVR/MinVR/issues).
 
-To suggest changes to this website, create a pull request for the `gh-pages` branch of the repository.
+To suggest changes to this website, create a pull request for the `gh-pages` branch of the repository. For directions on how to contribute code and issue a pull request, see the tutorial on [Contributing to MinVR](docs/latest/contributing.html).
 
 ###License
 

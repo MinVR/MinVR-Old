@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['iminnonneg',['iMinNonNeg',['../namespaceMinVR.html#aca3ed527d9f16d5ff6abdc0e05453d68',1,'MinVR']]],
+  ['init',['init',['../classMinVR_1_1AbstractMVREngine.html#ad8168356ad33bd8aa9c501f76488646e',1,'MinVR::AbstractMVREngine::init(int argc, char **argv)'],['../classMinVR_1_1AbstractMVREngine.html#a7f3b8d6817a6747cd5ed41e37230a0f4',1,'MinVR::AbstractMVREngine::init(ConfigMapRef configMap)']]],
+  ['initializecontextspecificvars',['initializeContextSpecificVars',['../classMinVR_1_1AbstractMVRApp.html#a3f2991552c105fcd41ad956ecb27e7ef',1,'MinVR::AbstractMVRApp::initializeContextSpecificVars()'],['../classMinVR_1_1AbstractMVREngine.html#a596f58b015f4645babe9a4e12fadaf0e',1,'MinVR::AbstractMVREngine::initializeContextSpecificVars()']]],
+  ['initializelogging',['initializeLogging',['../classMinVR_1_1AbstractMVREngine.html#aea4ebcc6bf7af98437ca8935e18199d5',1,'MinVR::AbstractMVREngine']]],
+  ['initpointertoobjectmap',['initPointerToObjectMap',['../classMinVR_1_1WindowGLFW.html#aacc8becf0ac447914909c182a0f7a660',1,'MinVR::WindowGLFW']]],
+  ['inputdevicespacenav',['InputDeviceSpaceNav',['../classMinVR_1_1InputDeviceSpaceNav.html',1,'MinVR']]],
+  ['inputdevicespacenav',['InputDeviceSpaceNav',['../classMinVR_1_1InputDeviceSpaceNav.html#a9804087495e26ba9da15c22be5117bed',1,'MinVR::InputDeviceSpaceNav']]],
+  ['inputdevicespacenav_2eh',['InputDeviceSpaceNav.H',['../InputDeviceSpaceNav_8H.html',1,'']]],
+  ['inputdevicetuioclient',['InputDeviceTUIOClient',['../classMinVR_1_1InputDeviceTUIOClient.html#abe1d3d7f0d266de381074c85ad636b78',1,'MinVR::InputDeviceTUIOClient::InputDeviceTUIOClient(int port=TUIO_PORT, double xScaleFactor=1.0, double yScaleFactor=1.0)'],['../classMinVR_1_1InputDeviceTUIOClient.html#aacac060d1a0d4f1bcba0e176f56eace9',1,'MinVR::InputDeviceTUIOClient::InputDeviceTUIOClient(const std::string name, const ConfigMapRef map)']]],
+  ['inputdevicetuioclient',['InputDeviceTUIOClient',['../classMinVR_1_1InputDeviceTUIOClient.html',1,'MinVR']]],
+  ['inputdevicetuioclient_2eh',['InputDeviceTUIOClient.H',['../InputDeviceTUIOClient_8H.html',1,'']]],
+  ['inputdevicevrpnanalog',['InputDeviceVRPNAnalog',['../classMinVR_1_1InputDeviceVRPNAnalog.html#a6f12e738f290c1360980b6f216e73637',1,'MinVR::InputDeviceVRPNAnalog::InputDeviceVRPNAnalog(const std::string &amp;vrpnAnalogDeviceName, const std::vector&lt; std::string &gt; &amp;eventsToGenerate)'],['../classMinVR_1_1InputDeviceVRPNAnalog.html#acf63be06bb75544e9e18b906bb315dd7',1,'MinVR::InputDeviceVRPNAnalog::InputDeviceVRPNAnalog(const std::string name, const ConfigMapRef map)']]],
+  ['inputdevicevrpnanalog',['InputDeviceVRPNAnalog',['../classMinVR_1_1InputDeviceVRPNAnalog.html',1,'MinVR']]],
+  ['inputdevicevrpnanalog_2eh',['InputDeviceVRPNAnalog.H',['../InputDeviceVRPNAnalog_8H.html',1,'']]],
+  ['inputdevicevrpnbutton',['InputDeviceVRPNButton',['../classMinVR_1_1InputDeviceVRPNButton.html',1,'MinVR']]],
+  ['inputdevicevrpnbutton',['InputDeviceVRPNButton',['../classMinVR_1_1InputDeviceVRPNButton.html#a07f98a7f8bbb5dcfe5e2faff6c0629f4',1,'MinVR::InputDeviceVRPNButton::InputDeviceVRPNButton(const std::string &amp;vrpnButtonDeviceName, const std::vector&lt; std::string &gt; &amp;eventsToGenerate)'],['../classMinVR_1_1InputDeviceVRPNButton.html#a32d350d07b6b3e0b138893f58fe9193f',1,'MinVR::InputDeviceVRPNButton::InputDeviceVRPNButton(const std::string name, const ConfigMapRef map)']]],
+  ['inputdevicevrpnbutton_2eh',['InputDeviceVRPNButton.H',['../InputDeviceVRPNButton_8H.html',1,'']]],
+  ['inputdevicevrpntracker',['InputDeviceVRPNTracker',['../classMinVR_1_1InputDeviceVRPNTracker.html',1,'MinVR']]],
+  ['inputdevicevrpntracker',['InputDeviceVRPNTracker',['../classMinVR_1_1InputDeviceVRPNTracker.html#a85d732dab1c5910467eafe5c768a0aeb',1,'MinVR::InputDeviceVRPNTracker::InputDeviceVRPNTracker(const std::string &amp;vrpnTrackerDeviceName, const std::vector&lt; std::string &gt; &amp;eventsToGenerate, const double &amp;trackerUnitsToRoomUnitsScale, const glm::mat4 &amp;deviceToRoom, const std::vector&lt; glm::mat4 &gt; &amp;propToTracker, const std::vector&lt; glm::mat4 &gt; &amp;finalOffset, const bool &amp;waitForNewReportInPoll, const bool &amp;convertLHtoRH=false, const bool &amp;ignoreZeroes=false)'],['../classMinVR_1_1InputDeviceVRPNTracker.html#a553ff8931b3cda727dab9e73f219270b',1,'MinVR::InputDeviceVRPNTracker::InputDeviceVRPNTracker(const std::string name, const ConfigMapRef map)']]],
+  ['inputdevicevrpntracker_2eh',['InputDeviceVRPNTracker.H',['../InputDeviceVRPNTracker_8H.html',1,'']]],
+  ['insertintoarray',['insertIntoArray',['../namespaceMinVR.html#a9d0ed301dde0dbd0c7e25c142d5ea072',1,'MinVR']]],
+  ['instance',['instance',['../classMinVR_1_1DataFileUtils.html#aa8abc7f20674eee80a58a15052df56cf',1,'MinVR::DataFileUtils']]],
+  ['inttostring',['intToString',['../namespaceMinVR.html#aa6b728c7037a81efd7dc40293c4d2217',1,'MinVR']]],
+  ['invertymat',['invertYMat',['../classMinVR_1_1CameraOffAxis.html#a5826ba41e1868cd4805a1327c65f846a',1,'MinVR::CameraOffAxis']]]
+];
