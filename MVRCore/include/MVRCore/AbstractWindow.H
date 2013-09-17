@@ -38,7 +38,7 @@
 
 namespace MinVR {
 
-typedef boost::shared_ptr<class AbstractWindow> WindowRef;
+typedef std::shared_ptr<class AbstractWindow> WindowRef;
 
 /*! @brief Base class for windows
 */

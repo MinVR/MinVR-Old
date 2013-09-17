@@ -33,7 +33,7 @@
 
 namespace MinVR {
 
-typedef boost::shared_ptr<class AbstractCamera> AbstractCameraRef;
+typedef std::shared_ptr<class AbstractCamera> AbstractCameraRef;
 
 class AbstractCamera
 {

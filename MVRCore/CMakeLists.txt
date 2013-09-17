@@ -49,6 +49,8 @@ include/MVRCore/Rect2D.H
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	# Mac OS X specific code
 	set (SOURCEFILES ${SOURCEFILES} source/InputDeviceSpaceNav_OSX.cpp)
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

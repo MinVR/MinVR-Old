@@ -40,16 +40,21 @@
 #ifdef WIN32
 #define NOMINMAX
 #include <windows.h>
-#endif
 #include <GL/gl.h>
+#endif
+#ifdef __APPLE__
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/glu.h>
+#endif
 #include "GL/glext.h"
+
 
 namespace MinVR {
 
 // forward declaration
 class AbstractMVREngine;
 
-typedef boost::shared_ptr<class RenderThread> RenderThreadRef;
+typedef std::shared_ptr<class RenderThread> RenderThreadRef;
 
 class RenderThread
 {
@@ -96,7 +101,7 @@ private:
 	GLuint _leftEyeTexture;
 	GLuint _rightEyeTexture;
 	GLuint _depthRBO;
-	GLhandleARB _stereoProgram;
+	GLuint _stereoProgram;
 	GLfloat _fullscreenVertices[8];
 	GLuint _fullscreenIndices[4];
 	GLuint _vertexBuffer;

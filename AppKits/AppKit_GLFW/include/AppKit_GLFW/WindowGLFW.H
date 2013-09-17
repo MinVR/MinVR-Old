@@ -32,8 +32,12 @@
 #include "GL/glew.h"
 #ifdef _WIN32
 #include "GL/wglew.h"
-#else
+#elseif (!defined(__APPLE__))
 #include "GL/glxew.h"
+#endif
+
+#ifdef __APPLE__
+#define CALLBACK
 #endif
 
 #include <GLFW/glfw3.h>

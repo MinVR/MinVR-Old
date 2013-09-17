@@ -49,6 +49,7 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 
 	// If we have access to the nvidia affinity extension, discover the gpus on the system
 	// and find which one corresponds with this window size and position.
+#ifdef _MSC_VER
 	if (settings->useGPUAffinity) {
 		GPU_DEVICE gpus[MAX_AFFINITY_GPUS];
 		if (WGLEW_NV_gpu_affinity) {
@@ -74,7 +75,7 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 			glfwWindowHint(GLFW_AFFINITY_GPU, currentGPU);
 		}
 	}
-	
+#endif
 	glfwWindowHint(GLFW_ALPHA_BITS, settings->alphaBits);
 	glfwWindowHint(GLFW_DEPTH_BITS, settings->depthBits);
 	glfwWindowHint(GLFW_DECORATED, settings->framed);
@@ -600,6 +601,11 @@ string WindowGLFW::getModsName(int mods)
 
     return modName;
 }
+    
+
+#ifndef _MSC_VER
+#define _snprintf snprintf
+#endif
 
 void WindowGLFW::formatDebugOutputARB(char outStr[], size_t outStrSize, GLenum source, GLenum type, GLuint id, GLenum severity, const char *msg)
 {

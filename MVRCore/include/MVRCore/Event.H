@@ -36,10 +36,10 @@
 namespace MinVR {
 
 class AbstractWindow;
-typedef boost::shared_ptr<class AbstractWindow> WindowRef;
+typedef std::shared_ptr<class AbstractWindow> WindowRef;
 
 class Event;
-typedef boost::shared_ptr<class Event> EventRef;
+typedef std::shared_ptr<class Event> EventRef;
 
 /// Creates a copy of the Event pointed to by e and returns a ref
 /// counted pointer to the new copy.

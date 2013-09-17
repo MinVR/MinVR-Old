@@ -33,7 +33,7 @@
 
 namespace MinVR {
 
-typedef boost::shared_ptr<class AbstractInputDevice> AbstractInputDeviceRef;
+typedef std::shared_ptr<class AbstractInputDevice> AbstractInputDeviceRef;
 
 /*! @brief Base class for InputDevices.
  *  Input Devices should be polled once

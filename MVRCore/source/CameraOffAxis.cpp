@@ -29,9 +29,14 @@
 #ifdef WIN32
 #define NOMINMAX
 #include <windows.h>
-#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
+
+#ifdef __APPLE__
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/glu.h>
+#endif
 
 namespace MinVR
 {
@@ -79,9 +84,9 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::mat4 newHeadFrame)
 	glm::mat4 rightEye2Room = getRightEyeFrame();
   
 	// 2. Setup projection matrix
-	glm::vec3 head = glm::column((_room2tile * head2Room), 3).xyz;
-	glm::vec3 left = glm::column((_room2tile * leftEye2Room), 3).xyz;
-	glm::vec3 right = glm::column((_room2tile * rightEye2Room), 3).xyz;
+	glm::vec3 head = glm::column((_room2tile * head2Room), 3).xyz();
+	glm::vec3 left = glm::column((_room2tile * leftEye2Room), 3).xyz();
+	glm::vec3 right = glm::column((_room2tile * rightEye2Room), 3).xyz();
 	
 
 	double lHead = (-_halfWidth - head.x);

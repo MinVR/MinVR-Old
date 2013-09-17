@@ -45,6 +45,9 @@
 #include "MVRCore/DataFileUtils.H"
 #include "MVRCore/Event.H"
 #include <glm/glm.hpp>
+#ifdef nil
+#undef nil
+#endif
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>

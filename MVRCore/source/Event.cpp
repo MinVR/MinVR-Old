@@ -210,25 +210,25 @@ EventRef createCopyOfEvent(EventRef e)
 {
 	switch (e->getType()) {
 		case Event::EVENTTYPE_STANDARD:
-			return boost::shared_ptr<Event>(new Event(e->getName(), e->getWindow(), e->getId()));
+			return std::shared_ptr<Event>(new Event(e->getName(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_1D:
-			return boost::shared_ptr<Event>(new Event(e->getName(),e->get1DData(), e->getWindow(), e->getId()));
+			return std::shared_ptr<Event>(new Event(e->getName(),e->get1DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_2D:
-			return boost::shared_ptr<Event>(new Event(e->getName(),e->get2DData(), e->getWindow(), e->getId()));
+			return std::shared_ptr<Event>(new Event(e->getName(),e->get2DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_3D:
-			return boost::shared_ptr<Event>(new Event(e->getName(),e->get3DData(), e->getWindow(), e->getId()));
+			return std::shared_ptr<Event>(new Event(e->getName(),e->get3DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_4D:
-			return boost::shared_ptr<Event>(new Event(e->getName(),e->get4DData(), e->getWindow(), e->getId()));
+			return std::shared_ptr<Event>(new Event(e->getName(),e->get4DData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_COORDINATEFRAME:
-			return boost::shared_ptr<Event>(new Event(e->getName(),e->getCoordinateFrameData(), e->getWindow(), e->getId()));
+			return std::shared_ptr<Event>(new Event(e->getName(),e->getCoordinateFrameData(), e->getWindow(), e->getId()));
 			break;
 		case Event::EVENTTYPE_MSG:
-			return boost::shared_ptr<Event>(new Event(e->getName(),e->getMsgData(), e->getWindow(), e->getId()));
+			return std::shared_ptr<Event>(new Event(e->getName(),e->getMsgData(), e->getWindow(), e->getId()));
 			break;
 		default:
 			BOOST_ASSERT_MSG(false, "createCopyOfEvent: Unknown event type!");

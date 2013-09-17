@@ -36,6 +36,7 @@
 #include <boost/filesystem/fstream.hpp>
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
+#include <sstream>
 
 // Can be used to get a quoted version of the value of a particular #define
 #define DEFINE_TO_QUOTED_STR( d ) #d
@@ -139,7 +140,7 @@ static inline bool retypeString(const std::string &str, T &val) {
   std::istringstream is(str.c_str());
   is >> val;
   if (!is) {
-	  BOOST_LOG_TRIVIAL(error) << "Error retyping string: " <<str
+	  BOOST_LOG_TRIVIAL(error) << "Error retyping string: " <<str;
 	  return false;
   }
   else return true;
@@ -162,8 +163,8 @@ template <class T>
 std::vector<T> insertIntoArray(std::vector<T> inputArray, T newElement, 
 			 int insertBeforeElementNum) 
 {
-	debugAssert(insertBeforeElementNum >= 0);
-	debugAssert(insertBeforeElementNum <= inputArray.size());
+	assert(insertBeforeElementNum >= 0);
+	assert(insertBeforeElementNum <= inputArray.size());
 
 	std::vector<T> anew;
   

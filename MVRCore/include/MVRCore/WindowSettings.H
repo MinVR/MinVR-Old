@@ -44,7 +44,7 @@
 
 namespace MinVR {
 
-typedef boost::shared_ptr<class WindowSettings> WindowSettingsRef;
+typedef std::shared_ptr<class WindowSettings> WindowSettingsRef;
 
 class WindowSettings
 {

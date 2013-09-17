@@ -118,7 +118,7 @@ static inline void notFoundWarning(const std::string &keyString) {
 /// don't require a type conversion, but can confuse a compiler.
 template <class KEYTYPE, class VALTYPE>
 VALTYPE ConfigVal(KEYTYPE keyString, const VALTYPE &defaultVal, bool warn=true) {
-	BOOST_ASSERT_MSG(ConfigValMap::map.notNull(), "The global config map is NULL!");
+	BOOST_ASSERT_MSG(ConfigValMap::map, "The global config map is NULL!");
 	if (!ConfigValMap::map->containsKey(keyString)) {
 		if (warn) {
 			notFoundWarning(keyString);
@@ -131,8 +131,8 @@ VALTYPE ConfigVal(KEYTYPE keyString, const VALTYPE &defaultVal, bool warn=true) 
 		VALTYPE val;
 		bool ok = retypeVal(valString, val);
 		if (!ok) {
-			std::string errString = string("ERROR: ConfigVal is unable to retype value.\n\tKey:\t'") 
-				+ keyString + string("'\n\tValue:\t'") + valString + string("'\n");
+			std::string errString = std::string("ERROR: ConfigVal is unable to retype value.\n\tKey:\t'")
+            + keyString + std::string("'\n\tValue:\t'") + valString + std::string("'\n");
 			std::cout << errString;
 		}
 		return val;

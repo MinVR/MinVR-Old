@@ -37,6 +37,10 @@ set(glfw_INSTALL_DIR "${MINVR_INSTALL_DIR}/glfw")
 set(glfw_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${glfw_INSTALL_DIR})
 set(glfw_DIR "${glfw_INSTALL_DIR}")
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+		set(glfw_CMAKE_ARGS ${glfw_CMAKE_ARGS} -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD="c++11" -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="libc++")
+endif()
+
 ExternalProject_add(glfw
 		PREFIX ${glfw_PREFIX}
 		GIT_REPOSITORY https://github.com/bretjackson/glfw.git
@@ -48,7 +52,11 @@ ExternalProject_add(glfw
 set_property(TARGET glfw PROPERTY FOLDER "Dependencies")
 
 set(GLFW_INCLUDE_DIR ${glfw_INSTALL_DIR}/include CACHE INTERNAL "Directory of GLFW header files")
-set(GLFW_LIBRARY ${glfw_INSTALL_DIR}/lib/glfw3.lib CACHE INTERNAL "GLFW lib file")
+if(MSVC)
+	set(GLFW_LIBRARY ${glfw_INSTALL_DIR}/lib/glfw3.lib CACHE INTERNAL "GLFW lib file")
+else()
+	set(GLFW_LIBRARY ${glfw_INSTALL_DIR}/lib/libglfw3.a CACHE INTERNAL "GLFW lib file")
+endif()	
 include_directories(${GLFW_INCLUDE_DIR})
 
 #------------------------------------------
@@ -71,6 +79,11 @@ if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	# Tell MSVC to use main instead of WinMain for Windows subsystem executables
     set_target_properties(${WINDOWS_BINARIES} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 endif()
 
 #------------------------------------------

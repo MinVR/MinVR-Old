@@ -38,7 +38,7 @@
 
 namespace MinVR {
 
-typedef boost::shared_ptr<class AbstractMVRApp> AbstractMVRAppRef;
+typedef std::shared_ptr<class AbstractMVRApp> AbstractMVRAppRef;
 
 /*! @brief Pure virtual base class for MinVR applications.
  *

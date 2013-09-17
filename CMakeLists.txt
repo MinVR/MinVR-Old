@@ -12,8 +12,8 @@ set(MINVR_VERSION "${MINVR_VERSION_MAJOR}.${MINVR_VERSION_MINOR}")
 set(MINVR_VERSION_FULL "${MINVR_VERSION}.${MINVR_VERSION_PATCH}${MINVR_VERSION_EXTRA}")
 
 option(USE_VRPN "Enable events from vrpn devices" ON)
-option(USE_TUIO "Enable generation of events from a tuio device" ON)
-option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" ON)
+option(USE_TUIO "Enable generation of events from a tuio device" OFF)
+option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" OFF)
 
 option(USE_APPKIT_GLFW "Enable to use the GLFW app kit" ON)
 option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" ON)
@@ -51,8 +51,14 @@ if (USE_VRPN)
 		include(ExternalProject)
 		set(vrpn_PREFIX "${vrpn_checkout_Dir}")
 		set(vrpn_INSTALL_DIR "${MINVR_INSTALL_DIR}/vrpn")
-		set(vrpn_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${vrpn_INSTALL_DIR} -DVRPN_BUILD_DIRECTSHOW_VIDEO_SERVER=OFF -DVRPN_USE_HID=ON -DVRPN_HID_DEBUGGING=ON -DVRPN_BUILD_HID_GUI=OFF -DVRPN_BUILD_JAVA=OFF -DVRPN_BUILD_PYTHON=OFF -DVRPN_USE_DIRECTINPUT=OFF -DVRPN_USE_DIRECTSHOW=OFF -DVRPN_USE_LOCAL_HIDAPI=ON")
+		set(vrpn_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${vrpn_INSTALL_DIR} -DVRPN_BUILD_DIRECTSHOW_VIDEO_SERVER=OFF -DVRPN_USE_HID=ON -DVRPN_HID_DEBUGGING=ON -DVRPN_BUILD_HID_GUI=OFF -DVRPN_BUILD_JAVA=OFF -DVRPN_BUILD_PYTHON=OFF -DVRPN_USE_DIRECTINPUT=OFF -DVRPN_USE_DIRECTSHOW=OFF -DVRPN_USE_LOCAL_HIDAPI=ON)
 		set(vrpn_DIR "${vrpn_INSTALL_DIR}")
+
+
+		if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+			set(vrpn_CMAKE_ARGS ${vrpn_CMAKE_ARGS} -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD=c++11 -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY=libc++)
+		endif()
+
 		ExternalProject_add(vrpn
 				PREFIX ${vrpn_PREFIX}
 				URL http://www.cs.unc.edu/Research/vrpn/downloads/vrpn_07_30.zip
@@ -61,7 +67,11 @@ if (USE_VRPN)
 		 )		 
 		set_property(TARGET vrpn PROPERTY FOLDER "Dependencies")
 		set(VRPN_INCLUDE_DIR ${vrpn_INSTALL_DIR}/include CACHE INTERNAL "Directory of VRPN header files")
-		set(VRPN_LIBRARY ${vrpn_INSTALL_DIR}/lib/vrpn.lib CACHE INTERNAL "VRPN lib file")
+		if(MSVC)
+			set(VRPN_LIBRARY ${vrpn_INSTALL_DIR}/lib/vrpn.lib CACHE INTERNAL "VRPN lib file")
+		else()
+			set(VRPN_LIBRARY ${vrpn_INSTALL_DIR}/lib/libvrpn.a CACHE INTERNAL "VRPN lib file")
+		endif()	
 		add_definitions(-DUSE_VRPN)
 		set(LIBS_ALL ${LIBS_ALL} ${VRPN_LIBRARY})
 		include_directories(${VRPN_INCLUDE_DIR})
@@ -84,6 +94,11 @@ if (USE_TUIO)
 		set(tuio_INSTALL_DIR "${MINVR_INSTALL_DIR}/tuio")
 		set(tuio_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${tuio_INSTALL_DIR}")
 		set(tuio_DIR "${tuio_INSTALL_DIR}")
+
+		if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+			set(tuio_CMAKE_ARGS ${tuio_CMAKE_ARGS} -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD=c++11 -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY=libc++)
+		endif()
+
 		ExternalProject_add(TUIO
 				PREFIX ${tuio_PREFIX}
 				URL http://prdownloads.sourceforge.net/reactivision/TUIO_CPP-1.4.zip
@@ -92,7 +107,11 @@ if (USE_TUIO)
 		 )		 
 		set_property(TARGET TUIO PROPERTY FOLDER "Dependencies")
 		set(TUIO_INCLUDE_DIR ${tuio_INSTALL_DIR}/include CACHE INTERNAL "Directory of TUIO header files")
-		set(TUIO_LIBRARY ${tuio_INSTALL_DIR}/lib/TUIO.lib CACHE INTERNAL "TUIO lib file")
+		if(MSVC)
+			set(TUIO_LIBRARY ${tuio_INSTALL_DIR}/lib/TUIO.lib CACHE INTERNAL "TUIO lib file")
+		else()
+			set(TUIO_LIBRARY ${tuio_INSTALL_DIR}/lib/libTUIO.a CACHE INTERNAL "TUIO lib file")
+		endif()
 		add_definitions(-DUSE_TUIO)
 		set(LIBS_ALL ${LIBS_ALL} ${TUIO_LIBRARY})
 		include_directories(${TUIO_INCLUDE_DIR})
@@ -131,8 +150,8 @@ elseif(BUILD_DEPENDENCIES)
         set(boost_CONFIGURE_COMMAND <SOURCE_DIR>/bootstrap.bat)
         set(boost_BUILD_COMMAND <SOURCE_DIR>/b2 install --prefix=${boost_INSTALL_DIR} --with-thread --with-chrono --with-date_time --with-log --with-filesystem toolset=msvc-10.0 link=static runtime-link=shared threading=multi address-model=64 variant=debug,release)
      else()
-        set(boost_CONFIGURE_COMMAND <SOURCE_DIR>/bootstrap.sh)
-        set(boost_BUILD_COMMAND <SOURCE_DIR>/b2 install --prefix=${boost_INSTALL_DIR} --with-thread --with-chrono --with-date_time --with-log --with-filesystem link=static runtime-link=shared threading=multi address-model=64 variant=debug,release)
+        set(boost_CONFIGURE_COMMAND <SOURCE_DIR>/bootstrap.sh cxxflags="-std=c++11 -stdlib=libc++" --with-toolset=clang)
+        set(boost_BUILD_COMMAND <SOURCE_DIR>/b2 install --prefix=${boost_INSTALL_DIR} --with-thread --with-chrono --with-date_time --with-log --with-filesystem toolset=clang cxxflags=-std=c++11 cxxflags=-stdlib=libc++ linkflags=-stdlib=libc++ link=static runtime-link=shared threading=multi address-model=64 variant=release)
      endif()
      ExternalProject_add(boost
      		  PREFIX ${boost_PREFIX}
@@ -144,12 +163,18 @@ elseif(BUILD_DEPENDENCIES)
      		  BUILD_IN_SOURCE 1
      )
 	 
-	 set_property(TARGET boost PROPERTY FOLDER "Dependencies")
-
-	 set( Boost_DIR ${boost_INSTALL_DIR} CACHE PATH "Boost Root Directory")
-     set( Boost_INCLUDE_DIR ${boost_INSTALL_DIR}/include/boost-1_54 CACHE PATH "Boost Include directory" FORCE)
-	 set( Boost_LIBRARY_DIRS ${boost_INSTALL_DIR}/lib CACHE PATH "Boost Library directory" FORCE)
-     set( Boost_LIBRARIES optimized ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-gd-1_54.lib CACHE INTERNAL "Boost libraries needed to compile MINVR apps")
+    set_property(TARGET boost PROPERTY FOLDER "Dependencies")
+    
+    set( Boost_DIR ${boost_INSTALL_DIR} CACHE PATH "Boost Root Directory")
+    set( Boost_LIBRARY_DIRS ${boost_INSTALL_DIR}/lib CACHE PATH "Boost Library directory" FORCE)
+    
+    if(MSVC)
+        set( Boost_INCLUDE_DIR ${boost_INSTALL_DIR}/include/boost-1_54 CACHE PATH "Boost Include directory" FORCE)
+        set( Boost_LIBRARIES optimized ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-gd-1_54.lib CACHE INTERNAL "Boost libraries needed to compile MINVR apps")
+    else()
+        set( Boost_INCLUDE_DIR ${boost_INSTALL_DIR}/include CACHE PATH "Boost Include directory" FORCE)
+        set( Boost_LIBRARIES ${Boost_LIBRARY_DIRS}/libboost_chrono.a ${Boost_LIBRARY_DIRS}/libboost_date_time.a ${Boost_LIBRARY_DIRS}/libboost_system.a ${Boost_LIBRARY_DIRS}/libboost_thread.a ${Boost_LIBRARY_DIRS}/libboost_filesystem.a ${Boost_LIBRARY_DIRS}/libboost_log_setup.a ${Boost_LIBRARY_DIRS}/libboost_log.a CACHE INTERNAL "Boost libraries needed to compile MINVR apps")
+    endif()
 else ()
 	message("   Set the BOOST_ROOT env var and re-configure, or set BUILD_BOOST to ON to download and build boost automatically.")
 endif()
@@ -158,7 +183,12 @@ include_directories(${Boost_INCLUDE_DIR})
 add_definitions(-DGLM_SWIZZLE)
 include_directories(dependencies/glm)
 
-#add_subdirectory (dependencies/G3DLite)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    # Mac OS X specific code
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+endif()
+
 add_subdirectory (MVRCore)
 
 #Compile the user specified App Kits

@@ -42,6 +42,11 @@ if (MSVC)
 	set_target_properties(${WINDOWS_BINARIES} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
 endif()
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+endif()
+
 make_directory(${CMAKE_BINARY_DIR}/lib)
 make_directory(${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -70,6 +75,12 @@ elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
 	set(CMAKE_BUILD_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
 else()
 	set(CMAKE_BUILD_POSTFIX "")
+endif()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+		find_library(COCOA_LIB Cocoa)
+		find_library(IOKIT_LIB IOKit)
+		set(LIBS_ALL ${LIBS_ALL} ${COCOA_LIB} ${IOKIT_LIB})
 endif()
 
 # Build Target
