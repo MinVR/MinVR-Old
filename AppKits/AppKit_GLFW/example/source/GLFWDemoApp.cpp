@@ -177,8 +177,6 @@ void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef
 		std::cout << "GLERROR: "<<err<<std::endl;
 	}
 
-	std::cout<< "\t drawing thread "<<threadId<<std::endl;
-		
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, *(_vboId.get()));
 
     // enable vertex arrays

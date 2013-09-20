@@ -11,7 +11,7 @@ find_library(G3D NAMES libG3D_x64.a G3D_x64.lib G3D_x64
 find_library(GLG3Dd NAMES libGLG3D_x64d.a GLG3D_x64d.lib GLG3D_x64d
              HINTS $ENV{G}/src/G3D/G3D-9.0/${GBUILDSTR} $ENV{G3D9_LIB_DIR} ${G3D9_LIB_DIR})
 
-find_library(G3Dd NAMES libG3Dd.a G3D_x64d.lib G3D_x64d
+find_library(G3Dd NAMES libG3D_x64d.a G3D_x64d.lib G3D_x64d
              HINTS $ENV{G}/src/G3D/G3D-9.0/${GBUILDSTR} $ENV{G3D9_LIB_DIR} ${G3D9_LIB_DIR})
 
 find_library(zlib NAMES libz_x64.a z_x64.lib zlib_x64.lib z zlib_x64

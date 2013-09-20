@@ -12,6 +12,7 @@ else
   UNAME=$(shell uname)
   ifeq ($(UNAME), Linux)
     ARCH=linux
+    NPROCS = $(shell nproc)
   else ifeq ($(UNAME), Darwin)
     ARCH=OSX
   else
@@ -20,7 +21,7 @@ else
 endif
 
 
-all: gen debug release
+all: gen
 
 gen:
 	mkdir -p ./build
@@ -37,14 +38,14 @@ gen:
 
 debug:
     ifeq ($(ARCH), linux) 
-	  cd ./build/$(GBUILDSTR)/Debug; make
+	  cd ./build/$(GBUILDSTR)/Debug; make -j$(NPROC)
     else
 	  @echo "Open the project file to build the project on this architecture."
     endif
 
 release opt:
     ifeq ($(ARCH), linux) 
-	  cd ./build/$(GBUILDSTR)/Release; make
+	  cd ./build/$(GBUILDSTR)/Release; make -j$(NPROC)
     else
 	  @echo "Open the project file to build the project on this architecture."
     endif

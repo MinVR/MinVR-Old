@@ -26,7 +26,7 @@
 //========================================================================
 
 // Only compile/include this if USE_SPACENAV is defined
-#include "MVRCore/InputDeviceSpaceNav.h"
+#include "MVRCore/InputDeviceSpaceNav.H"
 
 namespace MinVR {
 

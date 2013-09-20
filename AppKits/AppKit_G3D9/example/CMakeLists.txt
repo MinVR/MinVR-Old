@@ -47,6 +47,13 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 endif()
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	find_package(Threads)
+	find_package(X11)
+	include_directories(${X11_INCLUDE_DIR})
+	set(LIBS_ALL ${LIBS_ALL} ${CMAKE_THREAD_LIBS_INIT} rt Xrandr Xxf86vm Xi m ${X11_LIBRARIES})
+endif()
+
 make_directory(${CMAKE_BINARY_DIR}/lib)
 make_directory(${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -86,6 +93,6 @@ endif()
 # Build Target
 add_executable ( ${PROJECT_NAME} ${HEADERFILES} ${SOURCEFILES} )
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "Examples")
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${G3D9_LIBRARIES} ${LIBS_OPT} ${LIBS_DEBUG} ${LIBS_ALL} debug MVRCore debug AppKit_G3D9)
+target_link_libraries(${PROJECT_NAME} AppKit_G3D9 MVRCore ${G3D9_LIBRARIES} ${Boost_LIBRARIES} ${LIBS_OPT} ${LIBS_DEBUG} ${LIBS_ALL})
 add_dependencies( ${PROJECT_NAME} boost MVRCore AppKit_G3D9)
 

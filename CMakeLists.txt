@@ -48,15 +48,18 @@ if (USE_VRPN)
 	elseif(BUILD_DEPENDENCIES)
 		set(vrpn_checkout_Dir ${CMAKE_SOURCE_DIR}/dependencies/vrpn)
 		make_directory(${vrpn_checkout_Dir})
+        message("   Library will be built from source in ${vrpn_checkout_Dir}.")
 		include(ExternalProject)
 		set(vrpn_PREFIX "${vrpn_checkout_Dir}")
 		set(vrpn_INSTALL_DIR "${MINVR_INSTALL_DIR}/vrpn")
-		set(vrpn_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${vrpn_INSTALL_DIR} -DVRPN_BUILD_DIRECTSHOW_VIDEO_SERVER=OFF -DVRPN_USE_HID=ON -DVRPN_HID_DEBUGGING=ON -DVRPN_BUILD_HID_GUI=OFF -DVRPN_BUILD_JAVA=OFF -DVRPN_BUILD_PYTHON=OFF -DVRPN_USE_DIRECTINPUT=OFF -DVRPN_USE_DIRECTSHOW=OFF -DVRPN_USE_LOCAL_HIDAPI=ON)
+		set(vrpn_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${vrpn_INSTALL_DIR} -DVRPN_BUILD_DIRECTSHOW_VIDEO_SERVER=OFF -DVRPN_BUILD_HID_GUI=OFF -DVRPN_BUILD_JAVA=OFF -DVRPN_BUILD_PYTHON=OFF -DVRPN_USE_DIRECTINPUT=OFF -DVRPN_USE_DIRECTSHOW=OFF)
 		set(vrpn_DIR "${vrpn_INSTALL_DIR}")
 
 
 		if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 			set(vrpn_CMAKE_ARGS ${vrpn_CMAKE_ARGS} -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD=c++11 -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY=libc++)
+		elseif(MSVC)
+				set(vrpn_CMAKE_ARGS ${vrpn_CMAKE_ARGS} -DVRPN_USE_HID=ON -DVRPN_HID_DEBUGGING=ON -DVRPN_USE_LOCAL_HIDAPI=ON)
 		endif()
 
 		ExternalProject_add(vrpn
@@ -89,6 +92,7 @@ if (USE_TUIO)
 	elseif(BUILD_DEPENDENCIES)
 		set(tuio_checkout_Dir ${CMAKE_SOURCE_DIR}/dependencies/tuio)
 		make_directory(${tuio_checkout_Dir})
+        message("   Library will be built from source in ${tuio_checkout_Dir}.")
 		include(ExternalProject)
 		set(tuio_PREFIX "${tuio_checkout_Dir}")
 		set(tuio_INSTALL_DIR "${MINVR_INSTALL_DIR}/tuio")
@@ -160,6 +164,7 @@ elseif(BUILD_DEPENDENCIES)
      		  CONFIGURE_COMMAND ${boost_CONFIGURE_COMMAND}
               BUILD_COMMAND ${boost_BUILD_COMMAND}
      		  INSTALL_DIR ${boost_INSTALL_DIR}
+			  INSTALL_COMMAND ""
      		  BUILD_IN_SOURCE 1
      )
 	 
@@ -187,6 +192,8 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     # Mac OS X specific code
 	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
 	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
 add_subdirectory (MVRCore)

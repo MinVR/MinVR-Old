@@ -45,7 +45,7 @@ Makefile to link with the SDK.
 #define SPACENAVDEV_H
 
 #include <glm/glm.hpp>
-#include "MVRCore/AbstractInputDevice.h"
+#include "MVRCore/AbstractInputDevice.H"
 #include "MVRCore/ConfigMap.H"
 #include "MVRCore/Event.H"
 #include <vector>

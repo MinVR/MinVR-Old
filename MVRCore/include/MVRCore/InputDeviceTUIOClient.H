@@ -35,7 +35,7 @@
 #endif
 
 
-#include "MVRCore/AbstractInputDevice.h"
+#include "MVRCore/AbstractInputDevice.H"
 #include "MVRCore/ConfigMap.H"
 #include "MVRCore/Event.H"
 #include <vector>

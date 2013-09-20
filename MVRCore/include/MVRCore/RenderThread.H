@@ -37,14 +37,17 @@
 #include <boost/filesystem.hpp>
 #include "MVRCore/StringUtils.H"
 
-#ifdef WIN32
+#if defined(WIN32)
 #define NOMINMAX
 #include <windows.h>
 #include <GL/gl.h>
-#endif
-#ifdef __APPLE__
+#elif defined(__APPLE__)
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/glu.h>
+#else
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glu.h>
 #endif
 #include "GL/glext.h"
 

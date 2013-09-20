@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 #include "MVRCore/StringUtils.H"
 #include <boost/filesystem.hpp>
 
