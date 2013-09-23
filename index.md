@@ -35,9 +35,11 @@ If you have a question about how to use MinVR, a bug report to submit, or a feat
 
 To suggest changes to this website, create a pull request for the `gh-pages` branch of the repository. For directions on how to contribute code and issue a pull request, see the tutorial on [Contributing to MinVR](docs/latest/contributing.html).
 
-###License
+###License and History
 
-MinVR is licensed under the MIT License. This allows you to do anything you want with the MinVR code as long as you provide attribution and don’t hold us  liable. A copy of the license can be found in the `LICENSE.txt` file and in every header file in the source code.
+MinVR is derived from the [VRG3D project](https://sourceforge.net/projects/vrg3d) which provides a VR wrapper around the [G3D graphics library](g3d.sourceforge.net). Derived classes are copyright to the Regents of the University of Minnesota and Brown University. MinVR uses the same license as VRG3D and G3D.
+
+MinVR is licensed under the BSD-3 Clause License. This allows you to do almost anything you want with the MinVR code as long as you provide attribution, don’t hold us liable, and do not use our names for marketing purposes. A copy of the license can be found in the `LICENSE.txt` file and in every header file in the source code.
 
 ###Authors and Contributors
 
