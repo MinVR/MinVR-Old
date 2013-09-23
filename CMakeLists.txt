@@ -98,6 +98,7 @@ if (USE_TUIO)
 		set(tuio_INSTALL_DIR "${MINVR_INSTALL_DIR}/tuio")
 		set(tuio_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${tuio_INSTALL_DIR}")
 		set(tuio_DIR "${tuio_INSTALL_DIR}")
+		set(tuio_PATCH "${CMAKE_COMMAND} -E copy ${tuio_checkout_Dir}/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt"
 
 		if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 			set(tuio_CMAKE_ARGS ${tuio_CMAKE_ARGS} -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD=c++11 -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY=libc++)
@@ -108,6 +109,7 @@ if (USE_TUIO)
 				URL http://prdownloads.sourceforge.net/reactivision/TUIO_CPP-1.4.zip
 				INSTALL_DIR ${tuio_INSTALL_DIR}
 				CMAKE_ARGS ${tuio_CMAKE_ARGS}
+				PATCH_COMMAND ${tuio_PATCH}
 		 )		 
 		set_property(TARGET TUIO PROPERTY FOLDER "Dependencies")
 		set(TUIO_INCLUDE_DIR ${tuio_INSTALL_DIR}/include CACHE INTERNAL "Directory of TUIO header files")
