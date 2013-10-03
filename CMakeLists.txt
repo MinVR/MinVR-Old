@@ -16,7 +16,7 @@ option(USE_TUIO "Enable generation of events from a tuio device" OFF)
 option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" OFF)
 
 option(USE_APPKIT_GLFW "Enable to use the GLFW app kit" ON)
-option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" ON)
+option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" OFF)
 option(USE_APPKIT_GLUT "Enable to use the GLut app kit" OFF)
 
 option(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in Visual Studio" ON)
@@ -98,7 +98,7 @@ if (USE_TUIO)
 		set(tuio_INSTALL_DIR "${MINVR_INSTALL_DIR}/tuio")
 		set(tuio_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${tuio_INSTALL_DIR}")
 		set(tuio_DIR "${tuio_INSTALL_DIR}")
-		set(tuio_PATCH "${CMAKE_COMMAND} -E copy ${tuio_checkout_Dir}/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt"
+		set(tuio_PATCH "${CMAKE_COMMAND} -E copy ${tuio_checkout_Dir}/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt")
 
 		if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 			set(tuio_CMAKE_ARGS ${tuio_CMAKE_ARGS} -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD=c++11 -DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY=libc++)
