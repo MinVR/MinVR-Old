@@ -71,5 +71,4 @@ clobber:
 	rm -rf ./dependencies/boost
 	rm -rf ./dependencies/glfw
 	rm -rf ./dependencies/vrpn
-	rm -rf ./dependencies/tuio
 	rm -rf ./install
