@@ -3,7 +3,7 @@
 using namespace G3D;
 using namespace MinVR;
 
-G3D9DemoApp::G3D9DemoApp()
+G3D9DemoApp::G3D9DemoApp() : MinVR::AbstractMVRApp()
 {
 }
 
@@ -17,6 +17,7 @@ void G3D9DemoApp::doUserInputAndPreDrawComputation(const std::vector<MinVR::Even
 		if (events[i]->getName() == "kbd_ESC_down") {
 			exit(0);
 		}
+		//std::cout << events[i]->getName()<<std::endl;
 	}
 }
 

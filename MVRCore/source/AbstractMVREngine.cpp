@@ -203,30 +203,35 @@ void AbstractMVREngine::setupWindowsAndViewports()
 
 void AbstractMVREngine::setupInputDevices()
 {
-	std::vector<std::string> devnames = splitStringIntoArray(_configMap->get( "InputDevices", ""));
+	std::string devicesFile = _configMap->get("InputDevicesFile", "");
+	if (devicesFile != "") {
+		ConfigMapRef devicesMap(new ConfigMap(DataFileUtils::findDataFile(devicesFile)));
+		std::string inputDevices = devicesMap->get( "InputDevices", "");
+		std::vector<std::string> devnames = splitStringIntoArray(inputDevices);
 
-	for (int i=0;i<devnames.size();i++) {
-		std::string type = _configMap->get(devnames[i] + "_Type", "");
+		for (int i=0;i<devnames.size();i++) {
+			std::string type = devicesMap->get(devnames[i] + "_Type", "");
 
-		if (type == "InputDeviceVRPNAnalog") {
-			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNAnalog(devnames[i], _configMap)));
-		}
-		else if (type == "InputDeviceVRPNButton") {
-			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNButton(devnames[i], _configMap)));
-		}
-		else if (type == "InputDeviceVRPNTracker") {
-			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNTracker(devnames[i], _configMap)));
-		}
-		else if (type == "InputDeviceTUIOClient") { 
-			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceTUIOClient(devnames[i], _configMap)));
-		}
-		else if (type == "InputDeviceSpaceNav") {
-			_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceSpaceNav(devnames[i], _configMap)));
-		}
-		else {
-			std::stringstream ss;
-			ss << "Fatal error: Unrecognized input device type" << type;
-			BOOST_ASSERT_MSG(false, ss.str().c_str());
+			if (type == "InputDeviceVRPNAnalog") {
+				_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNAnalog(devnames[i], devicesMap)));
+			}
+			else if (type == "InputDeviceVRPNButton") {
+				_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNButton(devnames[i], devicesMap)));
+			}
+			else if (type == "InputDeviceVRPNTracker") {
+				_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceVRPNTracker(devnames[i], devicesMap)));
+			}
+			else if (type == "InputDeviceTUIOClient") { 
+				_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceTUIOClient(devnames[i], devicesMap)));
+			}
+			else if (type == "InputDeviceSpaceNav") {
+				_inputDevices.push_back(AbstractInputDeviceRef(new InputDeviceSpaceNav(devnames[i], devicesMap)));
+			}
+			else {
+				std::stringstream ss;
+				ss << "Fatal error: Unrecognized input device type" << type;
+				BOOST_ASSERT_MSG(false, ss.str().c_str());
+			}
 		}
 	}
 }
@@ -336,8 +341,8 @@ void AbstractMVREngine::updateProjectionForHeadTracking()
 		i--;
 	}
 	if (i >= 0) {
-		for (int i=0;i<_windows.size();i++) {
-			_windows[i]->updateHeadTrackingForAllViewports(_events[i]->getCoordinateFrameData());
+		for (int j=0;j<_windows.size();j++) {
+			_windows[j]->updateHeadTrackingForAllViewports(_events[i]->getCoordinateFrameData());
 		}
 	}
 } 

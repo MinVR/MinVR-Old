@@ -12,17 +12,17 @@ set(MINVR_VERSION "${MINVR_VERSION_MAJOR}.${MINVR_VERSION_MINOR}")
 set(MINVR_VERSION_FULL "${MINVR_VERSION}.${MINVR_VERSION_PATCH}${MINVR_VERSION_EXTRA}")
 
 option(USE_VRPN "Enable events from vrpn devices" ON)
-option(USE_TUIO "Enable generation of events from a tuio device" OFF)
-option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" OFF)
+option(USE_TUIO "Enable generation of events from a tuio device" ON)
+option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" ON)
 
 option(USE_APPKIT_GLFW "Enable to use the GLFW app kit" ON)
-option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" OFF)
+option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" ON)
 option(USE_APPKIT_GLUT "Enable to use the GLut app kit" OFF)
 
 option(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in Visual Studio" ON)
 option(BUILD_EXAMPLES "Enable to build app kit example projects" ON)
 option(BUILD_DEPENDENCIES "If enabled, dependencies will be downloaded and built if an installed version is not found" ON)
-option(BUILD_DOCUMENTATION "If enable, cmake attempts to find Doxygen and build the API documentation" ON)
+option(BUILD_DOCUMENTATION "If enable, cmake attempts to find Doxygen and build the API documentation" OFF)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS})
 

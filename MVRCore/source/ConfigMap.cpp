@@ -163,7 +163,8 @@ bool ConfigMap::readFile(const std::string &filename)
 					name = name.substr(0,name.size()-2);
 
 					if (ConfigMap::containsKey(name)) {
-						ConfigMap::set(name, ConfigMap::getValue(name) + " " + val);
+						std::string newVal = ConfigMap::getValue(name) + " " + val;
+						ConfigMap::set(name, newVal);
 					}
 					else {
 						ConfigMap::set(name, val);
@@ -209,7 +210,15 @@ std::string ConfigMap::getValue(const std::string &keyString)
 
 void ConfigMap::set(const std::string &key, const std::string &value)
 {
-	_map.insert(std::pair<std::string, std::string>(key, value));
+	std::unordered_map<std::string,std::string>::iterator got = _map.find (key);
+	if ( got == _map.end() ) {
+		// If not found insert it
+		_map.insert(std::pair<std::string, std::string>(key, value));
+	}
+	else {
+		// change existing value
+		got->second = value;
+	}
 }
 
 ConfigMap::ConfigMap(int argc, char **argv, bool exitOnUnrecognizedArgument)

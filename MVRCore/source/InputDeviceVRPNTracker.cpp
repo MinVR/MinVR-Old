@@ -56,7 +56,7 @@ void VRPN_CALLBACK trackerHandler(void *thisPtr, const vrpn_TRACKERCB info)
 {
 	glm::mat4 vrpnEvent;
 	vrpnEvent = glm::mat4_cast(glm::quat(info.quat[0],info.quat[1], info.quat[2],info.quat[3]));
-	glm::column(vrpnEvent, 3, glm::vec4(info.pos[0],info.pos[1],info.pos[2], 1.0));
+	vrpnEvent = glm::column(vrpnEvent, 3, glm::vec4(info.pos[0],info.pos[1],info.pos[2], 1.0));
 
 	InputDeviceVRPNTracker* device = ((InputDeviceVRPNTracker*)thisPtr);
 	device->processEvent(vrpnEvent, info.sensor);
