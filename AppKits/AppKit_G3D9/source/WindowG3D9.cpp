@@ -73,6 +73,11 @@ WindowG3D9::WindowG3D9(WindowSettingsRef settings, std::vector<AbstractCameraRef
 	// This is a hack because the G3D GLFWWindow constructor makes the opengl
 	// context current. We want it to be current on the renderthread instead of this main thread.
 	glfwMakeContextCurrent(NULL);
+
+	// G3D adjusts the position based on the client position not the full window.
+	if (settings->framed == false) {
+		_window->setClientPosition(settings->xPos, settings->yPos);
+	}
 }
 
 WindowG3D9::~WindowG3D9()

@@ -77,6 +77,7 @@ void MVREngineG3D9::setupWindowsAndViewports()
 		wSettings->alphaBits    = _configMap->get(winStr + "AlphaBits", wSettings->alphaBits);
 		wSettings->visible      = _configMap->get(winStr + "Visible", wSettings->visible);
 		wSettings->useGPUAffinity = _configMap->get(winStr + "UseGPUAffinity", wSettings->useGPUAffinity);
+		wSettings->stereo		= _configMap->get(winStr + "Stereo", wSettings->stereo);
 
 		//wSettings.mouseVisible = _configMap->get(winStr + "MouseVisible", wSettings.mouseVisible);
 

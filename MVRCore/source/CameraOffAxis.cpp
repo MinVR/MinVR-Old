@@ -75,6 +75,10 @@ CameraOffAxis::CameraOffAxis(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 bo
 						y.x, y.y, y.z, 0,
 						z.x, z.y, z.z, 0,
 						center.x, center.y, center.z, 1);
+	//glm::mat4 tile2room(x.x, y.x, z.x, center.x,
+	//					x.y, y.y, z.y, center.y,
+	//					x.z, y.z, z.z, center.z,
+	//					0.0, 0.0, 0.0, 1);
 	_room2tile = glm::inverse(tile2room);
 }
 
