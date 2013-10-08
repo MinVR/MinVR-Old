@@ -111,6 +111,11 @@ macro(find_glfw)
 	set(GLFW_LIBRARIES ${GLFW_LIBRARY})
 endmacro(find_glfw)
 
+macro(find_g3d9)
+        find_package(G3D9 ${QUIET_})
+		set(G3D9_LIBRARY_DIRS ${G3D9_LIBRARY_DIR})
+endmacro(find_g3d9)
+
 macro(find_external_library _component _lib)
   if("${_lib}" STREQUAL "Boost")
     find_boost()
@@ -122,6 +127,8 @@ macro(find_external_library _component _lib)
     find_spacenav()
   elseif("${_lib}" STREQUAL "glfw")
     find_glfw()
+  elseif("${_lib}" STREQUAL "G3D9")
+    find_g3d9()
   endif("${_lib}" STREQUAL "Boost")
 
   string(TOUPPER "${_component}" COMPONENT)
@@ -216,12 +223,12 @@ foreach(component ${MinVR_TO_FIND_COMPONENTS})
   set(minvr_component minvr_${component})
   string(TOUPPER "${component}" COMPONENT)
 
-  message(STATUS "looking for ${COMPONENT}")
+  message(STATUS "looking for ${component}")
   
   find_path(MINVR_${COMPONENT}_INCLUDE_DIR
     NAMES ${component}
-    HINTS ${MinVR_INCLUDE_DIRS}
-    PATH_SUFFIXES ${component}/include
+    HINTS ${MinVR_INCLUDE_DIR}
+    PATH_SUFFIXES ${component}
     DOC "path to ${component} headers"
     NO_DEFAULT_PATH)
 
@@ -229,16 +236,16 @@ foreach(component ${MinVR_TO_FIND_COMPONENTS})
     list(APPEND MINVR_${COMPONENT}_INCLUDE_DIRS "${MINVR_${COMPONENT}_INCLUDE_DIR}")
   endif(MINVR_${COMPONENT}_INCLUDE_DIR)
   
-    find_library(MINVR_${COMPONENT}_LIBRARY ${minvr_component}${MINVR_RELEASE_SUFFIX}
-      HINTS ${MinVR_LIBRARY_DIRS}
+    find_library(MINVR_${COMPONENT}_LIBRARY ${component}${MINVR_RELEASE_SUFFIX}
+      HINTS ${MinVR_LIBRARY_DIR}
       DOC "path to ${minvr_component} library"
       NO_DEFAULT_PATH)
     get_filename_component(${component}_library_path 
       ${MINVR_${COMPONENT}_LIBRARY}
       PATH)
 
-    find_library(MINVR_${COMPONENT}_LIBRARY_DEBUG ${minvr_component}${MINVR_DEBUG_SUFFIX}
-      HINTS ${MinVR_LIBRARY_DIRS} 
+    find_library(MINVR_${COMPONENT}_LIBRARY_DEBUG ${component}${MINVR_DEBUG_SUFFIX}
+      HINTS ${MinVR_LIBRARY_DIR} 
       DOC "path to ${minvr_component} library debug"
       NO_DEFAULT_PATH)
     if(MINVR_${COMPONENT}_LIBRARY_DEBUG)
@@ -254,12 +261,12 @@ foreach(component ${MinVR_TO_FIND_COMPONENTS})
     if(NOT "${MINVR_${COMPONENT}_INCLUDE_DIRS}" STREQUAL "")
       list(REMOVE_DUPLICATES MINVR_${COMPONENT}_INCLUDE_DIRS)
     endif(NOT "${MINVR_${COMPONENT}_INCLUDE_DIRS}" STREQUAL "")
-    list(APPEND MINVR_INCLUDE_DIRS ${MINVR_${COMPONENT}_INCLUDE_DIRS})
+    list(APPEND MinVR_INCLUDE_DIRS ${MINVR_${COMPONENT}_INCLUDE_DIRS})
     mark_as_advanced(MINVR_${COMPONENT}_INCLUDE_DIRS)
-      list(APPEND MINVR_LIBRARY_DIRS ${component_library_path})
+      list(APPEND MinVR_LIBRARY_DIRS ${component_library_path})
       if(MINVR_${COMPONENT}_LIBRARY_DEBUG)
         list(APPEND MINVR_${COMPONENT}_LIBRARIES optimized ${MINVR_${COMPONENT}_LIBRARY} debug ${MINVR_${COMPONENT}_LIBRARY_DEBUG})
-        list(APPEND MINVR_LIBRARY_DIRS ${component_library_path_debug})
+        list(APPEND MinVR_LIBRARY_DIRS ${component_library_path_debug})
       else(MINVR_${COMPONENT}_LIBRARY_DEBUG)
         list(APPEND MINVR_${COMPONENT}_LIBRARIES ${MINVR_${COMPONENT}_LIBRARY})
       endif(MINVR_${COMPONENT}_LIBRARY_DEBUG)

@@ -111,6 +111,7 @@ find_library(civetwebd NAMES civetwebd.a civetwebd.lib civetwebd
              HINTS $ENV{G}/src/G3D/G3D-9.0/G3D9/lib $ENV{G3D9_LIB_DIR} ${G3D9_LIB_DIR})			 
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
+get_filename_component(G3D9_LIBRARY_DIR ${G3D} PATH)
 
 set(LIBG3D_DEBUG_LIBRARIES debug ${GLG3Dd} debug ${G3Dd} debug ${freeimaged} debug ${assimpd} debug ${civetwebd})
 set(LIBG3D_OPT_LIBRARIES optimized ${GLG3D} optimized ${G3D} optimized ${freeimage} optimized ${assimp} optimized ${civetweb})

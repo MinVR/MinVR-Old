@@ -228,7 +228,7 @@ Open `MinVR/cmake/minvr_minvrconfig.cmake`. In the section titled "Handle AppKit
 	if (USE_APPKIT_<appkit name>)
 		set(MVRCONFIG_AVAILABLE_COMPONENTS "${MVRCONFIG_AVAILABLE_COMPONENTS} AppKit_<appkit name>")
 		set(MVRCONFIG_AVAILABLE_COMPONENTS_LIST "${MVRCONFIG_AVAILABLE_COMPONENTS_LIST}\n# - AppKit_<appkit name>")
-		set(MVRCONFIG_DEPENDENCIES "${MVRCONFIG_DEPENDENCIES}set(minvr_appkit_<appkit name>_dep MVRCore <the cmake project names of any dependences>\n")
+		set(MVRCONFIG_DEPENDENCIES "${MVRCONFIG_DEPENDENCIES}set(minvr_appkit_<appkit name>_dep MVRCore <the cmake project names of any dependences>)\n")
 	endif(USE_APPKIT_<appkit name>)
 @endcode
 
