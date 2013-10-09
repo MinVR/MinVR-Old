@@ -110,6 +110,7 @@ add_library ( ${PROJECT_NAME} ${HEADERFILES} ${SOURCEFILES} )
 target_link_libraries( ${PROJECT_NAME} ${Boost_LIBRARIES} ${LIBS_ALL} )
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${MINVR_INSTALL_DIR}/include")
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/glm/glm/ DESTINATION "${MINVR_INSTALL_DIR}/include/glm")
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/shaders/ DESTINATION "${MINVR_INSTALL_DIR}/share/shaders")
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/vrsetup/ DESTINATION "${MINVR_INSTALL_DIR}/share/vrsetup")
 

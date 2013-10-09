@@ -274,7 +274,7 @@ foreach(component ${MinVR_TO_FIND_COMPONENTS})
       mark_as_advanced(MINVR_${COMPONENT}_LIBRARY MINVR_${COMPONENT}_LIBRARY_DEBUG)
    
     # Append dependencies
-    foreach(dep ${pcl_${component}_dep})
+    foreach(dep ${minvr_${component}_dep})
       string(TOUPPER "${dep}" DEP)
       if(MINVR_${DEP}_FOUND)
         list(APPEND MINVR_${COMPONENT}_INCLUDE_DIRS ${MINVR_${DEP}_INCLUDE_DIRS})
