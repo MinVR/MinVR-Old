@@ -64,7 +64,8 @@ void OffAxisCameraG3D9::applyProjectionAndCameraMatrices(const glm::mat4& projec
 	G3D::CoordinateFrame g3dView(rotation, trans);
 	g3dView = g3dView.inverse();
 
-	_renderDevice->setProjectionAndCameraMatrix(G3D::Projection(g3dProj), g3dView);
+	_renderDevice->setProjectionMatrix(g3dProj);
+	_renderDevice->setCameraToWorldMatrix(g3dView);
 }
 
 void OffAxisCameraG3D9::setObjectToWorldMatrix(glm::mat4 obj2World)
