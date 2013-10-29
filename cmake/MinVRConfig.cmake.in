@@ -73,7 +73,7 @@ macro(find_boost)
 	set(Boost_USE_STATIC_LIBS ON)
 	set(Boost_USE_MULTITHREADED ON)  
 	set(Boost_USE_STATIC_RUNTIME OFF)
-	find_package(Boost 1.54.0 ${QUIET_} COMPONENTS thread)
+	find_package(Boost 1.54.0 ${QUIET_} COMPONENTS chrono date_time system thread log log_setup filesystem)
   
 	set(BOOST_FOUND ${Boost_FOUND})
 	set(BOOST_INCLUDE_DIRS "${Boost_INCLUDE_DIR}")

@@ -141,7 +141,7 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_ADDITIONAL_VERSIONS "1.54" "1.54.0")
-find_package(Boost 1.54.0 COMPONENTS chrono date_time system thread log filesystem)
+find_package(Boost 1.54.0 COMPONENTS chrono date_time system thread log log_setup filesystem)
 if(Boost_FOUND)
     message("Using installed version of Boost")
 elseif(BUILD_DEPENDENCIES)
@@ -217,6 +217,8 @@ if (BUILD_EXAMPLES)
 endif()
 
 #Configure MinVRConfig.cmake
+set(CMAKE_DEBUG_POSTFIX "d")
+set(CMAKE_RELEASE_POSTFIX "")
 include(${CMAKE_SOURCE_DIR}/cmake/minvr_minvrconfig.cmake)
 
 install(DIRECTORY ${CMAKE_BINARY_DIR}/lib/ DESTINATION "${MINVR_INSTALL_DIR}/lib")
