@@ -108,6 +108,12 @@ public:
 	*/
 	glm::mat4 getRightEyeFrame();
 
+	/*! @brief Gets the vector from the head position to the center of the display tile
+	*
+	*  @return A vector from the current head position to the center of the display tile
+	*/
+	glm::vec3 getLookVector();
+
 protected:
 
 	glm::vec3 _topLeft;

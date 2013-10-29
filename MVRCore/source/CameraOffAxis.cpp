@@ -227,4 +227,15 @@ void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::mat4& projection
 	glLoadMatrixf(matrix);
 }
 
+glm::vec3 CameraOffAxis::getLookVector()
+{
+	glm::vec3 right = _topRight-_topLeft;
+	right *= 0.5;
+	glm::vec3 down = _botLeft-_topLeft;
+	down *= 0.5;
+	glm::vec3 filmPlaneCtr = _topLeft + right + down;
+	glm::vec3 headPos = glm::column(_headFrame, 3).xyz;
+	return glm::normalize(filmPlaneCtr - headPos);
+}
+
 } // End namespace
