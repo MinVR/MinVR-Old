@@ -48,7 +48,7 @@ namespace MinVR {
 
 void VRPN_CALLBACK analogHandler(void *thisPtr, const vrpn_ANALOGCB info)
 {
-	int lastchannel = (int)glm::min(info.num_channel, ((InputDeviceVRPNAnalog*)thisPtr)->numChannels());
+	int lastchannel = (int)glm::min(info.num_channel, (int)((InputDeviceVRPNAnalog*)thisPtr)->numChannels());
 	for (int i=0;i<lastchannel;i++) {
 		((InputDeviceVRPNAnalog*)thisPtr)->sendEventIfChanged(i, info.channel[i]);
 	}

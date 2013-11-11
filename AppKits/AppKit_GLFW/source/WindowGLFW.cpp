@@ -66,7 +66,7 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 				if( !wglEnumGpusNV( gpu, &hGPU )) {
 					break;
 				}
-				bool found = wglEnumGpuDevicesNV( hGPU, 0, &gpus[gpu] );
+				wglEnumGpuDevicesNV( hGPU, 0, &gpus[gpu] );
 				numGPUs++;
 			}
 
@@ -107,7 +107,7 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 		int xPos, yPos;
 		for(int i=0; i < count; i++) {
 			glfwGetMonitorPos(monitors[i], &xPos, &yPos);
-			float curDist = pow((closestXPos - xPos), 2.0) + pow((closestYPos - yPos), 2.0);
+			float curDist = pow((float)(closestXPos - xPos), 2.0f) + pow((float)(closestYPos - yPos), 2.0f);
 			if (curDist <= closestDist) {
 				closestInd = i;
 				closestXPos = xPos;
@@ -266,8 +266,8 @@ void WindowGLFW::appendEvent(EventRef newEvent)
 
 void WindowGLFW::setCursorPosition(double x, double y)
 {
-	_cursorPosition.x = x;
-	_cursorPosition.y = y;
+	_cursorPosition.x = (float)x;
+	_cursorPosition.y = (float)y;
 }
 
 glm::vec2 WindowGLFW::getCursorPosition()

@@ -97,7 +97,7 @@ public:
 	virtual void updateHeadTrackingForAllViewports(glm::mat4 headFrame);
 
 	WindowSettings::StereoType getStereoType() { return _settings->stereoType; }
-	int getNumViewports() { return _viewports.size(); }
+	size_t getNumViewports() { return _viewports.size(); }
 	MinVR::Rect2D getViewport(int n) { return _viewports[n]; }
 	AbstractCameraRef getCamera(int n) { return _cameras[n]; }
 	WindowSettingsRef getSettings() { return _settings; }

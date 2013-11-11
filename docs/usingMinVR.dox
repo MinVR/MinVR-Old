@@ -19,6 +19,7 @@ To create your App class, you will need to override the following methods:
 @code
 virtual void doUserInputAndPreDrawComputation(const std::vector<EventRef> &events, double synchronizedTime) = 0;
 virtual void initializeContextSpecificVars(int threadId, WindowRef window) = 0;
+virtual void postInitialization() = 0;
 virtual void drawGraphics(int threadId, AbstractCameraRef camera, WindowRef window) = 0;
 @endcode
 	
@@ -48,6 +49,10 @@ glGenBuffersARB(1, _vboId.get());
 Using a thread specific pointer object, enables you to run your application with a variety of different window configurations without worrying about explicitly creating a set number of variables that matches the number of windows (i.e. render threads). Under the hood, boost will create a new variable, and retrieve the correct thread specific one later if you reference it.
 
 Alternatively, if you know you will only ever run your application with a specific number of windows, you could initialize your thread specific variables in an array. Then you could reference them using the threadId that is passed to the `drawGraphics` method as an index location in your array.
+
+@subsection using_creating_post Overriding postInitialization
+
+The `postInitialization` method is called once from the main thread after `initializeContextSpecificVars` has finished being called from each render thread. This method can be used to initialize any final variables in your app that may need context specific variables to be initialized first.
 
 @subsection using_creating_draw Overriding drawGraphics
 

@@ -170,6 +170,10 @@ void GLFWDemoApp::initLights()
 	}
 }
 
+void GLFWDemoApp::postInitialization()
+{
+}
+
 void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef window)
 {
 	GLenum err;

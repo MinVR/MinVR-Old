@@ -84,6 +84,12 @@ public:
 	*/
 	virtual void initializeContextSpecificVars(int threadId, WindowRef window) = 0;
 
+	/*! @brief Initialize variables after threads are initialized.
+	*
+	*  This will be called once after initializeContextSpecificVars has been called from each render thread.
+	*/
+	virtual void postInitialization() = 0;
+
 	/*! @brief Drawing code.
 	 *  This is where all your OpenGL drawing code should go.  This routine is typically called more than
 	 *  once per frame.  In a desktop VR environment, this would be called once to draw the image for the

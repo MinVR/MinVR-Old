@@ -460,13 +460,13 @@ int WindowG3D9::getHeight()
 int WindowG3D9::getXPos()
 {
 	debugAssert(_renderDevice->initialized());
-	return _window->clientRect().x0();
+	return (int)_window->clientRect().x0();
 }
 
 int WindowG3D9::getYPos()
 {
 	debugAssert(_renderDevice->initialized());
-	return _window->clientRect().y0();
+	return (int)_window->clientRect().y0();
 }
 
 G3D::RenderDevice* WindowG3D9::getRenderDevice()

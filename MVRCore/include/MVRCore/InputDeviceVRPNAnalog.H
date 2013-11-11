@@ -69,7 +69,7 @@ public:
 	void        pollForInput(std::vector<EventRef> &events);
 	void        sendEventIfChanged(int channelNumber, double data);
 	std::string getEventName(int channelNumber);
-	int         numChannels() { return _eventNames.size(); }
+	size_t         numChannels() { return _eventNames.size(); }
 
 private:
 	vrpn_Analog_Remote  *_vrpnDevice;

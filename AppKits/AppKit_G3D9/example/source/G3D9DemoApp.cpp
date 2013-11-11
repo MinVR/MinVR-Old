@@ -26,7 +26,7 @@ void G3D9DemoApp::initializeContextSpecificVars(int threadId, MinVR::WindowRef w
 	initVBO();
 
 	RenderDevice* rd = dynamic_cast<WindowG3D9*>(window.get())->getRenderDevice();
-	rd->setColorClearValue(Color4(0.2, 0.2, 0.2, 1.0));
+	rd->setColorClearValue(Color4(0.2f, 0.2f, 0.2f, 1.0f));
 
 }
 
@@ -163,6 +163,10 @@ void G3D9DemoApp::initVBO()
 	_gpuNormals.reset(new AttributeArray(cpuNormals, vbuf));
 	_gpuColors.reset(new AttributeArray(cpuColors, vbuf));
 	_gpuIndex.reset(new IndexStream(cpuIndex, vbuf));
+}
+
+void G3D9DemoApp::postInitialization()
+{
 }
 
 void G3D9DemoApp::drawGraphics(int threadId, MinVR::AbstractCameraRef camera, MinVR::WindowRef window)

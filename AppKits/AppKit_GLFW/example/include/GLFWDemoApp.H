@@ -20,6 +20,7 @@ public:
 
 	void doUserInputAndPreDrawComputation(const std::vector<MinVR::EventRef> &events, double synchronizedTime);
 	void initializeContextSpecificVars(int threadId, MinVR::WindowRef window);
+	void postInitialization();
 	void drawGraphics(int threadId, MinVR::AbstractCameraRef camera, MinVR::WindowRef window);
 
 private:

@@ -97,7 +97,7 @@ void AbstractMVREngine::setupWindowsAndViewports()
 	glm::mat4 initialHeadFrame = _configMap->get("InitialHeadFrame", glm::mat4(1.0));
 	
 	// InterOcularDistance defaults to 2.5 inches (0.2083 ft). This assumes your coordinate system is in feet.
-	float interOcularDistance = _configMap->get("InterOcularDistance", 0.2083);
+	double interOcularDistance = _configMap->get("InterOcularDistance", 0.2083);
 
 	// Each window will have its own OpenGL graphics context and run in its own thread.
 	// Many applications will only have 1 window, but for fastest performance in a CAVE
@@ -167,8 +167,8 @@ void AbstractMVREngine::setupWindowsAndViewports()
 			
 			int width    = _configMap->get(viewportStr + "Width", wSettings->width);
 			int height   = _configMap->get(viewportStr + "Height", wSettings->height);
-			int x        = _configMap->get(viewportStr + "X", 0.0);
-			int y        = _configMap->get(viewportStr + "Y", 0.0);
+			int x        = _configMap->get(viewportStr + "X", 0);
+			int y        = _configMap->get(viewportStr + "Y", 0);
 			wSettings->viewports.push_back(MinVR::Rect2D::xywh(x,y,width,height));
 
 			std::string cameraStr = _configMap->get(viewportStr + "CameraType", "OffAxis");
@@ -177,8 +177,8 @@ void AbstractMVREngine::setupWindowsAndViewports()
 				glm::vec3 topRight = _configMap->get(viewportStr + "TopRight", glm::vec3(1.0, 1.0, 0.0));
 				glm::vec3 botLeft  = _configMap->get(viewportStr + "BotLeft", glm::vec3(-1.0, -1.0, 0.0));
 				glm::vec3 botRight = _configMap->get(viewportStr + "BotRight", glm::vec3(1.0, -1.0, 0.0));
-				float nearClip = _configMap->get(viewportStr + "NearClip", 0.01);
-				float farClip  = _configMap->get(viewportStr + "FarClip", 1000.0);
+				float nearClip = _configMap->get(viewportStr + "NearClip", 0.01f);
+				float farClip  = _configMap->get(viewportStr + "FarClip", 1000.0f);
 				AbstractCameraRef cam(new CameraOffAxis(topLeft, topRight, botLeft, botRight, initialHeadFrame, interOcularDistance, nearClip, farClip));
 				cameras.push_back(cam);
 			}
@@ -337,7 +337,7 @@ void AbstractMVREngine::pollUserInput()
 void AbstractMVREngine::updateProjectionForHeadTracking() 
 {
 	// Use the most recent Head_Tracker event as the head position
-	int i = _events.size()-1;
+	size_t i = _events.size()-1;
 	while ((i >= 0) && (_events[i]->getName() != "Head_Tracker")) {
 		i--;
 	}

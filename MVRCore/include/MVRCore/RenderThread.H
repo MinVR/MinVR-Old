@@ -81,7 +81,7 @@ public:
 	static RenderingState renderingState;
 	static int numThreadsReceivedStartRendering;
 	static int numThreadsReceivedRenderingComplete;
-	static int numRenderingThreads;
+	static size_t numRenderingThreads;
 	static int nextThreadId;
 	static int numThreadsInitComplete;
 

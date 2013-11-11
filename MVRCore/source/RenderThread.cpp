@@ -50,7 +50,7 @@ namespace MinVR {
 RenderThread::RenderingState RenderThread::renderingState = RenderThread::RENDERING_WAIT;
 int RenderThread::numThreadsReceivedStartRendering = 0;
 int RenderThread::numThreadsReceivedRenderingComplete = 0;
-int RenderThread::numRenderingThreads = 0;
+size_t RenderThread::numRenderingThreads = 0;
 int RenderThread::nextThreadId = 0;
 int RenderThread::numThreadsInitComplete = 0;
 
@@ -472,7 +472,7 @@ void RenderThread::setShaderVariables()
 		glUseProgram(_stereoProgram);
 
 		GLint screenSizeLoc = glGetUniformLocation(_stereoProgram, "screenSize");
-		glUniform2f(screenSizeLoc, _window->getWidth(), _window->getHeight());
+		glUniform2f(screenSizeLoc, (GLfloat)_window->getWidth(), (GLfloat)_window->getHeight());
 
 		GLuint leftEyeTexLoc  = glGetUniformLocation(_stereoProgram, "leftEyeTexture");
 		GLuint rightEyeTexLoc = glGetUniformLocation(_stereoProgram, "rightEyeTexture");

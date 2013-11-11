@@ -39,6 +39,8 @@
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
 
+#include "MVRCore/AbstractWindow.H"
+
 namespace MinVR {
 	
 Event::Event(const std::string &name, const WindowRef window/*= nullptr*/, const int id/*= -1*/)
