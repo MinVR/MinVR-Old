@@ -272,6 +272,8 @@ void AbstractMVREngine::runApp(AbstractMVRAppRef app)
 	}
 	threadsInitializedLock.unlock();
 
+	_app->postInitialization();
+
 	_frameCount = 0;
 	
 	bool quit = false;
@@ -296,6 +298,7 @@ void AbstractMVREngine::runOneFrameOfApp(AbstractMVRAppRef app)
 			_threadsInitializedCond.wait(threadsInitializedLock);
 		}
 		threadsInitializedLock.unlock();
+		_app->postInitialization();
 	}
 
 	pollUserInput();
