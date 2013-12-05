@@ -12,11 +12,11 @@ set(MINVR_VERSION "${MINVR_VERSION_MAJOR}.${MINVR_VERSION_MINOR}")
 set(MINVR_VERSION_FULL "${MINVR_VERSION}.${MINVR_VERSION_PATCH}${MINVR_VERSION_EXTRA}")
 
 option(USE_VRPN "Enable events from vrpn devices" ON)
-option(USE_TUIO "Enable generation of events from a tuio device" ON)
-option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" ON)
+option(USE_TUIO "Enable generation of events from a tuio device" OFF)
+option(USE_SPACENAV "Enable generation of events from the 3dconnexion SpaceNavigator device" OFF)
 
 option(USE_APPKIT_GLFW "Enable to use the GLFW app kit" ON)
-option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" ON)
+option(USE_APPKIT_G3D9 "Enable to use the G3D9 app kit" OFF)
 option(USE_APPKIT_GLUT "Enable to use the GLut app kit" OFF)
 
 option(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in Visual Studio" ON)
@@ -196,6 +196,8 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(MSVC)
+	add_definitions(-DNOMINMAX)
 endif()
 
 add_subdirectory (MVRCore)
@@ -212,8 +214,12 @@ if (USE_APPKIT_G3D9)
 endif()
 
 if (BUILD_EXAMPLES)
-	add_subdirectory(AppKits/AppKit_GLFW/example)
-	add_subdirectory(AppKits/AppKit_G3D9/example)
+	if(USE_APPKIT_GLFW)
+		add_subdirectory(AppKits/AppKit_GLFW/example)
+	endif()
+	if(USE_APPKIT_G3D9)
+		add_subdirectory(AppKits/AppKit_G3D9/example)
+	endif()
 endif()
 
 #Configure MinVRConfig.cmake
