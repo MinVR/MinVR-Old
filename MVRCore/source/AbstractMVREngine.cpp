@@ -340,16 +340,13 @@ void AbstractMVREngine::pollUserInput()
 void AbstractMVREngine::updateProjectionForHeadTracking() 
 {
 	// Use the most recent Head_Tracker event as the head position
-	size_t i = _events.size();
-	if (i > 0) {
+	int i = (int)_events.size()-1;
+	while ((i >= 0) && (_events[i]->getName() != "Head_Tracker")) {
 		i--;
-		while ((i >= 0) && (_events[i]->getName() != "Head_Tracker")) {
-			i--;
-		}
-		if (i >= 0) {
-			for (int j=0;j<_windows.size();j++) {
-				_windows[j]->updateHeadTrackingForAllViewports(_events[i]->getCoordinateFrameData());
-			}
+	}
+	if (i >= 0) {
+		for (int j=0;j<_windows.size();j++) {
+			_windows[j]->updateHeadTrackingForAllViewports(_events[i]->getCoordinateFrameData());
 		}
 	}
 } 
