@@ -6,6 +6,7 @@
 #include "MVRCore/AbstractCamera.H"
 #include "MVRCore/AbstractWindow.H"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "MVRCore/Event.H"
 #include <GLFW/glfw3.h>

@@ -81,7 +81,7 @@ std::ostream & operator<< ( std::ostream &os, const glm::vec3 &vec3);
 std::istream & operator>> ( std::istream &is, glm::vec3 &vec3);
 // Vector4
 std::ostream & operator<< ( std::ostream &os, const glm::vec4 &vec4);
-std::istream & operator<< ( std::istream &is, glm::vec4 &vec4);
+std::istream & operator>> ( std::istream &is, glm::vec4 &vec4);
 
 // Matrix3
 std::ostream & operator<< ( std::ostream &os, const glm::mat3 &m);

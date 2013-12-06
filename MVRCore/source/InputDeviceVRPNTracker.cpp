@@ -55,7 +55,7 @@ namespace MinVR {
 void VRPN_CALLBACK trackerHandler(void *thisPtr, const vrpn_TRACKERCB info)
 {
 	glm::mat4 vrpnEvent;
-	vrpnEvent = glm::mat4_cast(glm::quat(info.quat[0],info.quat[1], info.quat[2],info.quat[3]));
+	vrpnEvent = glm::mat4_cast(glm::quat(info.quat[3],info.quat[0], info.quat[1],info.quat[2]));
 	vrpnEvent = glm::column(vrpnEvent, 3, glm::vec4(info.pos[0],info.pos[1],info.pos[2], 1.0));
 
 	InputDeviceVRPNTracker* device = ((InputDeviceVRPNTracker*)thisPtr);
@@ -219,17 +219,17 @@ void InputDeviceVRPNTracker::processEvent(const glm::mat4 &vrpnEvent, int sensor
 		// Coordinates to Right-Handed Coordinates" by David Eberly,
 		// available online:
 		// http://www.geometrictools.com/Documentation/LeftHandedToRightHanded.pdf
-		trackerToDevice[2][3] = -trackerToDevice[2][3];
+		trackerToDevice[3][2] = -trackerToDevice[3][2];
 
-		trackerToDevice[0][2] = -trackerToDevice[0][2];
-		trackerToDevice[1][2] = -trackerToDevice[1][2];
 		trackerToDevice[2][0] = -trackerToDevice[2][0];
 		trackerToDevice[2][1] = -trackerToDevice[2][1];
+		trackerToDevice[0][2] = -trackerToDevice[0][2];
+		trackerToDevice[1][2] = -trackerToDevice[1][2];
 	}
 
-	trackerToDevice[0][3] *= _trackerUnitsToRoomUnitsScale;
-	trackerToDevice[1][3] *= _trackerUnitsToRoomUnitsScale;
-	trackerToDevice[2][3] *= _trackerUnitsToRoomUnitsScale;
+	trackerToDevice[3][0] *= _trackerUnitsToRoomUnitsScale;
+	trackerToDevice[3][1] *= _trackerUnitsToRoomUnitsScale;
+	trackerToDevice[3][2] *= _trackerUnitsToRoomUnitsScale;
 
 	glm::mat4 eventRoom = _finalOffset[sensorNum] * _deviceToRoom * trackerToDevice * _propToTracker[sensorNum];
 
