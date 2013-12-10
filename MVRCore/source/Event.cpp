@@ -194,13 +194,13 @@ std::string	Event::toString()
 		return boost::str(boost::format("%s (Data: %.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data1D % _id % _window);
 		break;
 	case EVENTTYPE_2D:
-		return boost::str(boost::format("%s (Data: %.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data2D[0] % _data2D[1]);
+		return boost::str(boost::format("%s (Data: %.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data2D[0] % _data2D[1] % _id % _window);
 		break;
 	case EVENTTYPE_3D:
-		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data3D[0] % _data3D[1] % _data3D[2]);
+		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data3D[0] % _data3D[1] % _data3D[2] % _id % _window);
 		break;
 	case EVENTTYPE_4D:
-		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data4D[0] % _data4D[1] % _data4D[2] % _data4D[3]);
+		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data4D[0] % _data4D[1] % _data4D[2] % _data4D[3] % _id % _window);
 		break;
 	case EVENTTYPE_COORDINATEFRAME:
 		return boost::str(boost::format("%s (Data: ((%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f)); Id: %d; Window ptr: %s)") % _name.c_str() % _dataCF[0][0] % _dataCF[0][1] % _dataCF[0][2]  % _dataCF[0][2]
