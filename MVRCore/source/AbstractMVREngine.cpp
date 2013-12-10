@@ -53,7 +53,7 @@ void AbstractMVREngine::initializeLogging()
 
     // Create a backend and attach a couple of streams to it
     boost::shared_ptr<boost::log::sinks::text_ostream_backend> backend = boost::make_shared<boost::log::sinks::text_ostream_backend>();
-    backend->add_stream(boost::shared_ptr< std::ostream >(&std::cout, boost::log::empty_deleter()));
+    backend->add_stream(boost::shared_ptr< std::ostream >(&std::cout, boost::empty_deleter()));
     backend->add_stream(boost::shared_ptr< std::ostream >(new std::ofstream("log.txt")));
 
     // Enable auto-flushing after each log record written

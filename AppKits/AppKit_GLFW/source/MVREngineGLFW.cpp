@@ -54,6 +54,17 @@ void MVREngineGLFW::runApp(AbstractMVRAppRef app)
 	_app = app;
 
 	setupRenderThreads();
+
+	// Wait for threads to finish being initialized
+	boost::unique_lock<boost::mutex> threadsInitializedLock(_threadsInitializedMutex);
+	while (RenderThread::numThreadsInitComplete < _windows.size()) {
+		_threadsInitializedCond.wait(threadsInitializedLock);
+	}
+	threadsInitializedLock.unlock();
+
+	_app->postInitialization();
+
+	_frameCount = 0;
 	
 	bool quit = false;
 	while (!quit) {
