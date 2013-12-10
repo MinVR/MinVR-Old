@@ -162,7 +162,7 @@ elseif(BUILD_DEPENDENCIES)
      ExternalProject_add(boost
      		  PREFIX ${boost_PREFIX}
 			  URL http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2
-     		  URL_MD5 15cb8c0803064faef0c4ddf5bc5ca279
+     		  URL_MD5 d6eef4b4cacb2183f2bf265a5a03a354
      		  CONFIGURE_COMMAND ${boost_CONFIGURE_COMMAND}
               BUILD_COMMAND ${boost_BUILD_COMMAND}
      		  INSTALL_DIR ${boost_INSTALL_DIR}
