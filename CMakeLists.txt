@@ -22,7 +22,7 @@ option(USE_APPKIT_GLUT "Enable to use the GLut app kit" OFF)
 option(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in Visual Studio" ON)
 option(BUILD_EXAMPLES "Enable to build app kit example projects" ON)
 option(BUILD_DEPENDENCIES "If enabled, dependencies will be downloaded and built if an installed version is not found" ON)
-option(BUILD_DOCUMENTATION "If enable, cmake attempts to find Doxygen and build the API documentation" OFF)
+option(BUILD_DOCUMENTATION "If enable, cmake attempts to find Doxygen and build the API documentation" ON)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS})
 
@@ -141,7 +141,7 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_ADDITIONAL_VERSIONS "1.54" "1.54.0")
-find_package(Boost 1.54.0 COMPONENTS chrono date_time system thread log log_setup filesystem)
+find_package(Boost 1.55.0 COMPONENTS chrono date_time system thread log log_setup filesystem)
 if(Boost_FOUND)
     message("Using installed version of Boost")
 elseif(BUILD_DEPENDENCIES)
@@ -161,7 +161,7 @@ elseif(BUILD_DEPENDENCIES)
      endif()
      ExternalProject_add(boost
      		  PREFIX ${boost_PREFIX}
-			  URL http://sourceforge.net/projects/boost/files/boost/1.54.0/boost_1_54_0.tar.bz2
+			  URL http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2
      		  URL_MD5 15cb8c0803064faef0c4ddf5bc5ca279
      		  CONFIGURE_COMMAND ${boost_CONFIGURE_COMMAND}
               BUILD_COMMAND ${boost_BUILD_COMMAND}
@@ -176,8 +176,8 @@ elseif(BUILD_DEPENDENCIES)
     set( Boost_LIBRARY_DIRS ${boost_INSTALL_DIR}/lib CACHE PATH "Boost Library directory" FORCE)
     
     if(MSVC)
-        set( Boost_INCLUDE_DIR ${boost_INSTALL_DIR}/include/boost-1_54 CACHE PATH "Boost Include directory" FORCE)
-        set( Boost_LIBRARIES optimized ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-1_54.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-gd-1_54.lib debug ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-gd-1_54.lib CACHE INTERNAL "Boost libraries needed to compile MINVR apps")
+        set( Boost_INCLUDE_DIR ${boost_INSTALL_DIR}/include/boost-1_55 CACHE PATH "Boost Include directory" FORCE)
+        set( Boost_LIBRARIES optimized ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-1_55.lib optimized ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-1_55.lib optimized ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-1_55.lib optimized ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-1_55.lib optimized ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-1_55.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-1_55.lib optimized ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-1_55.lib debug ${Boost_LIBRARY_DIRS}/libboost_chrono-vc100-mt-gd-1_55.lib debug ${Boost_LIBRARY_DIRS}/libboost_date_time-vc100-mt-gd-1_55.lib debug ${Boost_LIBRARY_DIRS}/libboost_system-vc100-mt-gd-1_55.lib debug ${Boost_LIBRARY_DIRS}/libboost_thread-vc100-mt-gd-1_55.lib debug ${Boost_LIBRARY_DIRS}/libboost_filesystem-vc100-mt-gd-1_55.lib debug ${Boost_LIBRARY_DIRS}/libboost_log_setup-vc100-mt-gd-1_55.lib debug ${Boost_LIBRARY_DIRS}/libboost_log-vc100-mt-gd-1_55.lib CACHE INTERNAL "Boost libraries needed to compile MINVR apps")
     else()
         set( Boost_INCLUDE_DIR ${boost_INSTALL_DIR}/include CACHE PATH "Boost Include directory" FORCE)
         set( Boost_LIBRARIES ${Boost_LIBRARY_DIRS}/libboost_chrono.a ${Boost_LIBRARY_DIRS}/libboost_date_time.a ${Boost_LIBRARY_DIRS}/libboost_system.a ${Boost_LIBRARY_DIRS}/libboost_thread.a ${Boost_LIBRARY_DIRS}/libboost_filesystem.a ${Boost_LIBRARY_DIRS}/libboost_log_setup.a ${Boost_LIBRARY_DIRS}/libboost_log.a CACHE INTERNAL "Boost libraries needed to compile MINVR apps")

@@ -85,6 +85,19 @@ public:
 	*/
 	virtual void applyProjectionAndCameraMatricesForRightEye();
 
+	/*! @brief Returns the last applied projection matrix.
+	*/
+	virtual glm::mat4 getLastAppliedProjectionMatrix();
+
+	/*! @brief Returns the last applied Model matrix.
+	*/
+	virtual glm::mat4 getLastAppliedModelMatrix();
+
+	/*! @brief Returns the last applied View matrix
+	*/
+	virtual glm::mat4 getLastAppliedViewMatrix();
+
+
 	/*! @brief Sets the object to world matrix.
 	*
 	*  This method sets the transformation between the current object (model) space and world (room)
@@ -137,6 +150,7 @@ protected:
 	glm::mat4 _object2World;
 
 	glm::mat4 _currentViewMatrix;
+	glm::mat4 _currentProjMatrix;
 
 	virtual void applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat);
 	glm::mat4 invertYMat();

@@ -50,6 +50,9 @@ void OffAxisCameraG3D9::applyProjectionAndCameraMatrices(const glm::mat4& projec
 {
 	debugAssertM(_renderDevice != nullptr, "OffAxisCameraG3D9::setRenderDevice has not been called yet");
 
+	_currentViewMatrix = viewMat;
+	_currentProjMatrix = projectionMat;
+
 	// convert from glm to G3D Matrix4 (i.e. column major to row major, and without the invertY since g3d does that later)
 	glm::mat4 invProj = invertYMat() * projectionMat;
 	G3D::Matrix4 g3dProj(invProj[0][0], invProj[1][0], invProj[2][0], invProj[3][0],
@@ -70,6 +73,7 @@ void OffAxisCameraG3D9::applyProjectionAndCameraMatrices(const glm::mat4& projec
 
 void OffAxisCameraG3D9::setObjectToWorldMatrix(glm::mat4 obj2World)
 {
+	_obj2World = obj2World
 	debugAssertM(_renderDevice != nullptr, "OffAxisCameraG3D9::setRenderDevice has not been called yet");
 
 	G3D::Matrix4 g3dMat(obj2World[0][0], obj2World[1][0], obj2World[2][0], obj2World[3][0],

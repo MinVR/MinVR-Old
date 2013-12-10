@@ -34,7 +34,7 @@ make_directory(${glfw_checkout_Dir})
 include(ExternalProject)
 set(glfw_PREFIX "${glfw_checkout_Dir}")
 set(glfw_INSTALL_DIR "${MINVR_INSTALL_DIR}/glfw")
-set(glfw_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${glfw_INSTALL_DIR})
+set(glfw_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${glfw_INSTALL_DIR} -DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON)
 set(glfw_DIR "${glfw_INSTALL_DIR}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

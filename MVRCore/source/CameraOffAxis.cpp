@@ -208,6 +208,7 @@ void CameraOffAxis::setObjectToWorldMatrix(glm::mat4 obj2World)
 void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat)
 {
 	_currentViewMatrix = viewMat;
+	_currentProjMatrix = projectionMat;
 	glMatrixMode(GL_PROJECTION);
     GLfloat matrix[16];
     for (int c = 0; c < 4; ++c) {
@@ -225,6 +226,21 @@ void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::mat4& projection
 		}
     }
 	glLoadMatrixf(matrix);
+}
+
+glm::mat4 CameraOffAxis::getLastAppliedProjectionMatrix()
+{
+	return _currentProjMatrix;
+}
+
+glm::mat4 CameraOffAxis::getLastAppliedModelMatrix()
+{
+	return _object2World;
+}
+
+glm::mat4 CameraOffAxis::getLastAppliedViewMatrix()
+{
+	return _currentViewMatrix;
 }
 
 glm::vec3 CameraOffAxis::getLookVector()
