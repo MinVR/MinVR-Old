@@ -13,13 +13,9 @@ GLFWDemoApp::~GLFWDemoApp()
 
 void GLFWDemoApp::doUserInputAndPreDrawComputation(const std::vector<MinVR::EventRef> &events, double synchronizedTime)
 {
-	/*
 	for(int i=0; i < events.size(); i++) {
-		if (events[i]->getName() == "Stylus_Tracker") {
-			std::cout << glm::column(events[i]->getCoordinateFrameData(), 3) <<std::endl;
-		}
+		std::cout << events[i]->getName() <<std::endl;
 	}
-	*/
 }
 
 void GLFWDemoApp::initializeContextSpecificVars(int threadId, WindowRef window)

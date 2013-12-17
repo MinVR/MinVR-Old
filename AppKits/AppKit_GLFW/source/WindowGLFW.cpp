@@ -40,11 +40,11 @@ namespace MinVR {
 
 using namespace std;
 
-std::map<GLFWwindow*, WindowGLFW*> WindowGLFW::pointerToObjectMap(WindowGLFW::initPointerToObjectMap()); 
+std::map<GLFWwindow*, WindowRef> WindowGLFW::pointerToObjectMap(WindowGLFW::initPointerToObjectMap()); 
 
-std::map<GLFWwindow*, WindowGLFW*> WindowGLFW::initPointerToObjectMap()
+std::map<GLFWwindow*, WindowRef> WindowGLFW::initPointerToObjectMap()
 {
-	std::map<GLFWwindow*, WindowGLFW*> map;
+	std::map<GLFWwindow*, WindowRef> map;
 	return map;
 }
 
@@ -125,7 +125,7 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 		BOOST_ASSERT_MSG(false, "Unable to create new GLFW window");
 	}
 
-	WindowGLFW::pointerToObjectMap.insert(std::pair<GLFWwindow*, WindowGLFW*>(_window, this));
+	WindowGLFW::pointerToObjectMap.insert(std::pair<GLFWwindow*, WindowRef>(_window, WindowRef(this)));
 
 	glfwSetWindowPos(_window, settings->xPos, settings->yPos);
 
@@ -136,6 +136,12 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 	_xPos = settings->xPos;
 	_yPos = settings->yPos;
 	glfwSetWindowPosCallback(_window, &window_pos_callback);
+
+	glfwSetKeyCallback(_window, &key_callback);
+	glfwSetCursorEnterCallback(_window, &cursor_enter_callback);
+	glfwSetCursorPosCallback(_window, &cursor_position_callback);
+	glfwSetMouseButtonCallback(_window, &mouse_button_callback);
+	glfwSetScrollCallback(_window, &scroll_callback);
 
 	glfwShowWindow(_window);
 }
@@ -244,13 +250,13 @@ void WindowGLFW::setPosition(int xPos, int yPos, bool actuallySet)
 
 void WindowGLFW::window_size_callback(GLFWwindow* window, int width, int height)
 {
-	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
+	WindowGLFW* obj = dynamic_cast<WindowGLFW*>((WindowGLFW::pointerToObjectMap.find(window))->second.get());
 	obj->setSize(width, height, false);
 }
 
 void WindowGLFW::window_pos_callback(GLFWwindow* window, int xpos, int ypos)
 {
-	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
+	WindowGLFW* obj = dynamic_cast<WindowGLFW*>((WindowGLFW::pointerToObjectMap.find(window))->second.get());
 	obj->setPosition(xpos, ypos, false);
 }
 
@@ -285,33 +291,37 @@ void WindowGLFW::mouse_button_callback(GLFWwindow* window, int button, int actio
 
     name = name + "_" + getActionName(action);
 
-	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent(new Event(name, obj->getCursorPosition(), WindowRef(obj)));
+	WindowRef objRef = (WindowGLFW::pointerToObjectMap.find(window))->second;
+	WindowGLFW* obj = dynamic_cast<WindowGLFW*>(objRef.get());
+	EventRef newEvent(new Event(name, obj->getCursorPosition(), objRef));
 	obj->appendEvent(newEvent);
 }
 
 void WindowGLFW::cursor_position_callback(GLFWwindow* window, double x, double y)
 {
 	string name = "mouse_pointer";
-    WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
+    WindowRef objRef = (WindowGLFW::pointerToObjectMap.find(window))->second;
+	WindowGLFW* obj = dynamic_cast<WindowGLFW*>(objRef.get());
 	obj->setCursorPosition(x, y);
-	EventRef newEvent(new Event(name, obj->getCursorPosition(), WindowRef(obj)));
+	EventRef newEvent(new Event(name, obj->getCursorPosition(), objRef));
 	obj->appendEvent(newEvent);
 }
 
 void WindowGLFW::cursor_enter_callback(GLFWwindow* window, int entered)
 {
 	string name = "mouse_pointer_" + entered ? "entered" : "left";
-    WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent(new Event(name, WindowRef(obj)));
+    WindowRef objRef = (WindowGLFW::pointerToObjectMap.find(window))->second;
+	WindowGLFW* obj = dynamic_cast<WindowGLFW*>(objRef.get());
+	EventRef newEvent(new Event(name, objRef));
 	obj->appendEvent(newEvent);
 }
 
 void WindowGLFW::scroll_callback(GLFWwindow* window, double x, double y)
 {
 	string name = "mouse_scroll";
-	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent(new Event(name, glm::vec2(x, y), WindowRef(obj)));
+	WindowRef objRef = (WindowGLFW::pointerToObjectMap.find(window))->second;
+	WindowGLFW* obj = dynamic_cast<WindowGLFW*>(objRef.get());
+	EventRef newEvent(new Event(name, glm::vec2(x, y), objRef));
 	obj->appendEvent(newEvent);
 }
 
@@ -327,8 +337,9 @@ void WindowGLFW::key_callback(GLFWwindow* window, int key, int scancode, int act
 
     name = name + "_" + getActionName(action);
 
-	WindowGLFW* obj = (*(WindowGLFW::pointerToObjectMap.find(window))).second;
-	EventRef newEvent(new Event(name, value, WindowRef(obj)));
+	WindowRef objRef = (WindowGLFW::pointerToObjectMap.find(window))->second;
+	WindowGLFW* obj = dynamic_cast<WindowGLFW*>(objRef.get());
+	EventRef newEvent(new Event(name, value, objRef));
 	obj->appendEvent(newEvent);
 }
 
