@@ -42,6 +42,7 @@
 #include "MVRCore/WindowSettings.H"
 #include "MVRCore/Rect2D.H"
 #include <vector>
+#include <memory>
 
 namespace MinVR {
 

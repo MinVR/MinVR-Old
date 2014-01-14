@@ -103,8 +103,8 @@ public:
 		we need to access the member variables in the callback functions, so we use this
 		hash table as a way to find the object and access the members.
 	*/
-	static std::map<GLFWwindow*, WindowGLFW*> pointerToObjectMap;
-	static std::map<GLFWwindow*, WindowGLFW*> initPointerToObjectMap();
+	static std::map<GLFWwindow*, WindowRef> pointerToObjectMap;
+	static std::map<GLFWwindow*, WindowRef> initPointerToObjectMap();
 
 	static void window_size_callback(GLFWwindow* window, int width, int height);
 	static void window_pos_callback(GLFWwindow* window, int xpos, int ypos);

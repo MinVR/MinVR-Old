@@ -45,7 +45,7 @@ Window1_Viewport1_TopLeft           (-4, 4, 4)
 Window1_Viewport1_TopRight          (-4, 4, -4)
 Window1_Viewport1_BotLeft           (-4,-4, 4)
 Window1_Viewport1_BotRight          (-4,-4, -4)
-Window1_Viewport1_NearClip          0.01
+Window1_Viewport1_NearClip          0.001
 Window1_Viewport1_FarClip           500.0
 
 Window1_Viewport2_CameraType	OffAxis
@@ -57,7 +57,7 @@ Window1_Viewport2_TopLeft           (4, 4, -4)
 Window1_Viewport2_TopRight          (4, 4, 4)
 Window1_Viewport2_BotLeft           (4,-4, -4)
 Window1_Viewport2_BotRight          (4,-4, 4)
-Window1_Viewport2_NearClip          0.01
+Window1_Viewport2_NearClip          0.001
 Window1_Viewport2_FarClip           500.0
 
 # Cave Front wall 
@@ -92,7 +92,7 @@ Window2_Viewport1_TopLeft           (-4, 4, -4)
 Window2_Viewport1_TopRight          (4, 4, -4)
 Window2_Viewport1_BotLeft           (-4,-4,-4)
 Window2_Viewport1_BotRight          (4,-4, -4)
-Window2_Viewport1_NearClip          0.01
+Window2_Viewport1_NearClip          0.001
 Window2_Viewport1_FarClip           500.0
 
 # Cave floor
@@ -127,5 +127,5 @@ Window3_Viewport1_TopLeft           (-4, -4, -4)
 Window3_Viewport1_TopRight          (4, -4, -4)
 Window3_Viewport1_BotLeft           (-4, -4, 4)
 Window3_Viewport1_BotRight          (4, -4, 4)
-Window3_Viewport1_NearClip          0.01
+Window3_Viewport1_NearClip          0.001
 Window3_Viewport1_FarClip           500.0

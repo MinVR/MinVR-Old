@@ -13,10 +13,8 @@ GLFWDemoApp::~GLFWDemoApp()
 
 void GLFWDemoApp::doUserInputAndPreDrawComputation(const std::vector<MinVR::EventRef> &events, double synchronizedTime)
 {
-	for (int i=0;i<events.size();i++) {
-		if (events[i]->getName().find("kbd") != std::string::npos) {
-			std::cout << events[i]->getName() <<std::endl;
-		}
+	for(int i=0; i < events.size(); i++) {
+		std::cout << events[i]->getName() <<std::endl;
 	}
 }
 
