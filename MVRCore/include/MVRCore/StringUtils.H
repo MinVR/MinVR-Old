@@ -41,6 +41,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
 #include <sstream>
@@ -191,6 +192,10 @@ std::vector<T> insertIntoArray(std::vector<T> inputArray, T newElement,
 std::string trimWhitespace(const std::string& s);
 
 std::string readWholeFile(const std::string& filename);
+
+// checks if input begins with symbol, ignoring whitespace. If so, it
+// returns true and removes symbol and the surrounding whitespace from input
+bool readSymbol(std::string& input, const std::string& symbol);
 
 } // end namespace
 #endif

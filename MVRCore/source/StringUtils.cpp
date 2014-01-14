@@ -412,6 +412,17 @@ std::string readWholeFile(const std::string& filename)
 	return instr;
 }
 
+bool readSymbol(std::string& input, const std::string& symbol)
+{
+	input = trimWhitespace(input);
+	if (boost::starts_with(input, symbol)) {
+		input = input.substr(symbol.size());
+		input = trimWhitespace(input);
+		return true;
+	}
+	return false;
+}
+
 /*
 bool getXMLField(const std::string &input, const std::string &fieldName,
 	Table<std::string, std::string> &propertiesAndValues,
