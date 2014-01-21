@@ -157,6 +157,7 @@ void WindowGLFW::initGLEW()
 	// Initialize glew
 	// Requires that a context exists and is current before it will work, so we create a temporary one here
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE); // Create a debug context so glew is initialized with debug context extensions as well in case we need them later
 	GLFWwindow* tempWin = glfwCreateWindow(200, 200, "Temporary", NULL, NULL);
 	glfwMakeContextCurrent(tempWin);
 	GLenum err = glewInit();
@@ -724,7 +725,7 @@ void WindowGLFW::debugCallbackAMD(GLuint id, GLenum category, GLenum severity, G
 void WindowGLFW::initDebugCallback()
 {
 	if (_settings->useDebugContext) {
-		if (glewIsSupported("GL_ARB_Debug_output"))
+		if (glewIsSupported("GL_ARB_debug_output"))
 		{
 			glDebugMessageCallbackARB(&debugCallbackARB, stdout);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);

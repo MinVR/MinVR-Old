@@ -1,0 +1,50 @@
+# MinVR Setup Configuration File
+
+Description           University of Minnesota Interactive Visualization Lab CAVE
+
+# Name of a configuration file for input devices (leave blank
+# for no devices other than kbd and mouse)
+InputDevicesFile      umn-cave-devices.cfg
+
+InterOcularDistance		0.2083
+InitialHeadFrame		((1,0,0,0), (0,1,0,2), (0,0,1,1), (0,0,0,1))
+
+# This file sets up 3 windows for a vr cave environment: one window with two viewports for the side walls
+# and a separate window for the front wall and floor.
+
+NumWindows			  1
+
+# Cave Front wall 
+Window1_Width           1280
+Window1_Height          1300
+Window1_X               4480
+Window1_Y               0
+Window1_RGBBits         8
+Window1_AlphaBits       8
+Window1_DepthBits       24
+Window1_StencilBits     8
+Window1_MSAASamples     1
+Window1_FullScreen      0
+Window1_Stereo          1
+Window1_Resizable       0
+Window1_AllowMaximize   0
+Window1_Framed          0
+Window1_Caption         MinVR Cave Front
+Window1_StereoType	    QuadBuffered
+Window1_UseDebugContext 1
+Window1_UseGPUAffinity  1
+Window1_Visible         0
+
+Window1_NumViewports 1
+
+Window1_Viewport1_CameraType	OffAxis
+Window1_Viewport1_Width				1280
+Window1_Viewport1_Height			1300
+Window1_Viewport1_X					0
+Window1_Viewport1_Y					0
+Window1_Viewport1_TopLeft           (-4, 4, -4)
+Window1_Viewport1_TopRight          (4, 4, -4)
+Window1_Viewport1_BotLeft           (-4,-4,-4)
+Window1_Viewport1_BotRight          (4,-4, -4)
+Window1_Viewport1_NearClip          0.001
+Window1_Viewport1_FarClip           500.0

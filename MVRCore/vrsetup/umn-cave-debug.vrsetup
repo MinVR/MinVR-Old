@@ -1,0 +1,131 @@
+# MinVR Setup Configuration File
+
+Description           University of Minnesota Interactive Visualization Lab CAVE
+
+# Name of a configuration file for input devices (leave blank
+# for no devices other than kbd and mouse)
+InputDevicesFile      umn-cave-devices.cfg
+
+InterOcularDistance		0.2083
+InitialHeadFrame		((1,0,0,0), (0,1,0,2), (0,0,1,1), (0,0,0,1))
+
+# This file sets up 3 windows for a vr cave environment: one window with two viewports for the side walls
+# and a separate window for the front wall and floor.
+
+NumWindows			  3
+
+# Side wall window
+Window1_Width           2550
+Window1_Height          1300
+Window1_X               1921
+Window1_Y               0
+Window1_RGBBits         8
+Window1_AlphaBits       8
+Window1_DepthBits       24
+Window1_StencilBits     8
+Window1_MSAASamples     1
+Window1_FullScreen      0
+Window1_Stereo          1
+Window1_Resizable       0
+Window1_AllowMaximize   0
+Window1_Framed          0
+Window1_Caption         MinVR Cave Sides
+Window1_StereoType	    QuadBuffered
+Window1_UseDebugContext 1
+Window1_UseGPUAffinity  1
+Window1_Visible         0
+
+Window1_NumViewports 2
+Window1_Viewport1_CameraType	OffAxis
+Window1_Viewport1_Width				1280
+Window1_Viewport1_Height			1300
+Window1_Viewport1_X					0
+Window1_Viewport1_Y					0
+Window1_Viewport1_TopLeft           (-4, 4, 4)
+Window1_Viewport1_TopRight          (-4, 4, -4)
+Window1_Viewport1_BotLeft           (-4,-4, 4)
+Window1_Viewport1_BotRight          (-4,-4, -4)
+Window1_Viewport1_NearClip          0.001
+Window1_Viewport1_FarClip           500.0
+
+Window1_Viewport2_CameraType	OffAxis
+Window1_Viewport2_Width				1270
+Window1_Viewport2_Height			1300
+Window1_Viewport2_X					1280
+Window1_Viewport2_Y					0
+Window1_Viewport2_TopLeft           (4, 4, -4)
+Window1_Viewport2_TopRight          (4, 4, 4)
+Window1_Viewport2_BotLeft           (4,-4, -4)
+Window1_Viewport2_BotRight          (4,-4, 4)
+Window1_Viewport2_NearClip          0.001
+Window1_Viewport2_FarClip           500.0
+
+# Cave Front wall 
+Window2_Width           1280
+Window2_Height          1300
+Window2_X               4480
+Window2_Y               0
+Window2_RGBBits         8
+Window2_AlphaBits       8
+Window2_DepthBits       24
+Window2_StencilBits     8
+Window2_MSAASamples     1
+Window2_FullScreen      0
+Window2_Stereo          1
+Window2_Resizable       0
+Window2_AllowMaximize   0
+Window2_Framed          0
+Window2_Caption         MinVR Cave Front
+Window2_StereoType	    QuadBuffered
+Window2_UseDebugContext 1
+Window2_UseGPUAffinity  1
+Window2_Visible         0
+
+Window2_NumViewports 1
+
+Window2_Viewport1_CameraType	OffAxis
+Window2_Viewport1_Width				1280
+Window2_Viewport1_Height			1300
+Window2_Viewport1_X					0
+Window2_Viewport1_Y					0
+Window2_Viewport1_TopLeft           (-4, 4, -4)
+Window2_Viewport1_TopRight          (4, 4, -4)
+Window2_Viewport1_BotLeft           (-4,-4,-4)
+Window2_Viewport1_BotRight          (4,-4, -4)
+Window2_Viewport1_NearClip          0.001
+Window2_Viewport1_FarClip           500.0
+
+# Cave floor
+Window3_Width           1280
+Window3_Height          1300
+Window3_X               5760
+Window3_Y               0
+Window3_RGBBits         8
+Window3_AlphaBits       8
+Window3_DepthBits       24
+Window3_StencilBits     8
+Window3_MSAASamples     1
+Window3_FullScreen      0
+Window3_Stereo          1
+Window3_Resizable       0
+Window3_AllowMaximize   0
+Window3_Framed          0
+Window3_Caption         MinVR Cave Floor
+Window3_StereoType	    QuadBuffered
+Window3_UseDebugContext 1
+Window3_UseGPUAffinity  1
+Window3_Visible         0
+
+Window3_NumViewports 1
+
+Window3_Viewport1_CameraType	OffAxis
+Window3_Viewport1_Width				1280
+Window3_Viewport1_Height			1300
+Window3_Viewport1_X					0
+Window3_Viewport1_Y					0
+Window3_Viewport1_TopLeft           (-4, -4, -4)
+Window3_Viewport1_TopRight          (4, -4, -4)
+Window3_Viewport1_BotLeft           (-4, -4, 4)
+Window3_Viewport1_BotRight          (4, -4, 4)
+Window3_Viewport1_NearClip          0.001
+Window3_Viewport1_FarClip           500.0
