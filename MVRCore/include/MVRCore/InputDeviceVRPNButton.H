@@ -59,6 +59,8 @@
 #include <boost/log/trivial.hpp>
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 #ifdef USE_VRPN
 class vrpn_Button_Remote;
@@ -80,7 +82,7 @@ public:
 	void pollForInput(std::vector<EventRef> &events);
 
 	std::string getEventName(int buttonNumber);
-	void sendEvent(int buttonNumber, bool down);
+	void sendEvent(int buttonNumber, bool down, const boost::posix_time::ptime &msg_time);
 
 private:
 	vrpn_Button_Remote  *_vrpnDevice;

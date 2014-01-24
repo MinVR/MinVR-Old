@@ -43,72 +43,107 @@
 
 namespace MinVR {
 	
-Event::Event(const std::string &name, const WindowRef window/*= nullptr*/, const int id/*= -1*/)
+Event::Event(const std::string &name, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp)
 { 
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
 	_name = name;
 	_type = EVENTTYPE_STANDARD;
-	_timestamp = boost::posix_time::microsec_clock::local_time();
 	_id = id;
 	_window = window;
 }
 
-Event::Event(const std::string &name, const double data, const WindowRef window/*= nullptr*/, const int id/*= -1*/)
+Event::Event(const std::string &name, const double data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp)
 { 
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
 	_name = name;
 	_data1D = data;
 	_type = EVENTTYPE_1D;
-	_timestamp = boost::posix_time::microsec_clock::local_time();
 	_id = id;
 	_window = window;
 }
 
-Event::Event(const std::string &name, const glm::vec2 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/)
+Event::Event(const std::string &name, const glm::vec2 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp)
 { 
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
 	_name = name;
 	_data2D = data;
 	_type = EVENTTYPE_2D;
-	_timestamp = boost::posix_time::microsec_clock::local_time();
 	_id = id;
 	_window = window;
 }
 
-Event::Event(const std::string &name, const glm::vec3 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
+Event::Event(const std::string &name, const glm::vec3 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
 { 
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
 	_name = name;
 	_data3D = data;
 	_type = EVENTTYPE_3D;
-	_timestamp = boost::posix_time::microsec_clock::local_time();
 	_id = id;
 	_window = window;
 }
 
-Event::Event(const std::string &name, const glm::vec4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
+Event::Event(const std::string &name, const glm::vec4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
 { 
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
 	_name = name;
 	_data4D = data;
 	_type = EVENTTYPE_4D;
-	_timestamp = boost::posix_time::microsec_clock::local_time();
 	_id = id;
 	_window = window;
 }
 
 
-Event::Event(const std::string &name, const glm::mat4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/) 
+Event::Event(const std::string &name, const glm::mat4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
 { 
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
 	_name = name;
 	_dataCF = data;
 	_type = EVENTTYPE_COORDINATEFRAME;
-	_timestamp = boost::posix_time::microsec_clock::local_time();
 	_id = id;
 	_window = window;
 }
 
-Event::Event(const std::string &name, const std::string &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/)
+Event::Event(const std::string &name, const std::string &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp )
 { 
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
 	_name = name;
 	_dataMsg = data;
 	_type = EVENTTYPE_MSG;
-	_timestamp = boost::posix_time::microsec_clock::local_time();
 	_id = id;
 	_window = window;
 }

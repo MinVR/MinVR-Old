@@ -334,7 +334,10 @@ void AbstractMVREngine::pollUserInput()
 	for (int i=0;i<_inputDevices.size();i++) { 
 		_inputDevices[i]->pollForInput(_events);
 	}
-	std::sort(_events.begin(), _events.end());
+	
+	//TODO: ideally we want to sort the events by time stamp, but this seems to be flipping some tracker events
+	// out of order. Currently we get better results not sorting. Still needs to be debugged
+	//std::stable_sort(_events.begin(), _events.end());
 }
 
 void AbstractMVREngine::updateProjectionForHeadTracking() 

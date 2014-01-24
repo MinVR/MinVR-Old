@@ -49,8 +49,9 @@ namespace MinVR {
 void VRPN_CALLBACK analogHandler(void *thisPtr, const vrpn_ANALOGCB info)
 {
 	int lastchannel = (int)glm::min(info.num_channel, (int)((InputDeviceVRPNAnalog*)thisPtr)->numChannels());
+	boost::posix_time::ptime msgTime = boost::posix_time::microsec_clock::local_time();
 	for (int i=0;i<lastchannel;i++) {
-		((InputDeviceVRPNAnalog*)thisPtr)->sendEventIfChanged(i, info.channel[i]);
+		((InputDeviceVRPNAnalog*)thisPtr)->sendEventIfChanged(i, info.channel[i], msgTime);
 	}
 }
 
@@ -107,10 +108,10 @@ std::string	InputDeviceVRPNAnalog::getEventName(int channelNumber)
 	}
 }
 
-void InputDeviceVRPNAnalog::sendEventIfChanged(int channelNumber, double data)
+void InputDeviceVRPNAnalog::sendEventIfChanged(int channelNumber, double data, const boost::posix_time::ptime &msg_time)
 {
 	if (_channelValues[channelNumber] != data) {
-		_pendingEvents.push_back(EventRef(new Event(_eventNames[channelNumber], data, nullptr, channelNumber)));
+		_pendingEvents.push_back(EventRef(new Event(_eventNames[channelNumber], data, nullptr, channelNumber, msg_time)));
 		_channelValues[channelNumber] = data;
 	}
 }

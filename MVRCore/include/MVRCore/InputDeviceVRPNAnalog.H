@@ -47,6 +47,8 @@
 #include <boost/log/trivial.hpp>
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 #ifdef USE_VRPN
 class vrpn_Analog_Remote;
@@ -67,7 +69,7 @@ public:
 	virtual ~InputDeviceVRPNAnalog();
 
 	void        pollForInput(std::vector<EventRef> &events);
-	void        sendEventIfChanged(int channelNumber, double data);
+	void        sendEventIfChanged(int channelNumber, double data, const boost::posix_time::ptime &msg_time);
 	std::string getEventName(int channelNumber);
 	size_t         numChannels() { return _eventNames.size(); }
 

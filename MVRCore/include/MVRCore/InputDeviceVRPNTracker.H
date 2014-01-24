@@ -51,6 +51,8 @@ based on tracker data from VRPN.
 #include "MVRCore/AbstractInputDevice.H"
 #include "MVRCore/ConfigMap.H"
 #include "MVRCore/StringUtils.H"
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 #include <boost/log/trivial.hpp>
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
@@ -117,7 +119,7 @@ public:
 
 	virtual ~InputDeviceVRPNTracker();
 
-	void processEvent(const glm::mat4 &vrpnEvent, int sensorNum);
+	void processEvent(const glm::mat4 &vrpnEvent, int sensorNum, const boost::posix_time::ptime &msg_time);
 	std::string getEventName(int trackerNumber);
 	void pollForInput(std::vector<EventRef> &events);
 	void setPrintSensor0(bool b) { _printSensor0 = b; }

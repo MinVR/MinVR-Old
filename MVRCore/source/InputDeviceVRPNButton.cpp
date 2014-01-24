@@ -49,7 +49,9 @@ namespace MinVR {
 
 void  VRPN_CALLBACK	buttonHandler(void *thisPtr, const vrpn_BUTTONCB info)
 {
-	((InputDeviceVRPNButton*)thisPtr)->sendEvent(info.button, info.state);
+	boost::posix_time::ptime msgTime = boost::posix_time::microsec_clock::local_time();
+
+	((InputDeviceVRPNButton*)thisPtr)->sendEvent(info.button, info.state, msgTime);
 }
 
 
@@ -101,14 +103,14 @@ std::string InputDeviceVRPNButton::getEventName(int buttonNumber)
 	}
 }
 
-void InputDeviceVRPNButton::sendEvent(int buttonNumber, bool down)
+void InputDeviceVRPNButton::sendEvent(int buttonNumber, bool down, const boost::posix_time::ptime &msg_time)
 {
 	std::string ename = getEventName(buttonNumber);
 	if (down) {
-		_pendingEvents.push_back(EventRef(new Event(ename + "_down", nullptr, buttonNumber)));
+		_pendingEvents.push_back(EventRef(new Event(ename + "_down", nullptr, buttonNumber, msg_time)));
 	}
 	else {
-		_pendingEvents.push_back(EventRef(new Event(ename + "_up", nullptr, buttonNumber)));
+		_pendingEvents.push_back(EventRef(new Event(ename + "_up", nullptr, buttonNumber, msg_time)));
 	}
 }
 

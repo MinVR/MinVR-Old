@@ -59,7 +59,8 @@ void VRPN_CALLBACK trackerHandler(void *thisPtr, const vrpn_TRACKERCB info)
 	vrpnEvent = glm::column(vrpnEvent, 3, glm::vec4(info.pos[0],info.pos[1],info.pos[2], 1.0));
 
 	InputDeviceVRPNTracker* device = ((InputDeviceVRPNTracker*)thisPtr);
-	device->processEvent(vrpnEvent, info.sensor);
+	boost::posix_time::ptime msgTime = boost::posix_time::microsec_clock::local_time();
+	device->processEvent(vrpnEvent, info.sensor, msgTime);
 }
 
 InputDeviceVRPNTracker::InputDeviceVRPNTracker(
@@ -193,7 +194,7 @@ room space.  You can think of this as what rotation, then
 translation would move the origin of RoomSpace to the origin of
 tracking device.  This is the deviceToRoom coordinate frame.
 */
-void InputDeviceVRPNTracker::processEvent(const glm::mat4 &vrpnEvent, int sensorNum)
+void InputDeviceVRPNTracker::processEvent(const glm::mat4 &vrpnEvent, int sensorNum, const boost::posix_time::ptime &msg_time)
 {
 
 	if(_ignoreZeroes && glm::column(vrpnEvent, 3) == glm::vec4(0.0, 0.0, 0.0, 1.0)){
@@ -237,7 +238,7 @@ void InputDeviceVRPNTracker::processEvent(const glm::mat4 &vrpnEvent, int sensor
 		glm::vec4 translation = glm::column(eventRoom, 3);
 		std::cout << translation << std::endl;
 	}
-	_pendingEvents.push_back(EventRef(new Event(getEventName(sensorNum), eventRoom, nullptr, sensorNum)));
+	_pendingEvents.push_back(EventRef(new Event(getEventName(sensorNum), eventRoom, nullptr, sensorNum, msg_time)));
 }
 
 std::string InputDeviceVRPNTracker::getEventName(int trackerNumber)
