@@ -57,7 +57,7 @@ public:
 	*
 	*  @remarks This should be implemented by any derived classes.
 	*/
-	virtual void updateHeadTrackingFrame(glm::mat4 newHeadFrame) = 0;
+	virtual void updateHeadTrackingFrame(glm::dmat4 newHeadFrame) = 0;
 
 	/*! @brief Sets the openGL matrices.
 	*
@@ -96,7 +96,7 @@ public:
 	*
 	*  @remarks This should be implemented by any derived classes.
 	*/
-	virtual void setObjectToWorldMatrix(glm::mat4 obj2World) = 0;
+	virtual void setObjectToWorldMatrix(glm::dmat4 obj2World) = 0;
 };
 
 } // end namespace

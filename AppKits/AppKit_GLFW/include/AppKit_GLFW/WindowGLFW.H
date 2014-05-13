@@ -96,7 +96,7 @@ public:
 
 	/** Gets the most recently updated cursor position in this window
 	*/
-	glm::vec2 getCursorPosition();
+	glm::dvec2 getCursorPosition();
 
 	/** This uglyness is caused because glfw is a C library so its callback functions for
 		key presses, size changes, etc. must be static or regular functions. Unfortunately,
@@ -121,7 +121,7 @@ private:
 	int _xPos;
 	int _yPos;
 	std::vector<EventRef> _currentEvents;
-	glm::vec2 _cursorPosition;
+	glm::dvec2 _cursorPosition;
 
 	void initGLEW();
 

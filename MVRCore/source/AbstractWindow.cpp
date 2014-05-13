@@ -47,7 +47,7 @@ AbstractWindow::~AbstractWindow()
 {
 }
 
-void AbstractWindow::updateHeadTrackingForAllViewports(glm::mat4 headFrame)
+void AbstractWindow::updateHeadTrackingForAllViewports(glm::dmat4 headFrame)
 {
 	for (int i=0;i<_cameras.size();i++) {
 		_cameras[i]->updateHeadTrackingFrame(headFrame);

@@ -95,7 +95,7 @@ public:
 	 *
 	 *  @param[in] The new head position.
 	 */
-	virtual void updateHeadTrackingForAllViewports(glm::mat4 headFrame);
+	virtual void updateHeadTrackingForAllViewports(glm::dmat4 headFrame);
 
 	WindowSettings::StereoType getStereoType() { return _settings->stereoType; }
 	size_t getNumViewports() { return _viewports.size(); }

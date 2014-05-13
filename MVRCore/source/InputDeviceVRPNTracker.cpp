@@ -54,9 +54,9 @@ namespace MinVR {
 // Callback function for VRPN, void* pointer points to a VRPNTrackerDevice
 void VRPN_CALLBACK trackerHandler(void *thisPtr, const vrpn_TRACKERCB info)
 {
-	glm::mat4 vrpnEvent;
+	glm::dmat4 vrpnEvent;
 	vrpnEvent = glm::mat4_cast(glm::quat(info.quat[3],info.quat[0], info.quat[1],info.quat[2]));
-	vrpnEvent = glm::column(vrpnEvent, 3, glm::vec4(info.pos[0],info.pos[1],info.pos[2], 1.0));
+	vrpnEvent = glm::column(vrpnEvent, 3, glm::dvec4(info.pos[0],info.pos[1],info.pos[2], 1.0));
 
 	InputDeviceVRPNTracker* device = ((InputDeviceVRPNTracker*)thisPtr);
 	boost::posix_time::ptime msgTime = boost::posix_time::microsec_clock::local_time();
@@ -67,9 +67,9 @@ InputDeviceVRPNTracker::InputDeviceVRPNTracker(
 	const std::string            &vrpnTrackerDeviceName,
 	const std::vector<std::string>     &eventsToGenerate,
 	const double                 &trackerUnitsToRoomUnitsScale,
-	const glm::mat4        &deviceToRoom,
-	const std::vector<glm::mat4> &propToTracker,
-	const std::vector<glm::mat4> &finalOffset,
+	const glm::dmat4        &deviceToRoom,
+	const std::vector<glm::dmat4> &propToTracker,
+	const std::vector<glm::dmat4> &finalOffset,
 	const bool                   &waitForNewReportInPoll,
 	const bool                   &convertLHtoRH,
 	const bool                   &ignoreZeroes)
@@ -98,10 +98,10 @@ InputDeviceVRPNTracker::InputDeviceVRPNTracker( const std::string name, const Co
 	std::vector<std::string> events = splitStringIntoArray(eventsStr);
 
 	double scale = map->get( name + "_TrackerUnitsToRoomUnitsScale", 1.0 );
-	glm::mat4 d2r = map->get( name + "_DeviceToRoom", glm::mat4(1.0) );
+	glm::dmat4 d2r = map->get( name + "_DeviceToRoom", glm::dmat4(1.0) );
 	
 	// orthonormalize
-	glm::mat3 rot(d2r[0][0], d2r[0][1], d2r[0][2],
+	glm::dmat3 rot(d2r[0][0], d2r[0][1], d2r[0][2],
 				  d2r[1][0], d2r[1][1], d2r[1][2],
 				  d2r[2][0], d2r[2][1], d2r[2][2]);
 	rot = glm::orthonormalize(rot);
@@ -115,13 +115,13 @@ InputDeviceVRPNTracker::InputDeviceVRPNTracker( const std::string name, const Co
 	d2r[2][1] = rot[2][1];
 	d2r[2][2] = rot[2][2];
 
-	std::vector<glm::mat4> p2t;
-	std::vector<glm::mat4> fo;
+	std::vector<glm::dmat4> p2t;
+	std::vector<glm::dmat4> fo;
 
 	for (int  i = 0; i < events.size(); i++)
 	{
-		glm::mat4 cf = map->get(events[i] + "_PropToTracker", glm::mat4(1.0));
-		glm::mat3 rot(cf[0][0], cf[0][1], cf[0][2],
+		glm::dmat4 cf = map->get(events[i] + "_PropToTracker", glm::dmat4(1.0));
+		glm::dmat3 rot(cf[0][0], cf[0][1], cf[0][2],
 				  cf[1][0], cf[1][1], cf[1][2],
 				  cf[2][0], cf[2][1], cf[2][2]);
 		rot = glm::orthonormalize(rot);
@@ -136,8 +136,8 @@ InputDeviceVRPNTracker::InputDeviceVRPNTracker( const std::string name, const Co
 		cf[2][2] = rot[2][2];
 
 		p2t.push_back(cf);
-		glm::mat4 cf2 = map->get(events[i] + "_FinalOffset", glm::mat4(1.0));
-		glm::mat3 rot2(cf2[0][0], cf2[0][1], cf2[0][2],
+		glm::dmat4 cf2 = map->get(events[i] + "_FinalOffset", glm::dmat4(1.0));
+		glm::dmat3 rot2(cf2[0][0], cf2[0][1], cf2[0][2],
 				  cf2[1][0], cf2[1][1], cf2[1][2],
 				  cf2[2][0], cf2[2][1], cf2[2][2]);
 		rot2 = glm::orthonormalize(rot2);
@@ -194,17 +194,17 @@ room space.  You can think of this as what rotation, then
 translation would move the origin of RoomSpace to the origin of
 tracking device.  This is the deviceToRoom coordinate frame.
 */
-void InputDeviceVRPNTracker::processEvent(const glm::mat4 &vrpnEvent, int sensorNum, const boost::posix_time::ptime &msg_time)
+void InputDeviceVRPNTracker::processEvent(const glm::dmat4 &vrpnEvent, int sensorNum, const boost::posix_time::ptime &msg_time)
 {
 
-	if(_ignoreZeroes && glm::column(vrpnEvent, 3) == glm::vec4(0.0, 0.0, 0.0, 1.0)){
+	if(_ignoreZeroes && glm::column(vrpnEvent, 3) == glm::dvec4(0.0, 0.0, 0.0, 1.0)){
 		return;
 	}
 	_newReportFlag = true;
 
 	// first, adjust units of trackerToDevice.  after this, everything
 	// is in RoomSpace units (typically feet for VRG3D).
-	glm::mat4 trackerToDevice = vrpnEvent;
+	glm::dmat4 trackerToDevice = vrpnEvent;
 
 	// convert a left handed coordinate system to a right handed one
 	// not sure if this actually works..
@@ -232,10 +232,10 @@ void InputDeviceVRPNTracker::processEvent(const glm::mat4 &vrpnEvent, int sensor
 	trackerToDevice[3][1] *= _trackerUnitsToRoomUnitsScale;
 	trackerToDevice[3][2] *= _trackerUnitsToRoomUnitsScale;
 
-	glm::mat4 eventRoom = _finalOffset[sensorNum] * _deviceToRoom * trackerToDevice * _propToTracker[sensorNum];
+	glm::dmat4 eventRoom = _finalOffset[sensorNum] * _deviceToRoom * trackerToDevice * _propToTracker[sensorNum];
 
 	if ((_printSensor0) && (sensorNum == 0)) {
-		glm::vec4 translation = glm::column(eventRoom, 3);
+		glm::dvec4 translation = glm::column(eventRoom, 3);
 		std::cout << translation << std::endl;
 	}
 	_pendingEvents.push_back(EventRef(new Event(getEventName(sensorNum), eventRoom, nullptr, sensorNum, msg_time)));

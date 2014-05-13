@@ -115,16 +115,16 @@ void InputDeviceSpaceNav::pollForInput(std::vector<EventRef> &events)
 					//calibrating the same as mac, windows results are (-1, 1) for rot
 					// and (-80, 80) for trans, mac are not so simple, also mac have some axis reversed, possibly
 					// settings stuff?
-					glm::vec3 trans(pTranslation->X / 80.0, pTranslation->Z / 80.0, -pTranslation->Y / 80.0);
-					glm::vec3 rot(pRotation->X, pRotation->Z, -pRotation->Y);
+					glm::dvec3 trans(pTranslation->X / 80.0, pTranslation->Z / 80.0, -pTranslation->Y / 80.0);
+					glm::dvec3 rot(pRotation->X, pRotation->Z, -pRotation->Y);
 
 					events.push_back(EventRef(new Event("SpaceNav_Trans", trans)));
 					events.push_back(EventRef(new Event("SpaceNav_Rot", rot)));
 					//cout << trans << " " << rot << endl;
 				}
 				else {
-					glm::vec3 trans(0.0);
-					glm::vec3 rot(0.0);
+					glm::dvec3 trans(0.0);
+					glm::dvec3 rot(0.0);
 
 
 					events.push_back(EventRef(new Event("SpaceNav_Trans", trans)));

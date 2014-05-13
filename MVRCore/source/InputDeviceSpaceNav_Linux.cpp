@@ -67,8 +67,8 @@ void InputDeviceSpaceNav::pollForInput(std::vector<EventRef> &events) {
 		spnav_event sev;
 		while(spnav_poll_event(&sev)) {//non-blocking API
 			if(sev.type == SPNAV_EVENT_MOTION) {
-				glm::vec3 trans(-sev.motion.x, sev.motion.z, sev.motion.y);
-				glm::vec3 rot(-sev.motion.rx, sev.motion.rz, sev.motion.ry);
+				glm::dvec3 trans(-sev.motion.x, sev.motion.z, sev.motion.y);
+				glm::dvec3 rot(-sev.motion.rx, sev.motion.rz, sev.motion.ry);
 				trans=trans/-400.0;//roughly normalizes
 				rot=rot/-400.0;//roughly normalizes
 				events.push_back(EventRef(new MinVR::Event("SpaceNav_Trans", trans)));

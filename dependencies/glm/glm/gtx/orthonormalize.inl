@@ -19,11 +19,11 @@ namespace glm
 
 		r[0] = normalize(r[0]);
 
-		float d0 = dot(r[0], r[1]);
+		T d0 = dot(r[0], r[1]);
 		r[1] -= r[0] * d0;
 		r[1] = normalize(r[1]);
 
-		float d1 = dot(r[1], r[2]);
+		T d1 = dot(r[1], r[2]);
 		d0 = dot(r[0], r[2]);
 		r[2] -= r[0] * d0 + r[1] * d1;
 		r[2] = normalize(r[2]);

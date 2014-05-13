@@ -176,10 +176,10 @@ void G3D9DemoApp::drawGraphics(int threadId, MinVR::AbstractCameraRef camera, Mi
 	rd->beginFrame();
 	rd->pushState();
 
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-	glm::vec2 rotAngles(-20.0, 45.0);
-	glm::mat4 rotate1 = glm::rotate(translate, rotAngles.y, glm::vec3(0.0,1.0,0.0));
-	camera->setObjectToWorldMatrix(glm::rotate(rotate1, rotAngles.x, glm::vec3(1.0,0,0)));
+	glm::dmat4 translate = glm::translate(glm::dmat4(1.0f), glm::dvec3(0.0f, 0.0f, -5.0f));
+	glm::dvec2 rotAngles(-20.0, 45.0);
+	glm::dmat4 rotate1 = glm::rotate(translate, rotAngles.y, glm::dvec3(0.0,1.0,0.0));
+	camera->setObjectToWorldMatrix(glm::rotate(rotate1, rotAngles.x, glm::dvec3(1.0,0,0)));
 
 	rd->setShadeMode(RenderDevice::SHADE_SMOOTH);
 

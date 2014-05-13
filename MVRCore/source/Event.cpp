@@ -72,7 +72,7 @@ Event::Event(const std::string &name, const double data, const WindowRef window/
 	_window = window;
 }
 
-Event::Event(const std::string &name, const glm::vec2 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp)
+Event::Event(const std::string &name, const glm::dvec2 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp)
 { 
 	if (timestamp.is_not_a_date_time()) {
 		_timestamp = boost::posix_time::microsec_clock::local_time();
@@ -87,7 +87,7 @@ Event::Event(const std::string &name, const glm::vec2 &data, const WindowRef win
 	_window = window;
 }
 
-Event::Event(const std::string &name, const glm::vec3 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
+Event::Event(const std::string &name, const glm::dvec3 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
 { 
 	if (timestamp.is_not_a_date_time()) {
 		_timestamp = boost::posix_time::microsec_clock::local_time();
@@ -102,7 +102,7 @@ Event::Event(const std::string &name, const glm::vec3 &data, const WindowRef win
 	_window = window;
 }
 
-Event::Event(const std::string &name, const glm::vec4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
+Event::Event(const std::string &name, const glm::dvec4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
 { 
 	if (timestamp.is_not_a_date_time()) {
 		_timestamp = boost::posix_time::microsec_clock::local_time();
@@ -118,7 +118,7 @@ Event::Event(const std::string &name, const glm::vec4 &data, const WindowRef win
 }
 
 
-Event::Event(const std::string &name, const glm::mat4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
+Event::Event(const std::string &name, const glm::dmat4 &data, const WindowRef window/*= nullptr*/, const int id/*= -1*/, const boost::posix_time::ptime &timestamp) 
 { 
 	if (timestamp.is_not_a_date_time()) {
 		_timestamp = boost::posix_time::microsec_clock::local_time();
@@ -182,22 +182,22 @@ double Event::get1DData()
 	return _data1D;
 }
 
-glm::vec2 Event::get2DData()
+glm::dvec2 Event::get2DData()
 {
 	return _data2D;
 }
 
-glm::vec3	Event::get3DData()
+glm::dvec3	Event::get3DData()
 {
 	return _data3D;
 }
 
-glm::vec4	Event::get4DData()
+glm::dvec4	Event::get4DData()
 {
 	return _data4D;
 }
 
-glm::mat4	Event::getCoordinateFrameData()
+glm::dmat4	Event::getCoordinateFrameData()
 {
 	return _dataCF;
 }

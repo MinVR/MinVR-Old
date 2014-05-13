@@ -94,7 +94,7 @@ void AbstractMVREngine::init(ConfigMapRef configMap)
 
 void AbstractMVREngine::setupWindowsAndViewports()
 {
-	glm::mat4 initialHeadFrame = _configMap->get("InitialHeadFrame", glm::mat4(1.0));
+	glm::dmat4 initialHeadFrame = _configMap->get("InitialHeadFrame", glm::dmat4(1.0));
 	
 	// InterOcularDistance defaults to 2.5 inches (0.2083 ft). This assumes your coordinate system is in feet.
 	double interOcularDistance = _configMap->get("InterOcularDistance", 0.2083);
@@ -173,12 +173,12 @@ void AbstractMVREngine::setupWindowsAndViewports()
 
 			std::string cameraStr = _configMap->get(viewportStr + "CameraType", "OffAxis");
 			if (cameraStr == "OffAxis") {
-				glm::vec3 topLeft  = _configMap->get(viewportStr + "TopLeft", glm::vec3(-1.0, 1.0, 0.0));
-				glm::vec3 topRight = _configMap->get(viewportStr + "TopRight", glm::vec3(1.0, 1.0, 0.0));
-				glm::vec3 botLeft  = _configMap->get(viewportStr + "BotLeft", glm::vec3(-1.0, -1.0, 0.0));
-				glm::vec3 botRight = _configMap->get(viewportStr + "BotRight", glm::vec3(1.0, -1.0, 0.0));
-				float nearClip = _configMap->get(viewportStr + "NearClip", 0.01f);
-				float farClip  = _configMap->get(viewportStr + "FarClip", 1000.0f);
+				glm::dvec3 topLeft  = _configMap->get(viewportStr + "TopLeft", glm::dvec3(-1.0, 1.0, 0.0));
+				glm::dvec3 topRight = _configMap->get(viewportStr + "TopRight", glm::dvec3(1.0, 1.0, 0.0));
+				glm::dvec3 botLeft  = _configMap->get(viewportStr + "BotLeft", glm::dvec3(-1.0, -1.0, 0.0));
+				glm::dvec3 botRight = _configMap->get(viewportStr + "BotRight", glm::dvec3(1.0, -1.0, 0.0));
+				double nearClip = _configMap->get(viewportStr + "NearClip", 0.01);
+				double farClip  = _configMap->get(viewportStr + "FarClip", 1000.0);
 				AbstractCameraRef cam(new CameraOffAxis(topLeft, topRight, botLeft, botRight, initialHeadFrame, interOcularDistance, nearClip, farClip));
 				cameras.push_back(cam);
 			}

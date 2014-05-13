@@ -40,42 +40,42 @@ using namespace std;
 
 namespace MinVR {
 
-std::ostream & operator<< ( std::ostream &os, const glm::vec2 &vec2) {
+std::ostream & operator<< ( std::ostream &os, const glm::dvec2 &vec2) {
 	// format:  (x, y)
 	return os << "("<<vec2.x<<", "<<vec2.y<<")";
 }
 
-std::istream & operator>> ( std::istream &is, glm::vec2 &vec2) {
+std::istream & operator>> ( std::istream &is, glm::dvec2 &vec2) {
 	// format:  (x, y)
 	char dummy;
 	return is >> dummy >> vec2.x >> dummy >> vec2.y >> dummy;
 }
 
-std::ostream & operator<< ( std::ostream &os, const glm::vec3 &vec3) {
+std::ostream & operator<< ( std::ostream &os, const glm::dvec3 &vec3) {
 	// format:  (x, y, z)
 	return os << "("<<vec3.x<<", "<<vec3.y<<", "<<vec3.z<<")";
 }
 
 
-std::istream & operator>> ( std::istream &is, glm::vec3 &vec3) {
+std::istream & operator>> ( std::istream &is, glm::dvec3 &vec3) {
 	// format:  (x, y, z)
 	char dummy;
 	return is >> dummy >> vec3.x >> dummy >> vec3.y >> dummy >> vec3.z >> dummy;
 }
 
-std::ostream & operator<< ( std::ostream &os, const glm::vec4 &vec4) {
+std::ostream & operator<< ( std::ostream &os, const glm::dvec4 &vec4) {
 	// format:  (x, y, z, w)
 	return os << "("<<vec4.x<<", "<<vec4.y<<", "<<vec4.z<<", "<<vec4.w<<")";
 }
 
 
-std::istream & operator>> ( std::istream &is, glm::vec4 &vec4) {
+std::istream & operator>> ( std::istream &is, glm::dvec4 &vec4) {
 	// format:  (x, y, z, w)
 	char dummy;
 	return is >> dummy >> vec4.x >> dummy >> vec4.y >> dummy >> vec4.z >> dummy >> vec4.w >> dummy;
 }
 
-std::ostream & operator<< ( std::ostream &os, const glm::mat3 &m) {
+std::ostream & operator<< ( std::ostream &os, const glm::dmat3 &m) {
 	// format:  ((r1c1, r1c2, r1c3), (r2c1, r2c2, r2c3), (r3c1, r3c2, r3c3))
 	// glm is column major
 	return os << "((" << m[0][0] << ", " << m[1][0] << ", " << m[2][0] << "), "
@@ -83,7 +83,7 @@ std::ostream & operator<< ( std::ostream &os, const glm::mat3 &m) {
 		<< "(" << m[0][2] << ", " << m[1][2] << ", " << m[2][2] << "))";
 }
 
-std::istream & operator>> ( std::istream &is, glm::mat3&m) {
+std::istream & operator>> ( std::istream &is, glm::dmat3&m) {
 	// format:  ((r1c1, r1c2, r1c3), (r2c1, r2c2, r2c3), (r3c1, r3c2, r3c3))
 	// glm is column major
 	char c;
@@ -92,7 +92,7 @@ std::istream & operator>> ( std::istream &is, glm::mat3&m) {
 		>> c >> m[0][2] >> c >> m[1][2] >> c >> m[2][2] >> c >> c;
 }
 
-std::ostream & operator<< ( std::ostream &os, const glm::mat4 &m) {
+std::ostream & operator<< ( std::ostream &os, const glm::dmat4 &m) {
 	// format:  ((r1c1, r1c2, r1c3, r1c4), (r2c1, r2c2, r2c3, r2c4), etc.. )
 	// glm is column major
 	return os << "((" << m[0][0] << ", " << m[1][0] << ", " << m[2][0] << ", " << m[3][0] << "), "
@@ -101,7 +101,7 @@ std::ostream & operator<< ( std::ostream &os, const glm::mat4 &m) {
 		<< "(" << m[0][3] << ", " << m[1][3] << ", " << m[2][3] << ", " << m[3][3] << "))";
 }
 
-std::istream & operator>> ( std::istream &is, glm::mat4 &m) {
+std::istream & operator>> ( std::istream &is, glm::dmat4 &m) {
 	// format:  ((r1c1, r1c2, r1c3, r1c4), (r2c1, r2c2, r2c3, r2c4), etc.. ) 
 	char c;
 	return is >> c >> c >> m[0][0] >> c >> m[1][0] >> c >> m[2][0] >> c >> m[3][0] >> c >> c

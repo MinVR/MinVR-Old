@@ -66,7 +66,7 @@ public:
 private:
 	G3D::RenderDevice* _renderDevice;
 	G3D::GLFWWindow* _window;
-	glm::vec2 _cursorPosition;
+	glm::dvec2 _cursorPosition;
 
 	std::string getKeyName(G3D::GKey::Value key);
 	std::string getModName(G3D::GKeyMod mod);

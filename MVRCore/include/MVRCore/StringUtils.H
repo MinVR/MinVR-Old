@@ -75,21 +75,21 @@ std::string replaceEnvVars(const std::string &in);
 unsigned int hashCode(const double d);
 
 // Vector2
-std::ostream & operator<< ( std::ostream &os, const glm::vec2 &vec2);
-std::istream & operator>> ( std::istream &is, glm::vec2 &vec2);
+std::ostream & operator<< ( std::ostream &os, const glm::dvec2 &vec2);
+std::istream & operator>> ( std::istream &is, glm::dvec2 &vec2);
 // Vector3
-std::ostream & operator<< ( std::ostream &os, const glm::vec3 &vec3);
-std::istream & operator>> ( std::istream &is, glm::vec3 &vec3);
+std::ostream & operator<< ( std::ostream &os, const glm::dvec3 &vec3);
+std::istream & operator>> ( std::istream &is, glm::dvec3 &vec3);
 // Vector4
-std::ostream & operator<< ( std::ostream &os, const glm::vec4 &vec4);
-std::istream & operator>> ( std::istream &is, glm::vec4 &vec4);
+std::ostream & operator<< ( std::ostream &os, const glm::dvec4 &vec4);
+std::istream & operator>> ( std::istream &is, glm::dvec4 &vec4);
 
 // Matrix3
-std::ostream & operator<< ( std::ostream &os, const glm::mat3 &m);
-std::istream & operator>> ( std::istream &is, glm::mat3 &m);
+std::ostream & operator<< ( std::ostream &os, const glm::dmat3 &m);
+std::istream & operator>> ( std::istream &is, glm::dmat3 &m);
 // Matrix4
-std::ostream & operator<< ( std::ostream &os, const glm::mat4 &m);
-std::istream & operator>> ( std::istream &is, glm::mat4 &m);
+std::ostream & operator<< ( std::ostream &os, const glm::dmat4 &m);
+std::istream & operator>> ( std::istream &is, glm::dmat4 &m);
 // etc.. add on as necessary..
 
 std::string  intToString(int i);

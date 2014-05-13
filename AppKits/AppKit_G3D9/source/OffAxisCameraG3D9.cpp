@@ -36,8 +36,8 @@
 
 namespace MinVR {
 
-OffAxisCameraG3D9::OffAxisCameraG3D9(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 botLeft, glm::vec3 botRight,
-				  glm::mat4 initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist) : CameraOffAxis(topLeft, topRight, botLeft, botRight, initialHeadFrame, interOcularDistance, nearClipDist, farClipDist)
+OffAxisCameraG3D9::OffAxisCameraG3D9(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 botLeft, glm::dvec3 botRight,
+				  glm::dmat4 initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist) : CameraOffAxis(topLeft, topRight, botLeft, botRight, initialHeadFrame, interOcularDistance, nearClipDist, farClipDist)
 {
 	_renderDevice = nullptr;
 }
@@ -46,7 +46,7 @@ OffAxisCameraG3D9::~OffAxisCameraG3D9()
 {
 }
 
-void OffAxisCameraG3D9::applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat)
+void OffAxisCameraG3D9::applyProjectionAndCameraMatrices(const glm::dmat4& projectionMat, const glm::dmat4& viewMat)
 {
 	debugAssertM(_renderDevice != nullptr, "OffAxisCameraG3D9::setRenderDevice has not been called yet");
 
@@ -54,7 +54,7 @@ void OffAxisCameraG3D9::applyProjectionAndCameraMatrices(const glm::mat4& projec
 	_currentProjMatrix = projectionMat;
 
 	// convert from glm to G3D Matrix4 (i.e. column major to row major, and without the invertY since g3d does that later)
-	glm::mat4 invProj = invertYMat() * projectionMat;
+	glm::dmat4 invProj = invertYMat() * projectionMat;
 	G3D::Matrix4 g3dProj(invProj[0][0], invProj[1][0], invProj[2][0], invProj[3][0],
 						 invProj[0][1], invProj[1][1], invProj[2][1], invProj[3][1],
 						 invProj[0][2], invProj[1][2], invProj[2][2], invProj[3][2],

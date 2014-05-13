@@ -273,11 +273,11 @@ void WindowGLFW::appendEvent(EventRef newEvent)
 
 void WindowGLFW::setCursorPosition(double x, double y)
 {
-	_cursorPosition.x = (float)x;
-	_cursorPosition.y = (float)y;
+	_cursorPosition.x = x;
+	_cursorPosition.y = y;
 }
 
-glm::vec2 WindowGLFW::getCursorPosition()
+glm::dvec2 WindowGLFW::getCursorPosition()
 {
 	return _cursorPosition;
 }
@@ -322,7 +322,7 @@ void WindowGLFW::scroll_callback(GLFWwindow* window, double x, double y)
 	string name = "mouse_scroll";
 	WindowRef objRef = (WindowGLFW::pointerToObjectMap.find(window))->second;
 	WindowGLFW* obj = dynamic_cast<WindowGLFW*>(objRef.get());
-	EventRef newEvent(new Event(name, glm::vec2(x, y), objRef));
+	EventRef newEvent(new Event(name, glm::dvec2(x, y), objRef));
 	obj->appendEvent(newEvent);
 }
 

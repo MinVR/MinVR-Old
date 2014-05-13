@@ -102,8 +102,8 @@ void messageHandlerProc(io_connect_t connection, natural_t messageType,	void *me
 					static Boolean wasZero = FALSE;
 
 					if (isZero = (memcmp(state->axis, zerodata, sizeof(zerodata)) == 0)) {
-						glm::vec3 trans(0.0);
-						glm::vec3 rot(0.0);
+						glm::dvec3 trans(0.0);
+						glm::dvec3 rot(0.0);
 							
 						gEventBufferMutex.lock();
 						gEventBuffer.push_back(EventRef(new MinVR::Event("SpaceNav_Trans", trans)));
@@ -111,8 +111,8 @@ void messageHandlerProc(io_connect_t connection, natural_t messageType,	void *me
 						gEventBufferMutex.unlock();
 					}
 					else {
-						glm::vec3 trans(state->axis[0], state->axis[1], state->axis[2]);
-						glm::vec3 rot(state->axis[3], state->axis[4], state->axis[5]);
+						glm::dvec3 trans(state->axis[0], state->axis[1], state->axis[2]);
+						glm::dvec3 rot(state->axis[3], state->axis[4], state->axis[5]);
 						//cout << "Trans: " << trans << endl;
 						//cout << "Rot:   " << rot << endl;
 

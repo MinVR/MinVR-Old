@@ -13,9 +13,9 @@ GLFWDemoApp::~GLFWDemoApp()
 
 void GLFWDemoApp::doUserInputAndPreDrawComputation(const std::vector<MinVR::EventRef> &events, double synchronizedTime)
 {
-	for(int i=0; i < events.size(); i++) {
-		std::cout << events[i]->getName() <<std::endl;
-	}
+	//for(int i=0; i < events.size(); i++) {
+	//	std::cout << events[i]->getName() <<std::endl;
+	//}
 }
 
 void GLFWDemoApp::initializeContextSpecificVars(int threadId, WindowRef window)
@@ -48,23 +48,23 @@ void GLFWDemoApp::initVBO()
 	// of 36 vertices (6 sides * 2 tris * 3 vertices = 36 vertices). And, each
 	// vertex is 3 components (x,y,z) of floats, therefore, the size of vertex
 	// array is 108 floats (36 * 3 = 108).
-	GLfloat vertices[]  = { 0.1f, 0.1f, 0.1f,  -0.1f, 0.1f, 0.1f,  -0.1f,-0.1f, 0.1f,      // v0-v1-v2 (front)
-						   -0.1f,-0.1f, 0.1f,   0.1f,-0.1f, 0.1f,   0.1f, 0.1f, 0.1f,      // v2-v3-v0
+	GLfloat vertices[]  = { 1.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 1.0f,  -1.0f,-1.0f, 1.0f,      // v0-v1-v2 (front)
+						   -1.0f,-1.0f, 1.0f,   1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,      // v2-v3-v0
 
-							0.1f, 0.1f, 0.1f,   0.1f,-0.1f, 0.1f,   0.1f,-0.1f,-0.1f,      // v0-v3-v4 (right)
-							0.1f,-0.1f,-0.1f,   0.1f, 0.1f,-0.1f,   0.1f, 0.1f, 0.1f,      // v4-v5-v0
+							1.0f, 1.0f, 1.0f,   1.0f,-1.0f, 1.0f,   1.0f,-1.0f,-1.0f,      // v0-v3-v4 (right)
+							1.0f,-1.0f,-1.0f,   1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,      // v4-v5-v0
 
-							0.1f, 0.1f, 0.1f,   0.1f, 0.1f,-0.1f,  -0.1f, 0.1f,-0.1f,      // v0-v5-v6 (top)
-						   -0.1f, 0.1f,-0.1f,  -0.1f, 0.1f, 0.1f,   0.1f, 0.1f, 0.1f,      // v6-v1-v0
+							1.0f, 1.0f, 1.0f,   1.0f, 1.0f,-1.0f,  -1.0f, 1.0f,-1.0f,      // v0-v5-v6 (top)
+						   -1.0f, 1.0f,-1.0f,  -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 1.0f,      // v6-v1-v0
 
-						   -0.1f, 0.1f, 0.1f,  -0.1f, 0.1f,-0.1f,  -0.1f,-0.1f,-0.1f,      // v1-v6-v7 (left)
-						   -0.1f,-0.1f,-0.1f,  -0.1f,-0.1f, 0.1f,  -0.1f, 0.1f, 0.1f,      // v7-v2-v0.1
+						   -1.0f, 1.0f, 1.0f,  -1.0f, 1.0f,-1.0f,  -1.0f,-1.0f,-1.0f,      // v1-v6-v7 (left)
+						   -1.0f,-1.0f,-1.0f,  -1.0f,-1.0f, 1.0f,  -1.0f, 1.0f, 1.0f,      // v7-v2-v1.0
 
-						   -0.1f,-0.1f,-0.1f,   0.1f,-0.1f,-0.1f,   0.1f,-0.1f, 0.1f,      // v7-v4-v3 (bottom)
-							0.1f,-0.1f, 0.1f,  -0.1f,-0.1f, 0.1f,  -0.1f,-0.1f,-0.1f,      // v3-v2-v7
+						   -1.0f,-1.0f,-1.0f,   1.0f,-1.0f,-1.0f,   1.0f,-1.0f, 1.0f,      // v7-v4-v3 (bottom)
+							1.0f,-1.0f, 1.0f,  -1.0f,-1.0f, 1.0f,  -1.0f,-1.0f,-1.0f,      // v3-v2-v7
 
-							0.1f,-0.1f,-0.1f,  -0.1f,-0.1f,-0.1f,  -0.1f, 0.1f,-0.1f,      // v4-v7-v6 (back)
-						   -0.1f, 0.1f,-0.1f,   0.1f, 0.1f,-0.1f,   0.1f,-0.1f,-0.1f };    // v6-v5-v4
+							1.0f,-1.0f,-1.0f,  -1.0f,-1.0f,-1.0f,  -1.0f, 1.0f,-1.0f,      // v4-v7-v6 (back)
+						   -1.0f, 1.0f,-1.0f,   1.0f, 1.0f,-1.0f,   1.0f,-1.0f,-1.0f };    // v6-v5-v4
 
 	// normal array
 	GLfloat normals[]   = { 0, 0, 1,   0, 0, 1,   0, 0, 1,      // v0-v1-v2 (front)
@@ -196,10 +196,10 @@ void GLFWDemoApp::drawGraphics(int threadId, AbstractCameraRef camera, WindowRef
     glColorPointer(3, GL_FLOAT, 0, (void*)((sizeof(GLfloat)*108)+(sizeof(GLfloat)*108)));
     glVertexPointer(3, GL_FLOAT, 0, 0);
 
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-	glm::vec2 rotAngles(-20.0, 45.0);
-	glm::mat4 rotate1 = glm::rotate(translate, rotAngles.y, glm::vec3(0.0,1.0,0.0));
-	camera->setObjectToWorldMatrix(glm::rotate(rotate1, rotAngles.x, glm::vec3(1.0,0,0)));
+	glm::dmat4 translate = glm::translate(glm::dmat4(1.0f), glm::dvec3(0.0f, 0.0f, -5.0f));
+	glm::dvec2 rotAngles(-20.0, 45.0);
+	glm::dmat4 rotate1 = glm::rotate(translate, rotAngles.y, glm::dvec3(0.0,1.0,0.0));
+	camera->setObjectToWorldMatrix(glm::rotate(rotate1, rotAngles.x, glm::dvec3(1.0,0,0)));
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays

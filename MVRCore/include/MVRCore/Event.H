@@ -75,10 +75,10 @@ public:
 
 	Event(const std::string &name, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
 	Event(const std::string &name, const double data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
-	Event(const std::string &name, const glm::vec2 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
-	Event(const std::string &name, const glm::vec3 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
-	Event(const std::string &name, const glm::vec4 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
-	Event(const std::string &name, const glm::mat4 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
+	Event(const std::string &name, const glm::dvec2 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
+	Event(const std::string &name, const glm::dvec3 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
+	Event(const std::string &name, const glm::dvec4 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
+	Event(const std::string &name, const glm::dmat4 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
 	Event(const std::string &name, const std::string &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
 	virtual ~Event();
 	
@@ -88,10 +88,10 @@ public:
 	WindowRef getWindow() const;
 
 	double get1DData();
-	glm::vec2 get2DData();
-	glm::vec3 get3DData();
-	glm::vec4 get4DData();
-	glm::mat4 getCoordinateFrameData();
+	glm::dvec2 get2DData();
+	glm::dvec3 get3DData();
+	glm::dvec4 get4DData();
+	glm::dmat4 getCoordinateFrameData();
 	std::string getMsgData();
 	boost::posix_time::ptime getTimestamp();
 
@@ -109,10 +109,10 @@ protected:
 	boost::posix_time::ptime _timestamp;
 	EventType _type;
 	double _data1D;
-	glm::vec2 _data2D;
-	glm::vec3 _data3D;
-	glm::vec4 _data4D;
-	glm::mat4 _dataCF;
+	glm::dvec2 _data2D;
+	glm::dvec3 _data3D;
+	glm::dvec4 _data4D;
+	glm::dmat4 _dataCF;
 	std::string _dataMsg;
 };
 

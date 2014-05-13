@@ -57,8 +57,8 @@ namespace MinVR {
 class OffAxisCameraG3D9 : public CameraOffAxis
 {
 public:
-	OffAxisCameraG3D9(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 botLeft, glm::vec3 botRight,
-				  glm::mat4 initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist);
+	OffAxisCameraG3D9(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 botLeft, glm::dvec3 botRight,
+				  glm::dmat4 initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist);
 
 	virtual ~OffAxisCameraG3D9();
 
@@ -67,7 +67,7 @@ public:
 	*  This method sets the transformation between the current object (model) space and world (room)
 	*  coordinate system. It is used when setting the opengl modelview matrix.
 	*/
-	virtual void setObjectToWorldMatrix(glm::mat4 obj2World);
+	virtual void setObjectToWorldMatrix(glm::dmat4 obj2World);
 
 	/*! @brief Set the associated render device
 	*/
@@ -76,7 +76,7 @@ public:
 protected:
 	G3D::RenderDevice* _renderDevice;
 
-	virtual void applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat);
+	virtual void applyProjectionAndCameraMatrices(const glm::dmat4& projectionMat, const glm::dmat4& viewMat);
 };
 
 } //end namespace

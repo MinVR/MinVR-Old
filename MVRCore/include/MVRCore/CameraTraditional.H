@@ -53,7 +53,7 @@ public:
 	*
 	*  @param[in] The new head position.
 	*/
-	virtual void updateHeadTrackingFrame(glm::mat4 newHeadFrame) = 0;
+	virtual void updateHeadTrackingFrame(glm::dmat4 newHeadFrame) = 0;
 
 	/*! @brief Sets the openGL matrices.
 	*

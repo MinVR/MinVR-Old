@@ -49,8 +49,8 @@
 namespace MinVR
 {
 
-CameraOffAxis::CameraOffAxis(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 botLeft, glm::vec3 botRight,
-	glm::mat4 initialHeadFrame, double interOcularDistance, 
+CameraOffAxis::CameraOffAxis(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 botLeft, glm::dvec3 botRight,
+	glm::dmat4 initialHeadFrame, double interOcularDistance, 
 	double nearClipDist, double farClipDist) : AbstractCamera()
 {
 	_topLeft = topLeft;
@@ -64,14 +64,14 @@ CameraOffAxis::CameraOffAxis(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 bo
 	_halfWidth = glm::length(_topRight - _topLeft) / 2.0;
 	_halfHeight = glm::length(_topRight - _botRight) / 2.0;
 
-	glm::vec3 center = (topLeft + topRight + botLeft + botRight);
+	glm::dvec3 center = (topLeft + topRight + botLeft + botRight);
 	center.x = center.x / 4.0;
 	center.y = center.y / 4.0;
 	center.z = center.z / 4.0;
-	glm::vec3 x = glm::normalize(topRight - topLeft);
-	glm::vec3 y = glm::normalize(topLeft - botLeft);
-	glm::vec3 z = glm::normalize(glm::cross(x, y));
-	glm::mat4 tile2room(x.x, x.y, x.z, 0,
+	glm::dvec3 x = glm::normalize(topRight - topLeft);
+	glm::dvec3 y = glm::normalize(topLeft - botLeft);
+	glm::dvec3 z = glm::normalize(glm::cross(x, y));
+	glm::dmat4 tile2room(x.x, x.y, x.z, 0,
 						y.x, y.y, y.z, 0,
 						z.x, z.y, z.z, 0,
 						center.x, center.y, center.z, 1);
@@ -86,19 +86,19 @@ CameraOffAxis::~CameraOffAxis()
 {
 }
 
-void CameraOffAxis::updateHeadTrackingFrame(glm::mat4 newHeadFrame)
+void CameraOffAxis::updateHeadTrackingFrame(glm::dmat4 newHeadFrame)
 {
 	_headFrame = newHeadFrame;
 
 	// 1. Get the center of the camera (the eye) position from the head position
-	glm::mat4 head2Room = _headFrame;
-	glm::mat4 leftEye2Room = getLeftEyeFrame();
-	glm::mat4 rightEye2Room = getRightEyeFrame();
+	glm::dmat4 head2Room = _headFrame;
+	glm::dmat4 leftEye2Room = getLeftEyeFrame();
+	glm::dmat4 rightEye2Room = getRightEyeFrame();
   
 	// 2. Setup projection matrix
-	glm::vec3 head = glm::column((_room2tile * head2Room), 3).xyz();
-	glm::vec3 left = glm::column((_room2tile * leftEye2Room), 3).xyz();
-	glm::vec3 right = glm::column((_room2tile * rightEye2Room), 3).xyz();
+	glm::dvec3 head = glm::column((_room2tile * head2Room), 3).xyz();
+	glm::dvec3 left = glm::column((_room2tile * leftEye2Room), 3).xyz();
+	glm::dvec3 right = glm::column((_room2tile * rightEye2Room), 3).xyz();
 	
 
 	double lHead = (-_halfWidth - head.x);
@@ -115,9 +115,9 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::mat4 newHeadFrame)
 	double k = _nearClip / dist;
 
 	// 3. Add eye position to the projection (eye is in tile coordinates)
-	glm::mat4 r2t = glm::column(glm::mat4(1.0), 3, glm::vec4(-head, 1.0)) * _room2tile;
-	glm::mat4 r2tLeft = glm::column(glm::mat4(1.0), 3, glm::vec4(-left, 1.0)) * _room2tile;
-	glm::mat4 r2tRight = glm::column(glm::mat4(1.0), 3, glm::vec4(-right, 1.0)) * _room2tile;
+	glm::dmat4 r2t = glm::column(glm::dmat4(1.0), 3, glm::dvec4(-head, 1.0)) * _room2tile;
+	glm::dmat4 r2tLeft = glm::column(glm::dmat4(1.0), 3, glm::dvec4(-left, 1.0)) * _room2tile;
+	glm::dmat4 r2tRight = glm::column(glm::dmat4(1.0), 3, glm::dvec4(-right, 1.0)) * _room2tile;
 
 	_projection = invertYMat() * perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
 	_projectionLeft = invertYMat() * perspectiveProjection(lLeft*k, rLeft*k, b*k, t*k, _nearClip, _farClip);
@@ -128,16 +128,16 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::mat4 newHeadFrame)
 
 }
 
-glm::mat4 CameraOffAxis::invertYMat()
+glm::dmat4 CameraOffAxis::invertYMat()
 {
-	static glm::mat4 M(1,  0, 0, 0,
+	static glm::dmat4 M(1,  0, 0, 0,
 					  0, -1, 0, 0,
 					  0,  0, 1, 0,
 					  0,  0, 0, 1);
 	return M;
 }
 
-glm::mat4 CameraOffAxis::perspectiveProjection(double left, double right, double bottom, double top, double nearval, double farval, float upDirection)
+glm::dmat4 CameraOffAxis::perspectiveProjection(double left, double right, double bottom, double top, double nearval, double farval, float upDirection)
 {
     double x, y, a, b, c, d;
 
@@ -159,20 +159,20 @@ glm::mat4 CameraOffAxis::perspectiveProjection(double left, double right, double
     y *= upDirection;
     b *= upDirection;
 
-    return glm::mat4((float)x, 0, 0, 0,
-					 0, (float)y, 0, 0,
-					 (float)a, (float)b, (float)c, -1,
-					 0, 0, (float)d, 0);
+    return glm::dmat4(x, 0, 0, 0,
+					 0, y, 0, 0,
+					 a, b, c, -1,
+					 0, 0, d, 0);
 }
 
-glm::mat4 CameraOffAxis::getLeftEyeFrame()
+glm::dmat4 CameraOffAxis::getLeftEyeFrame()
 {
-	return _headFrame * glm::column(glm::mat4(1.0), 3, glm::vec4(-_iod/2.0, 0.0, 0.0, 1.0));
+	return _headFrame * glm::column(glm::dmat4(1.0), 3, glm::dvec4(-_iod/2.0, 0.0, 0.0, 1.0));
 }
 
-glm::mat4 CameraOffAxis::getRightEyeFrame()
+glm::dmat4 CameraOffAxis::getRightEyeFrame()
 {
-	return _headFrame * glm::column(glm::mat4(1.0), 3, glm::vec4(_iod/2.0, 0.0, 0.0, 1.0));
+	return _headFrame * glm::column(glm::dmat4(1.0), 3, glm::dvec4(_iod/2.0, 0.0, 0.0, 1.0));
 }
 
 void CameraOffAxis::applyProjectionAndCameraMatrices()
@@ -190,22 +190,22 @@ void CameraOffAxis::applyProjectionAndCameraMatricesForRightEye()
 	applyProjectionAndCameraMatrices(_projectionRight, _viewRight);
 }
 
-void CameraOffAxis::setObjectToWorldMatrix(glm::mat4 obj2World)
+void CameraOffAxis::setObjectToWorldMatrix(glm::dmat4 obj2World)
 {
 	_object2World = obj2World;
 	glMatrixMode(GL_MODELVIEW);
-	glm::mat4 modelView = _currentViewMatrix * _object2World;
+	glm::dmat4 modelView = _currentViewMatrix * _object2World;
 	GLfloat matrix[16];
     for (int c = 0; c < 4; ++c) {
 		for(int r = 0; r < 4; ++r) {
-			matrix[c*4+r] = modelView[c][r];
+			matrix[c*4+r] = (float)modelView[c][r];
 		}
     }
 	glLoadMatrixf(matrix);
 }
 
 
-void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat)
+void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::dmat4& projectionMat, const glm::dmat4& viewMat)
 {
 	_currentViewMatrix = viewMat;
 	_currentProjMatrix = projectionMat;
@@ -213,44 +213,44 @@ void CameraOffAxis::applyProjectionAndCameraMatrices(const glm::mat4& projection
     GLfloat matrix[16];
     for (int c = 0; c < 4; ++c) {
 		for(int r = 0; r < 4; ++r) {
-			matrix[c*4+r] = projectionMat[c][r];
+			matrix[c*4+r] = (float)projectionMat[c][r];
 		}
     }
 	glLoadMatrixf(matrix);
 
 	glMatrixMode(GL_MODELVIEW);
-	glm::mat4 modelView = viewMat * _object2World;
+	glm::dmat4 modelView = viewMat * _object2World;
 	for (int c = 0; c < 4; ++c) {
 		for(int r = 0; r < 4; ++r) {
-			matrix[c*4+r] = modelView[c][r];
+			matrix[c*4+r] = (float)modelView[c][r];
 		}
     }
 	glLoadMatrixf(matrix);
 }
 
-glm::mat4 CameraOffAxis::getLastAppliedProjectionMatrix()
+glm::dmat4 CameraOffAxis::getLastAppliedProjectionMatrix()
 {
 	return _currentProjMatrix;
 }
 
-glm::mat4 CameraOffAxis::getLastAppliedModelMatrix()
+glm::dmat4 CameraOffAxis::getLastAppliedModelMatrix()
 {
 	return _object2World;
 }
 
-glm::mat4 CameraOffAxis::getLastAppliedViewMatrix()
+glm::dmat4 CameraOffAxis::getLastAppliedViewMatrix()
 {
 	return _currentViewMatrix;
 }
 
-glm::vec3 CameraOffAxis::getLookVector()
+glm::dvec3 CameraOffAxis::getLookVector()
 {
-	glm::vec3 right = _topRight-_topLeft;
+	glm::dvec3 right = _topRight-_topLeft;
 	right *= 0.5;
-	glm::vec3 down = _botLeft-_topLeft;
+	glm::dvec3 down = _botLeft-_topLeft;
 	down *= 0.5;
-	glm::vec3 filmPlaneCtr = _topLeft + right + down;
-	glm::vec3 headPos = glm::column(_headFrame, 3).xyz;
+	glm::dvec3 filmPlaneCtr = _topLeft + right + down;
+	glm::dvec3 headPos = glm::column(_headFrame, 3).xyz;
 	return glm::normalize(filmPlaneCtr - headPos);
 }
 

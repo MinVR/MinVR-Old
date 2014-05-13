@@ -50,8 +50,8 @@ namespace MinVR {
 class CameraOffAxis : public AbstractCamera
 {
 public:
-	CameraOffAxis(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 botLeft, glm::vec3 botRight,
-				  glm::mat4 initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist);
+	CameraOffAxis(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 botLeft, glm::dvec3 botRight,
+				  glm::dmat4 initialHeadFrame, double interOcularDistance, double nearClipDist, double farClipDist);
 
 	virtual ~CameraOffAxis();
 
@@ -62,7 +62,7 @@ public:
 	*
 	*  @param[in] The new head position.
 	*/
-	virtual void updateHeadTrackingFrame(glm::mat4 newHeadFrame);
+	virtual void updateHeadTrackingFrame(glm::dmat4 newHeadFrame);
 
 	/*! @brief Sets the openGL matrices.
 	*
@@ -87,15 +87,15 @@ public:
 
 	/*! @brief Returns the last applied projection matrix.
 	*/
-	virtual glm::mat4 getLastAppliedProjectionMatrix();
+	virtual glm::dmat4 getLastAppliedProjectionMatrix();
 
 	/*! @brief Returns the last applied Model matrix.
 	*/
-	virtual glm::mat4 getLastAppliedModelMatrix();
+	virtual glm::dmat4 getLastAppliedModelMatrix();
 
 	/*! @brief Returns the last applied View matrix
 	*/
-	virtual glm::mat4 getLastAppliedViewMatrix();
+	virtual glm::dmat4 getLastAppliedViewMatrix();
 
 
 	/*! @brief Sets the object to world matrix.
@@ -103,7 +103,7 @@ public:
 	*  This method sets the transformation between the current object (model) space and world (room)
 	*  coordinate system. It is used when setting the opengl modelview matrix.
 	*/
-	virtual void setObjectToWorldMatrix(glm::mat4 obj2World);
+	virtual void setObjectToWorldMatrix(glm::dmat4 obj2World);
 
 	/*! @brief Gets the current location of the left eye.
 	*
@@ -111,7 +111,7 @@ public:
 	*  
 	*  @return A coordinate frame representing the translation and rotation for the left eye position.
 	*/
-	glm::mat4 getLeftEyeFrame();
+	glm::dmat4 getLeftEyeFrame();
 
 	/*! @brief Gets the current location of the right eye.
 	*
@@ -119,42 +119,42 @@ public:
 	*  
 	*  @return A coordinate frame representing the translation and rotation for the right eye position.
 	*/
-	glm::mat4 getRightEyeFrame();
+	glm::dmat4 getRightEyeFrame();
 
 	/*! @brief Gets the vector from the head position to the center of the display tile
 	*
 	*  @return A vector from the current head position to the center of the display tile
 	*/
-	glm::vec3 getLookVector();
+	glm::dvec3 getLookVector();
 
 protected:
 
-	glm::vec3 _topLeft;
-	glm::vec3 _topRight;
-	glm::vec3 _botLeft;
-	glm::vec3 _botRight;
-	glm::mat4 _headFrame;
+	glm::dvec3 _topLeft;
+	glm::dvec3 _topRight;
+	glm::dvec3 _botLeft;
+	glm::dvec3 _botRight;
+	glm::dmat4 _headFrame;
 	double _iod;
 	double _nearClip;
 	double _farClip;
 	double _halfWidth;
 	double _halfHeight;
-	glm::mat4 _room2tile;
+	glm::dmat4 _room2tile;
 
-	glm::mat4 _projection;
-	glm::mat4 _projectionLeft;
-	glm::mat4 _projectionRight;
-	glm::mat4 _view;
-	glm::mat4 _viewLeft;
-	glm::mat4 _viewRight;
-	glm::mat4 _object2World;
+	glm::dmat4 _projection;
+	glm::dmat4 _projectionLeft;
+	glm::dmat4 _projectionRight;
+	glm::dmat4 _view;
+	glm::dmat4 _viewLeft;
+	glm::dmat4 _viewRight;
+	glm::dmat4 _object2World;
 
-	glm::mat4 _currentViewMatrix;
-	glm::mat4 _currentProjMatrix;
+	glm::dmat4 _currentViewMatrix;
+	glm::dmat4 _currentProjMatrix;
 
-	virtual void applyProjectionAndCameraMatrices(const glm::mat4& projectionMat, const glm::mat4& viewMat);
-	glm::mat4 invertYMat();
-	glm::mat4 perspectiveProjection(double left, double right, double bottom, double top, double nearval, double farval, float upDirection = -1.0);
+	virtual void applyProjectionAndCameraMatrices(const glm::dmat4& projectionMat, const glm::dmat4& viewMat);
+	glm::dmat4 invertYMat();
+	glm::dmat4 perspectiveProjection(double left, double right, double bottom, double top, double nearval, double farval, float upDirection = -1.0);
 
 };
 

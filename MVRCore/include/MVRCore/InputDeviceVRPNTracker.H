@@ -108,9 +108,9 @@ public:
 		const std::string							   &vrpnTrackerDeviceName,
 		const std::vector<std::string>				   &eventsToGenerate,
 		const double								   &trackerUnitsToRoomUnitsScale,
-		const glm::mat4								   &deviceToRoom,
-		const std::vector<glm::mat4>			       &propToTracker,
-		const std::vector<glm::mat4>				   &finalOffset,
+		const glm::dmat4								   &deviceToRoom,
+		const std::vector<glm::dmat4>			       &propToTracker,
+		const std::vector<glm::dmat4>				   &finalOffset,
 		const bool									   &waitForNewReportInPoll,
 		const bool									   &convertLHtoRH = false,
 		const bool									   &ignoreZeroes = false);
@@ -119,7 +119,7 @@ public:
 
 	virtual ~InputDeviceVRPNTracker();
 
-	void processEvent(const glm::mat4 &vrpnEvent, int sensorNum, const boost::posix_time::ptime &msg_time);
+	void processEvent(const glm::dmat4 &vrpnEvent, int sensorNum, const boost::posix_time::ptime &msg_time);
 	std::string getEventName(int trackerNumber);
 	void pollForInput(std::vector<EventRef> &events);
 	void setPrintSensor0(bool b) { _printSensor0 = b; }
@@ -129,9 +129,9 @@ private:
 	vrpn_Tracker_Remote    *_vrpnDevice;
 	std::vector<std::string>      _eventNames;
 	double                  _trackerUnitsToRoomUnitsScale;
-	glm::mat4         _deviceToRoom;
-	std::vector<glm::mat4>  _propToTracker;
-	std::vector<glm::mat4>  _finalOffset;
+	glm::dmat4         _deviceToRoom;
+	std::vector<glm::dmat4>  _propToTracker;
+	std::vector<glm::dmat4>  _finalOffset;
 	bool                    _printSensor0;
 	bool                    _waitForNewReport;
 	bool                    _convertLHtoRH;
@@ -143,9 +143,9 @@ private:
 		const std::string							   &vrpnTrackerDeviceName,
 		const std::vector<std::string>			   &eventsToGenerate,
 		const double								   &trackerUnitsToRoomUnitsScale,
-		const glm::mat4				   &deviceToRoom,
-		const std::vector<glm::mat4> &propToTracker,
-		const std::vector<glm::mat4> &finalOffset,
+		const glm::dmat4				   &deviceToRoom,
+		const std::vector<glm::dmat4> &propToTracker,
+		const std::vector<glm::dmat4> &finalOffset,
 		const bool									   &waitForNewReportInPoll,
 		const bool									   &convertLHtoRH = false,
 		const bool									   &ignoreZeroes = false)

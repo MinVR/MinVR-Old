@@ -108,7 +108,7 @@ void InputDeviceTUIOClient::pollForInput(std::vector<EventRef> &events)
 	// Send "button" down events for cursors that are new and updated positions for all cursors
 	for (std::list<TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {
 		TuioCursor *tcur = (*iter);
-		glm::vec2 pos = glm::vec2(_xScale*tcur->getX(), _yScale*tcur->getY());
+		glm::dvec2 pos = glm::vec2(_xScale*tcur->getX(), _yScale*tcur->getY());
 
 		if (_cursorsDown.find(tcur->getCursorID()) != _cursorsDown.end()) {
 			events.push_back(EventRef(new Event("TUIO_Cursor" + intToString(tcur->getCursorID()) + "_down", pos, nullptr, tcur->getCursorID())));
@@ -116,7 +116,7 @@ void InputDeviceTUIOClient::pollForInput(std::vector<EventRef> &events)
 		}
 
 		if (tcur->getMotionSpeed() > 0.0) {
-			glm::vec4 data = glm::vec4(pos, tcur->getMotionSpeed(), tcur->getMotionAccel());
+			glm::dvec4 data = glm::vec4(pos, tcur->getMotionSpeed(), tcur->getMotionAccel());
 			events.push_back(EventRef(new Event("TUIO_CursorMove" + intToString(tcur->getCursorID()), data, nullptr, tcur->getCursorID())));
 		}
 
@@ -142,12 +142,12 @@ void InputDeviceTUIOClient::pollForInput(std::vector<EventRef> &events)
 	for (std::list<TuioObject*>::iterator iter = objectList.begin(); iter!=objectList.end(); iter++) {
 		TuioObject* tuioObject = (*iter);    
 		int   id    = tuioObject->getSymbolID();
-		float xpos  = _xScale*tuioObject->getX();
-		float ypos  = _yScale*tuioObject->getY();
-		float angle = tuioObject->getAngle()/M_PI*180.0;
+		double xpos  = _xScale*tuioObject->getX();
+		double ypos  = _yScale*tuioObject->getY();
+		double angle = tuioObject->getAngle()/M_PI*180.0;
 
 		std::string name = "TUIO_Obj" + intToString(id);
-		events.push_back(EventRef(new Event(name, glm::vec3(xpos, ypos, angle))));
+		events.push_back(EventRef(new Event(name, glm::dvec3(xpos, ypos, angle))));
 	}
 	_tuioClient->unlockObjectList();
 }
