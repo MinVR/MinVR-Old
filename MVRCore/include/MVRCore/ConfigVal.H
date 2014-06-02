@@ -41,6 +41,7 @@
 
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
+#include <boost/log/sources/logger.hpp>
 
 namespace MinVR {
 

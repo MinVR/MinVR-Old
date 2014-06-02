@@ -53,6 +53,8 @@ based on tracker data from VRPN.
 #include "MVRCore/StringUtils.H"
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/attributes/constant.hpp>
 
 #include <boost/log/trivial.hpp>
 #define BOOST_ASSERT_MSG_OSTREAM std::cout

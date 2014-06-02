@@ -57,6 +57,8 @@ Makefile to link with the SDK.
 #include "MVRCore/Event.H"
 #include <vector>
 #include <boost/log/trivial.hpp>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/attributes/constant.hpp>
 
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
@@ -71,7 +73,9 @@ public:
 #ifdef USE_SPACENAV
 	InputDeviceSpaceNav( const std::string name, const ConfigMapRef map = NULL )
 	{
-		BOOST_LOG_TRIVIAL(info) << "Creating new SpaceNavDevice";
+		boost::log::sources::logger logger;
+		logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+		BOOST_LOG(logger) << "Creating new SpaceNavDevice";
 		setup();
 	}
 

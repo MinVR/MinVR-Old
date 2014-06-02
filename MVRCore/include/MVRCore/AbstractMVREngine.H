@@ -71,6 +71,7 @@
 #include <boost/log/sources/severity_logger.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <boost/log/attributes/constant.hpp>
 #include <vector>
 #include <fstream>
 #include <iostream>

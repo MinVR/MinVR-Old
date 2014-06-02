@@ -49,6 +49,8 @@
 #include <boost/assert.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/attributes/constant.hpp>
 
 #ifdef USE_VRPN
 class vrpn_Analog_Remote;

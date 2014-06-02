@@ -157,7 +157,9 @@ InputDeviceVRPNTracker::InputDeviceVRPNTracker( const std::string name, const Co
 	bool convertLHtoRH = map->get( name + "_ConvertLHtoRH", false );
 	bool ignoreZeroes  = map->get( name + "_IgnoreZeroes", false );
 
-	BOOST_LOG_TRIVIAL(info) << "Creating new InputDeviceVRPNTracker ( " + vrpnname + ")";
+	boost::log::sources::logger logger;
+	logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+	BOOST_LOG(logger) << "Creating new InputDeviceVRPNTracker ( " + vrpnname + ")";
 
 	_eventNames                   = events;
 	_trackerUnitsToRoomUnitsScale = scale;

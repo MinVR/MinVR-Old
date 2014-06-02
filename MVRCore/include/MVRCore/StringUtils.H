@@ -44,6 +44,8 @@
 #include <boost/algorithm/string/predicate.hpp>
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/attributes/constant.hpp>
 #include <sstream>
 
 // Can be used to get a quoted version of the value of a particular #define
@@ -148,7 +150,9 @@ static inline bool retypeString(const std::string &str, T &val) {
   std::istringstream is(str.c_str());
   is >> val;
   if (!is) {
-	  BOOST_LOG_TRIVIAL(error) << "Error retyping string: " <<str;
+	  boost::log::sources::logger logger;
+	  logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+	  BOOST_LOG(logger) << "Error retyping string: " <<str;
 	  return false;
   }
   else return true;

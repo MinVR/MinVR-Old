@@ -47,6 +47,8 @@ AbstractMVREngine::~AbstractMVREngine()
 {
 }
 
+BOOST_LOG_ATTRIBUTE_KEYWORD(tag_attr, "Tag", std::string)
+
 void AbstractMVREngine::initializeLogging()
 {
     boost::shared_ptr<boost::log::core> core = boost::log::core::get();
@@ -65,9 +67,9 @@ void AbstractMVREngine::initializeLogging()
     boost::shared_ptr< sink_t > sink(new sink_t(backend));
     core->add_sink(sink);
 	boost::log::add_common_attributes();
-	core->set_filter
+	sink->set_filter
     (
-        boost::log::trivial::severity >= boost::log::trivial::info
+	boost::log::trivial::severity >= boost::log::trivial::info || (boost::log::expressions::has_attr(tag_attr) && tag_attr == "MinVR Core")
     );
 }
 

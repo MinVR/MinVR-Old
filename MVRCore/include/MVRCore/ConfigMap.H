@@ -43,6 +43,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <unordered_map>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/attributes/constant.hpp>
 
 #define BOOST_ASSERT_MSG_OSTREAM std::cout
 #include <boost/assert.hpp>
@@ -169,12 +171,16 @@ public:
 				return val;
 			}
 			else {
-				BOOST_LOG_TRIVIAL(error) << "ConfigMap Error: cannot remap " << valString;
+				boost::log::sources::logger logger;
+				logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+				BOOST_LOG(logger) << "ConfigMap Error: cannot remap " << valString;
 				return defaultVal;
 			}
 		}
 		else {
-			BOOST_LOG_TRIVIAL(error) << "ConfigMap Error: cannot find " << keyString;
+			boost::log::sources::logger logger;
+			logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+			BOOST_LOG(logger) << "ConfigMap Error: cannot find " << keyString;
 			return defaultVal;
 		}
 	}
@@ -183,7 +189,9 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
+			boost::log::sources::logger logger;
+			logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+			BOOST_LOG(logger) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -192,7 +200,9 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
+			boost::log::sources::logger logger;
+			logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+			BOOST_LOG(logger) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -201,7 +211,9 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
+			boost::log::sources::logger logger;
+			logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+			BOOST_LOG(logger) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}
@@ -210,7 +222,9 @@ public:
 		if (containsKey(keyString))
 			return replaceEnvVars(getValue(keyString));
 		else {
-			BOOST_LOG_TRIVIAL(error) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
+			boost::log::sources::logger logger;
+			logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+			BOOST_LOG(logger) << "ConfigMap Warning: no mapping for '" << keyString <<"'";
 			return replaceEnvVars(defaultVal);
 		}
 	}

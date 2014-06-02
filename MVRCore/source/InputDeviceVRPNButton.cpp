@@ -75,7 +75,9 @@ InputDeviceVRPNButton::InputDeviceVRPNButton(const std::string name, const Confi
 	std::string vrpnname = map->get( name + "_InputDeviceVRPNButtonName", "" );
 	std::string events   = map->get( name + "_EventsToGenerate","" );
 
-	BOOST_LOG_TRIVIAL(info) << "Creating new InputDeviceVRPNButton (" + vrpnname + ")";
+	boost::log::sources::logger logger;
+	logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+	BOOST_LOG(logger) << "Creating new InputDeviceVRPNButton (" + vrpnname + ")";
 
 	_eventNames = splitStringIntoArray( events );
 

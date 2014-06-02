@@ -77,7 +77,9 @@ InputDeviceVRPNAnalog::InputDeviceVRPNAnalog(const std::string name, const Confi
 	std::string  vrpnname = map->get( name + "_InputDeviceVRPNAnalogName", "" );
 	std::string  events   = map->get( name + "_EventsToGenerate", "" );
 
-	BOOST_LOG_TRIVIAL(info) << "Creating new InputDeviceVRPNAnalog (" + vrpnname + ")";
+	boost::log::sources::logger logger;
+	logger.add_attribute("Tag", boost::log::attributes::constant< std::string >("MinVR Core"));
+	BOOST_LOG(logger) << "Creating new InputDeviceVRPNAnalog (" + vrpnname + ")";
 
 	_eventNames = splitStringIntoArray( events );
 	for (int i=0;i<_eventNames.size();i++) { 
