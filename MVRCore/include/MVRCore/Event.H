@@ -80,6 +80,7 @@ public:
 	Event(const std::string &name, const glm::dvec4 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
 	Event(const std::string &name, const glm::dmat4 &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
 	Event(const std::string &name, const std::string &data, const WindowRef window = nullptr, const int id = -1, const boost::posix_time::ptime &timestamp = boost::posix_time::ptime(boost::posix_time::not_a_date_time));
+	Event(const std::string &eventString, const boost::posix_time::ptime &timestamp); // Create an event from a string in the format of Event::toString();
 	virtual ~Event();
 	
 	std::string getName() const;

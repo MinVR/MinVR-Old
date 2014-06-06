@@ -148,6 +148,68 @@ Event::Event(const std::string &name, const std::string &data, const WindowRef w
 	_window = window;
 }
 
+Event::Event(const std::string &eventString, const boost::posix_time::ptime &timestamp)
+{
+	if (timestamp.is_not_a_date_time()) {
+		_timestamp = boost::posix_time::microsec_clock::local_time();
+	}
+	else {
+		_timestamp = timestamp;
+	}
+
+	std::string str = eventString;
+	MinVR::popNextToken(str, _name, false);
+
+	std::string val, data, id, tmp;
+	int type;
+	MinVR::popNextToken(str, val, false);
+	MinVR::popNextToken(str, tmp, false); // remove (Data: from string
+	str = trimWhitespace(str);
+	MinVR::popUntilSemicolon(str, data); // get data
+	MinVR::popNextToken(str, tmp, false); // remove Id: 
+	MinVR::popNextToken(str, id, false); // get id
+
+	retypeString(val, type);
+	retypeString(id, _id);
+	
+	switch(type) {
+		case 0:
+			_type = EVENTTYPE_STANDARD;
+			break;
+		case 1:
+			_type = EVENTTYPE_1D;
+			retypeString(data, _data1D);
+			break;
+		case 2:
+			_type = EVENTTYPE_2D;
+			retypeString(data, _data2D);
+			break;
+		case 3:
+			_type = EVENTTYPE_3D;
+			retypeString(data, _data3D);
+			break;
+		case 4:
+			_type = EVENTTYPE_4D;
+			retypeString(data, _data4D);
+			break;
+		case 5:
+			_type = EVENTTYPE_COORDINATEFRAME;
+			retypeString(data, _dataCF);
+			break;
+		case 6:
+			_type = EVENTTYPE_MSG;
+			_dataMsg = data;
+			if (_dataMsg == "\\n") {
+				_dataMsg = "\n";
+			}
+			break;
+		default:
+			BOOST_ASSERT_MSG(false, "Unknown Event type in Event constructor from event string");
+	}
+
+	_window = nullptr; // Don't bother with the window reference because it might not exist.
+}
+
 Event::~Event()
 {
 }
@@ -224,24 +286,31 @@ bool Event::operator<(EventRef otherRef) const
 
 std::string	Event::toString()
 {
+	std::string escapedMessage = _dataMsg;
+	boost::replace_all(escapedMessage, "\n", "\\n");
+	boost::replace_all(escapedMessage, "\t", "\\t");
+
 	switch (_type) {
+	case EVENTTYPE_STANDARD:
+		return boost::str(boost::format("%s %d (Data: %s; Id: %d; Window ptr: %s)") % _name.c_str() % EVENTTYPE_STANDARD % _dataMsg % _id % _window);
+		break;
 	case EVENTTYPE_1D:
-		return boost::str(boost::format("%s (Data: %.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data1D % _id % _window);
+		return boost::str(boost::format("%s %d (Data: %.6f; Id: %d; Window ptr: %s)") % _name.c_str() % EVENTTYPE_1D % _data1D % _id % _window);
 		break;
 	case EVENTTYPE_2D:
-		return boost::str(boost::format("%s (Data: %.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data2D[0] % _data2D[1] % _id % _window);
+		return boost::str(boost::format("%s %d (Data: (%.6f, %.6f); Id: %d; Window ptr: %s)") % _name.c_str() % EVENTTYPE_2D % _data2D[0] % _data2D[1] % _id % _window);
 		break;
 	case EVENTTYPE_3D:
-		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data3D[0] % _data3D[1] % _data3D[2] % _id % _window);
+		return boost::str(boost::format("%s %d (Data: (%.6f, %.6f, %.6f); Id: %d; Window ptr: %s)") % _name.c_str() % EVENTTYPE_3D % _data3D[0] % _data3D[1] % _data3D[2] % _id % _window);
 		break;
 	case EVENTTYPE_4D:
-		return boost::str(boost::format("%s (Data: %.2f,%.2f,%.2f,%.2f; Id: %d; Window ptr: %s)") % _name.c_str() % _data4D[0] % _data4D[1] % _data4D[2] % _data4D[3] % _id % _window);
+		return boost::str(boost::format("%s %d (Data: (%.6f, %.6f, %.6f, %.6f); Id: %d; Window ptr: %s)") % _name.c_str() % EVENTTYPE_4D % _data4D[0] % _data4D[1] % _data4D[2] % _data4D[3] % _id % _window);
 		break;
 	case EVENTTYPE_COORDINATEFRAME:
-		return boost::str(boost::format("%s (Data: ((%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f), (%.2f, %.2f, %.2f, %.2f)); Id: %d; Window ptr: %s)") % _name.c_str() % _dataCF[0][0] % _dataCF[0][1] % _dataCF[0][2]  % _dataCF[0][2]
-							 % _dataCF[1][0]  % _dataCF[1][1]  % _dataCF[1][2]  % _dataCF[1][2] % _dataCF[2][0] % _dataCF[2][1] % _dataCF[2][2] % _dataCF[2][3] % _dataCF[3][0] % _dataCF[3][1] % _dataCF[3][2] % _dataCF[3][3] % _id % _window);
+		return boost::str(boost::format("%s %d (Data: ((%.6f, %.6f, %.6f, %.6f), (%.6f, %.6f, %.6f, %.6f), (%.6f, %.6f, %.6f, %.6f), (%.6f, %.6f, %.6f, %.6f)); Id: %d; Window ptr: %s)") % _name.c_str() % EVENTTYPE_COORDINATEFRAME  % _dataCF[0][0] % _dataCF[1][0] % _dataCF[2][0]  % _dataCF[3][0]
+							 % _dataCF[0][1]  % _dataCF[1][1]  % _dataCF[2][1]  % _dataCF[3][1] % _dataCF[0][2] % _dataCF[1][2] % _dataCF[2][2] % _dataCF[3][2] % _dataCF[0][3] % _dataCF[1][3] % _dataCF[2][3] % _dataCF[3][3] % _id % _window);
 	case EVENTTYPE_MSG:
-		return boost::str(boost::format("%s (Data: %s; Id: %d; Window ptr: %s)") % _name.c_str() % _dataMsg % _id % _window);
+		return boost::str(boost::format("%s %d (Data: %s; Id: %d; Window ptr: %s)") % _name.c_str() % EVENTTYPE_MSG % escapedMessage % _id % _window);
 		break;
 	default:
 		return _name;
