@@ -105,10 +105,15 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::dmat4 newHeadFrame)
 	double rHead = (_halfWidth - head.x);
 	double lLeft = (-_halfWidth - left.x);
 	double rLeft = (_halfWidth - left.x);
+	double bLeft =  (-_halfHeight - left.y);
+	double tLeft = (_halfHeight - left.y);
+	double kLeft = _nearClip / left.z;
 	double lRight = (-_halfWidth - right.x);
 	double rRight = (_halfWidth - right.x);
+	double bRight =  (-_halfHeight - right.y);
+	double tRight = (_halfHeight - right.y);
+	double kRight = _nearClip / right.z;
 
-	// y and z for head and eyes are the same so don't need to calculate three times
 	double b = (-_halfHeight - head.y);
 	double t = (_halfHeight - head.y);
 	double dist = head.z;
@@ -120,12 +125,12 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::dmat4 newHeadFrame)
 	glm::dmat4 r2tRight = glm::column(glm::dmat4(1.0), 3, glm::dvec4(-right, 1.0)) * _room2tile;
 
 	_projection = invertYMat() * perspectiveProjection(lHead*k, rHead*k, b*k, t*k, _nearClip, _farClip);
-	_projectionLeft = invertYMat() * perspectiveProjection(lLeft*k, rLeft*k, b*k, t*k, _nearClip, _farClip);
-	_projectionRight = invertYMat() * perspectiveProjection(lRight*k, rRight*k, b*k, t*k, _nearClip, _farClip);
+	_projectionLeft = invertYMat() * perspectiveProjection(lLeft*kLeft, rLeft*kLeft, bLeft*kLeft, tLeft*kLeft, _nearClip, _farClip);
+	_projectionRight = invertYMat() * perspectiveProjection(lRight*kRight, rRight*kRight, bRight*kRight, tRight*kRight, _nearClip, _farClip);
+
 	_view = r2t;//.inverse();
 	_viewLeft = r2tLeft;//.inverse();
 	_viewRight = r2tRight;//.inverse();
-
 }
 
 glm::dmat4 CameraOffAxis::invertYMat()
