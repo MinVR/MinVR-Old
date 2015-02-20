@@ -114,7 +114,6 @@ void CameraOffAxis::updateHeadTrackingFrame(glm::dmat4 newHeadFrame)
 	double tRight = (_halfHeight - right.y);
 	double kRight = _nearClip / right.z;
 
-	// y and z for head and eyes are the same so don't need to calculate three times
 	double b = (-_halfHeight - head.y);
 	double t = (_halfHeight - head.y);
 	double dist = head.z;
