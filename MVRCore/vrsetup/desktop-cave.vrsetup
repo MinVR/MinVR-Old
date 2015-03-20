@@ -5,17 +5,17 @@ Description           A standard non-VR desktop window
 
 # Name of a configuration file for input devices (leave blank
 # for no devices other than keyboard and mouse)
-InputDevicesFile      
+InputDevicesFile      umn-cave-devices.cfg
 
 InterOcularDistance		0.2083
 InitialHeadFrame		((1,0,0,0), (0,1,0,0), (0,0,1,1), (0,0,0,1))
 
 NumWindows				1
 
-Window1_Width           1920
-Window1_Height          1200
-Window1_X               20
-Window1_Y               20
+Window1_Width           1680
+Window1_Height          1050
+Window1_X               0
+Window1_Y               0
 Window1_RGBBits         8
 Window1_AlphaBits       8
 Window1_DepthBits       24
@@ -24,8 +24,8 @@ Window1_MSAASamples     4
 Window1_FullScreen      0
 Window1_Stereo          0
 Window1_Resizable       1
-Window1_AllowMaximize   1
-Window1_Framed          1
+Window1_AllowMaximize   0
+Window1_Framed          0
 Window1_Caption         MinVR Window 1
 Window1_StereoType	    Mono
 Window1_UseDebugContext 1
@@ -34,8 +34,8 @@ Window1_Visible         0
 
 Window1_NumViewports 1
 Window1_Viewport1_CameraType	OffAxis
-Window1_Viewport1_Width				1920
-Window1_Viewport1_Height			1200
+Window1_Viewport1_Width				1680
+Window1_Viewport1_Height			1050
 Window1_Viewport1_X					0
 Window1_Viewport1_Y					0
 Window1_Viewport1_TopLeft           (-0.854167, 0.541667, 0.0)

@@ -17,7 +17,8 @@ NumWindows			  3
 # Side wall window
 Window1_Width           2550
 Window1_Height          1300
-Window1_X               1921
+#Window1_X               1921
+Window1_X               1681
 Window1_Y               0
 Window1_RGBBits         8
 Window1_AlphaBits       8
@@ -63,7 +64,8 @@ Window1_Viewport2_FarClip           500.0
 # Cave Front wall 
 Window2_Width           1280
 Window2_Height          1300
-Window2_X               4480
+#Window2_X               4480
+Window2_X               4240
 Window2_Y               0
 Window2_RGBBits         8
 Window2_AlphaBits       8
@@ -98,7 +100,8 @@ Window2_Viewport1_FarClip           500.0
 # Cave floor
 Window3_Width           1280
 Window3_Height          1300
-Window3_X               5760
+#Window3_X               5760
+Window3_X               5520
 Window3_Y               0
 Window3_RGBBits         8
 Window3_AlphaBits       8
