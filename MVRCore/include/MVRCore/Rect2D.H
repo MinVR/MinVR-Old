@@ -35,6 +35,8 @@
 #ifndef RECT2D_H
 #define RECT2D_H
 
+#include <glm/glm.hpp>
+
 namespace MinVR {
 
 class Rect2D
@@ -50,6 +52,8 @@ public:
 	int y0();
 	int x1();
 	int y1();
+	Rect2D intersect(const Rect2D& rect);
+	int getArea();
 
 private:
 	int _width;

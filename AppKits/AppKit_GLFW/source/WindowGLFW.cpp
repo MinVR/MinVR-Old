@@ -58,6 +58,55 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 	// and find which one corresponds with this window size and position.
 #ifdef _MSC_VER
 	if (settings->useGPUAffinity) {
+		int currentGPU = -1;
+		GPU_DEVICE gpus[MAX_AFFINITY_GPUS];
+		if (WGLEW_NV_gpu_affinity) {
+			int numGPUs = 0;
+			for( UINT gpu = 0; true; ++gpu ) {
+				HGPUNV hGPU = 0;
+				if( !wglEnumGpusNV( gpu, &hGPU )) {
+					break;
+				}
+				
+				Rect2D win(settings->width, settings->height, settings->xPos, settings->yPos);
+				std::cout << "Area: " << win.getArea() << std::endl;
+				int deviceIndex = 0;
+				int area = win.getArea();
+				int gpuArea = 0;
+				gpus[gpu].cb = sizeof(GPU_DEVICE);
+				while (wglEnumGpuDevicesNV(hGPU, deviceIndex, &gpus[gpu])) {
+
+					std::cout << &gpus[gpu] << " " << gpus[gpu].cb << " " << gpus[gpu].DeviceName << " " << gpus[gpu].DeviceString << " " << gpus[gpu].Flags << std::endl;
+
+					deviceIndex++;
+					int j = gpu;
+					Rect2D dev(gpus[j].rcVirtualScreen.right - gpus[j].rcVirtualScreen.left, gpus[j].rcVirtualScreen.bottom - gpus[j].rcVirtualScreen.top, gpus[j].rcVirtualScreen.left, gpus[j].rcVirtualScreen.top);
+					Rect2D intersection = dev.intersect(win);
+					gpuArea += intersection.getArea();
+					if (area <= gpuArea)
+					{
+						currentGPU = gpu;
+						//break;
+					}
+
+
+					std::cout << "(" << intersection.x0() << ", " << intersection.y0() << ") " << "(" << intersection.width() << ", " << intersection.height() << ") " << std::endl;
+					std::cout << "GPU " << j << ": " << intersection.getArea() << " = " << gpus[j].rcVirtualScreen.left << " " << gpus[j].rcVirtualScreen.right << " " << gpus[j].rcVirtualScreen.top << " " << gpus[j].rcVirtualScreen.bottom << std::endl;
+				}
+
+				if (currentGPU > 0)
+				{
+					break;
+				}
+				numGPUs++;
+			}
+
+			glfwWindowHint(GLFW_AFFINITY_GPU, currentGPU);
+			//settings->gpuId = currentGPU;
+		}
+	}
+	/*
+	if (settings->useGPUAffinity) {
 		GPU_DEVICE gpus[MAX_AFFINITY_GPUS];
 		if (WGLEW_NV_gpu_affinity) {
 			int numGPUs = 0;
@@ -82,6 +131,7 @@ WindowGLFW::WindowGLFW(WindowSettingsRef settings, std::vector<AbstractCameraRef
 			glfwWindowHint(GLFW_AFFINITY_GPU, currentGPU);
 		}
 	}
+	*/
 #endif
 	glfwWindowHint(GLFW_ALPHA_BITS, settings->alphaBits);
 	glfwWindowHint(GLFW_DEPTH_BITS, settings->depthBits);

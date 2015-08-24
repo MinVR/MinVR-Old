@@ -87,4 +87,21 @@ int Rect2D::y1()
 	return _y+_height;
 }
 
+Rect2D Rect2D::intersect(const Rect2D& rect)
+{
+	glm::ivec2 low(_x, _y);
+	glm::ivec2 rectLow(rect._x, rect._y);
+	glm::ivec2 high = low + glm::ivec2(_width, _height);
+	glm::ivec2 rectHigh = rectLow + glm::ivec2(rect._width, rect._height);
+	glm::ivec2 maxLow(glm::max(low.x, rectLow.x), glm::max(low.y, rectLow.y));
+	glm::ivec2 minHigh(glm::min(high.x, rectHigh.x), glm::min(high.y, rectHigh.y));
+	Rect2D intersection(glm::max(0, minHigh.x - maxLow.x), glm::max(0, minHigh.y - maxLow.y), maxLow.x, maxLow.y);
+	return intersection;
+}
+
+int Rect2D::getArea()
+{
+	return _width*_height;
+}
+
 } // namespace
