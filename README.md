@@ -1,5 +1,6 @@
 #MinVR
 
+**This repository has been deprecated. It is replaced by a new version called MinVR2: https://github.com/ivlab/minvr2**
 
 ##Introduction
 
