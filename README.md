@@ -6,7 +6,7 @@
 
 MinVR is an open-source cross-platform virtual reality library initially developed at the University of Minnesota [Interactive Visualization Lab](http://ivlab.cs.umn.edu). It supports interaction with multiple VR input devices and display configurations (e.g. fish-tank VR displays, powerwalls, and CAVE systems), while allowing for integration with a variety of graphics toolkits (e.g. raw OpenGL, G3D, Glut, OpenSceneGraph, etc.).
 
-The main MinVR website is found at [http://minvr.github.io/MinVR/](http://minvr.github.io/MinVR/).
+The main MinVR V1 website is found at http://minvr.github.io/MinVR-Old/](http://minvr.github.io/MinVR-Old/).
 
 ##MinVR Features and Design 
 
